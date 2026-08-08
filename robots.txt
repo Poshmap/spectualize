@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Explicit allow for AI crawlers used by LLMs (GEO)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://spectualize.com/sitemap.xml

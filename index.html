@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#F1EAE0">
+
+  <title>Spectualize — Esperienze digitali immersive</title>
+  <meta name="description" content="Spectualize è uno studio digitale che progetta esperienze immersive: interfacce, siti WebGL, brand experience. Con base in Italia.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Spectualize">
+
+  <link rel="canonical" href="https://spectualize.com/">
+  <link rel="alternate" hreflang="it" href="https://spectualize.com/">
+  <link rel="alternate" hreflang="en" href="https://spectualize.com/?lang=en">
+  <link rel="alternate" hreflang="x-default" href="https://spectualize.com/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Spectualize">
+  <meta property="og:title" content="Spectualize — Esperienze digitali immersive">
+  <meta property="og:description" content="Studio digitale che progetta esperienze immersive per il web.">
+  <meta property="og:url" content="https://spectualize.com/">
+  <meta property="og:image" content="https://spectualize.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:locale:alternate" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Spectualize — Immersive Digital Experiences">
+  <meta name="twitter:description" content="Studio digitale che progetta esperienze immersive per il web.">
+  <meta name="twitter:image" content="https://spectualize.com/og-image.png">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs><linearGradient id='g' x1='50%25' y1='0%25' x2='50%25' y2='100%25'><stop offset='0%25' stop-color='%23FF7A2A'/><stop offset='55%25' stop-color='%23E91FA8'/><stop offset='100%25' stop-color='%23FF1CD6'/></linearGradient></defs><path d='M7 3 L18 5 L14 12 L10 12 L6 21 L17 19 L13 12 Z' fill='url(%23g)'/></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Spectualize",
+    "url": "https://spectualize.com",
+    "logo": "https://spectualize.com/logo.png",
+    "description": "Studio digitale che progetta esperienze immersive per il web.",
+    "areaServed": "Worldwide",
+    "address": { "@type": "PostalAddress", "addressCountry": "IT" }
+  }
+  </script>
+
+  <style>
+    :root {
+      --cream: #F1EAE0;
+      --cream-deep: #E8DFD1;
+      --ink: #1A1210;
+      --ink-mid: rgba(26, 18, 16, 0.55);
+      --ink-soft: rgba(26, 18, 16, 0.35);
+      --hairline: rgba(26, 18, 16, 0.10);
+      --brand-warm: #FF3D6E;
+      --brand-magenta: #E91FA8;
+      --brand-pink: #FF1CD6;
+      --sans: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--sans);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      cursor: none; /* custom cursor blob replaces it */
+    }
+    body { position: relative; overscroll-behavior: none; }
+
+    /* Show system cursor on touch devices (no blob) */
+    @media (hover: none) { html, body { cursor: auto; } }
+    /* Show system cursor over interactive elements */
+    button, a { cursor: pointer; }
+
+    /* --- Shader canvas (signature element) --- */
+    #shader {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
+
+    body.no-webgl #shader { display: none; }
+    body.no-webgl::before {
+      content: "";
+      position: fixed;
+      inset: -10%;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 55% at 30% 35%, rgba(255,122,42,0.65), transparent 60%),
+        radial-gradient(ellipse 55% 50% at 72% 68%, rgba(233,31,168,0.65), transparent 60%),
+        radial-gradient(ellipse 50% 45% at 50% 90%, rgba(255,28,214,0.5), transparent 60%);
+      filter: blur(50px);
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+
+    /* --- Cursor blob (desktop only) --- */
+    .cursor-blob {
+      position: fixed;
+      top: 0; left: 0;
+      width: 420px; height: 420px;
+      pointer-events: none;
+      z-index: 1;
+      background: radial-gradient(circle at center,
+        rgba(255, 122, 42, 0.32) 0%,
+        rgba(255, 61, 110, 0.24) 22%,
+        rgba(233, 31, 168, 0.14) 48%,
+        rgba(255, 28, 214, 0.06) 65%,
+        transparent 78%);
+      filter: blur(24px);
+      mix-blend-mode: multiply;
+      transform: translate3d(-1000px, -1000px, 0);
+      will-change: transform;
+      opacity: 0;
+      transition: opacity 500ms ease;
+    }
+    .cursor-blob.on { opacity: 1; }
+    @media (hover: none) { .cursor-blob { display: none; } }
+
+    /* --- Click ripples --- */
+    .ripples { position: fixed; inset: 0; z-index: 6; pointer-events: none; }
+    .ripple {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 61, 110, 0.7);
+      transform: translate3d(-50%, -50%, 0);
+      animation: ripple-out 1100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      mix-blend-mode: multiply;
+    }
+    .ripple.b {
+      border-color: rgba(255, 28, 214, 0.55);
+      animation-duration: 1400ms;
+      animation-delay: 90ms;
+    }
+    .ripple.c {
+      border-color: rgba(255, 122, 42, 0.5);
+      animation-duration: 900ms;
+      animation-delay: 40ms;
+    }
+    @keyframes ripple-out {
+      0%   { width: 6px;   height: 6px;   opacity: 1; border-width: 2px; }
+      60%  { opacity: 0.7; border-width: 1.5px; }
+      100% { width: 520px; height: 520px; opacity: 0; border-width: 0.5px; }
+    }
+
+    /* --- Grain (paper texture, subtle) --- */
+    .grain {
+      position: fixed; inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      opacity: 0.28;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.07  0 0 0 0 0.06  0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      background-size: 240px 240px;
+    }
+
+    /* Hairline grid — structural signature */
+    .grid {
+      position: fixed;
+      z-index: 2;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to right, var(--hairline) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--hairline) 1px, transparent 1px);
+      background-size: 33.333vw 33.333vh;
+      background-position: 0 0;
+      opacity: 0.5;
+    }
+
+    /* --- Header --- */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
+      padding: clamp(20px, 3vw, 32px);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      pointer-events: none;
+    }
+    header > * { pointer-events: auto; }
+
+    .brand-mark {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      line-height: 1.6;
+    }
+    .brand-mark .row { display: flex; align-items: center; gap: 8px; }
+    .brand-mark .dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      background: var(--brand-warm);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(255,61,110,0.55);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%     { opacity: 0.55; transform: scale(0.85); }
+    }
+    .brand-mark .wm { color: var(--ink); letter-spacing: 0.18em; font-weight: 500; }
+
+    .lang {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .lang button {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--ink-soft);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: inherit;
+      padding: 6px 10px;
+      letter-spacing: 0.06em;
+      transition: color 220ms ease, border-color 220ms ease;
+      border-radius: 2px;
+    }
+    .lang button:hover { color: var(--ink); }
+    .lang button:focus-visible {
+      outline: none;
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    .lang button[aria-pressed="true"] { color: var(--ink); }
+    .lang .sep { color: var(--hairline); user-select: none; }
+
+    /* --- Main / hero --- */
+    main {
+      position: relative;
+      z-index: 3;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+    .logo-wrap {
+      width: min(74vw, 460px);
+      display: flex; justify-content: center; align-items: center;
+      transform: translateY(-8px);
+      animation: float 9s ease-in-out infinite;
+      will-change: transform;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(-8px); }
+      50%     { transform: translateY(2px); }
+    }
+    .logo-wrap img {
+      width: 100%; height: auto;
+      user-select: none; -webkit-user-drag: none;
+      display: block;
+    }
+    .tagline {
+      margin-top: clamp(28px, 4.5vh, 48px);
+      font-family: var(--sans);
+      font-weight: 300;
+      font-size: clamp(11px, 1.15vw, 13px);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      max-width: 40ch;
+      line-height: 1.6;
+    }
+
+    /* --- Footer --- */
+    footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 10;
+      padding: clamp(20px, 3vw, 32px);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+    }
+    footer .year { font-variant-numeric: tabular-nums; letter-spacing: 0.18em; }
+
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logo-wrap, .brand-mark .dot { animation: none; }
+      .cursor-blob { display: none; }
+      .ripple { animation-duration: 300ms; }
+      * { transition: none !important; }
+    }
+    @media (max-width: 640px) {
+      header, footer { padding: 16px; }
+      .brand-mark { font-size: 10px; }
+      .lang button { padding: 6px 8px; }
+      .tagline { letter-spacing: 0.24em; font-size: 10.5px; }
+      .grid { background-size: 50vw 50vh; opacity: 0.4; }
+      footer .loc { display: none; }
+    }
+    @media (max-height: 520px) {
+      .tagline { margin-top: 18px; }
+      header, footer { padding: 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="shader" aria-hidden="true"></canvas>
+  <div class="cursor-blob" aria-hidden="true"></div>
+  <div class="grid" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="ripples" aria-hidden="true"></div>
+
+  <header>
+    <div class="brand-mark" aria-hidden="true">
+      <div class="row"><span class="dot"></span><span data-i18n="status">In cantiere</span></div>
+      <div class="wm">SPECTUALIZE</div>
+    </div>
+    <nav class="lang" aria-label="Language">
+      <button data-lang="it" aria-pressed="true">IT</button>
+      <span class="sep" aria-hidden="true">/</span>
+      <button data-lang="en" aria-pressed="false">EN</button>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="visually-hidden" data-i18n="h1">Spectualize — Esperienze digitali immersive</h1>
+    <div class="logo-wrap">
+      <img src="./logo.png" alt="Spectualize" width="2000" height="1115" fetchpriority="high">
+    </div>
+    <p class="tagline" data-i18n="tagline">Esperienze digitali immersive</p>
+  </main>
+
+  <footer>
+    <span class="loc" data-i18n="loc">Studio · Italia</span>
+    <span class="year">MMXXVI</span>
+  </footer>
+
+  <script>
+  (function(){
+    // =========================================================
+    // Shared state
+    // =========================================================
+    const canvas  = document.getElementById('shader');
+    const blob    = document.querySelector('.cursor-blob');
+    const ripples = document.querySelector('.ripples');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouch      = window.matchMedia('(hover: none)').matches;
+    const start = performance.now();
+
+    // Mouse state (all in [0,1] with y=0 at bottom for shader convenience)
+    let mTgt = { x: 0.5, y: 0.5 };
+    let mCur = { x: 0.5, y: 0.5 };
+    let mPrev = { x: 0.5, y: 0.5 };
+    let mvel = 0;
+
+    // Click state
+    let click = { x: 0.5, y: 0.5, at: -100 };
+
+    // =========================================================
+    // Cursor blob follower (desktop only)
+    // =========================================================
+    let bx = -1000, by = -1000, btx = -1000, bty = -1000;
+    let blobActive = false;
+    if (!isTouch && !reduceMotion) {
+      window.addEventListener('mousemove', (e) => {
+        btx = e.clientX; bty = e.clientY;
+        if (!blobActive) { bx = btx; by = bty; blob.classList.add('on'); blobActive = true; }
+      });
+      window.addEventListener('mouseleave', () => { blob.classList.remove('on'); blobActive = false; });
+    }
+
+    // =========================================================
+    // Ripple spawn (works for click & touch via pointerdown)
+    // =========================================================
+    function spawnRipple(x, y) {
+      const variants = ['', 'b', 'c'];
+      variants.forEach(v => {
+        const r = document.createElement('div');
+        r.className = 'ripple' + (v ? ' ' + v : '');
+        r.style.left = x + 'px';
+        r.style.top  = y + 'px';
+        ripples.appendChild(r);
+        setTimeout(() => r.remove(), 1500);
+      });
+    }
+
+    window.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('button, a')) return;
+      const w = window.innerWidth, h = window.innerHeight;
+      spawnRipple(e.clientX, e.clientY);
+      click.x = e.clientX / w;
+      click.y = 1 - (e.clientY / h);
+      click.at = (performance.now() - start) / 1000;
+    });
+
+    // =========================================================
+    // WebGL shader
+    // =========================================================
+    let gl = null;
+    try {
+      gl = canvas.getContext('webgl', {
+        alpha: true, antialias: false, premultipliedAlpha: false, powerPreference: 'low-power'
+      });
+    } catch(e) {}
+
+    if (!gl) {
+      document.body.classList.add('no-webgl');
+    } else {
+      const vsSrc = `attribute vec2 a_position; void main(){ gl_Position = vec4(a_position, 0.0, 1.0); }`;
+      const fsSrc = `precision mediump float;
+        uniform vec2  u_resolution;
+        uniform float u_time;
+        uniform vec2  u_mouse;
+        uniform float u_mvel;
+        uniform vec3  u_click; // xy in [0,1], z = elapsed seconds since click
+
+        float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+        float noise(vec2 p){
+          vec2 i=floor(p), f=fract(p);
+          vec2 u=f*f*(3.0-2.0*f);
+          return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),u.x),
+                     mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0,1.0)),u.x), u.y);
+        }
+        float fbm(vec2 p){
+          float v=0.0, a=0.5;
+          for(int i=0;i<5;i++){ v += a*noise(p); p = p*2.02 + vec2(1.7,9.2); a *= 0.5; }
+          return v;
+        }
+        void main(){
+          vec2 p = (gl_FragCoord.xy - u_resolution*0.5) / min(u_resolution.x, u_resolution.y);
+          float t = u_time * 0.05;
+
+          // Domain warping for organic flow
+          vec2 q = vec2(fbm(p*1.4 + t), fbm(p*1.4 - t + vec2(3.1,1.3)));
+          vec2 r = vec2(fbm(p*1.1 + q*1.9 + vec2(1.7,9.2) + t*0.4),
+                        fbm(p*1.1 + q*1.9 + vec2(8.3,2.8) + t*0.55));
+          float n = fbm(p*1.0 + r*2.4);
+
+          // Mouse position in shader coords
+          vec2 mp = u_mouse - 0.5;
+          mp.x *= u_resolution.x / u_resolution.y;
+          float md = distance(p, mp);
+          // Cursor bloom + velocity boost
+          n += smoothstep(0.55, 0.0, md) * (0.09 + u_mvel * 0.07);
+
+          // Click wave — a soft ring that expands from the click point
+          float e = u_click.z;
+          if (e > 0.0 && e < 2.5) {
+            vec2 cp = u_click.xy - 0.5;
+            cp.x *= u_resolution.x / u_resolution.y;
+            float cd = distance(p, cp);
+            float radius = e * 1.05;
+            float ring   = smoothstep(0.075, 0.0, abs(cd - radius));
+            float fade   = 1.0 - smoothstep(0.0, 2.2, e);
+            n += ring * fade * 0.28;
+            // Also boost color inside the ring's inner disc briefly
+            float inner = smoothstep(radius, radius - 0.25, cd) * (1.0 - smoothstep(0.0, 0.9, e));
+            n += inner * 0.12;
+          }
+
+          // Brand palette (from logo)
+          vec3 c1 = vec3(1.000, 0.478, 0.165); // #FF7A2A
+          vec3 c2 = vec3(1.000, 0.239, 0.416); // #FF3D6A
+          vec3 c3 = vec3(0.914, 0.122, 0.659); // #E91FA8
+          vec3 c4 = vec3(1.000, 0.110, 0.839); // #FF1CD6
+
+          vec3 col = c1;
+          col = mix(col, c2, smoothstep(0.44, 0.64, n));
+          col = mix(col, c3, smoothstep(0.62, 0.80, n));
+          col = mix(col, c4, smoothstep(0.78, 0.92, n));
+
+          // Alpha ramp — starts earlier so orange is actually visible
+          float alpha = smoothstep(0.20, 0.60, n) * 0.78;
+
+          // Very soft vignette (colors don't die at edges)
+          float vig = smoothstep(1.45, 0.45, length(p));
+          alpha *= mix(0.65, 1.0, vig);
+
+          gl_FragColor = vec4(col, alpha); // non-premultiplied — matches blendFunc below
+        }`;
+
+      function compile(type, src){
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+          console.error(gl.getShaderInfoLog(s));
+          return null;
+        }
+        return s;
+      }
+      const vs = compile(gl.VERTEX_SHADER, vsSrc);
+      const fs = compile(gl.FRAGMENT_SHADER, fsSrc);
+      const prog = gl.createProgram();
+      gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        document.body.classList.add('no-webgl');
+      } else {
+        gl.useProgram(prog);
+
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+        const posLoc = gl.getAttribLocation(prog, 'a_position');
+        gl.enableVertexAttribArray(posLoc);
+        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+        const uRes   = gl.getUniformLocation(prog, 'u_resolution');
+        const uTime  = gl.getUniformLocation(prog, 'u_time');
+        const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+        const uMvel  = gl.getUniformLocation(prog, 'u_mvel');
+        const uClick = gl.getUniformLocation(prog, 'u_click');
+
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); // matches non-premultiplied output
+        gl.clearColor(0, 0, 0, 0);
+
+        function resize(){
+          const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+          const w = window.innerWidth, h = window.innerHeight;
+          canvas.width = Math.round(w * dpr);
+          canvas.height = Math.round(h * dpr);
+          canvas.style.width = w + 'px';
+          canvas.style.height = h + 'px';
+          gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Global mouse tracking (used by shader)
+        window.addEventListener('mousemove', e => {
+          mTgt.x = e.clientX / window.innerWidth;
+          mTgt.y = 1.0 - (e.clientY / window.innerHeight);
+        });
+        window.addEventListener('touchmove', e => {
+          if (e.touches[0]) {
+            mTgt.x = e.touches[0].clientX / window.innerWidth;
+            mTgt.y = 1.0 - (e.touches[0].clientY / window.innerHeight);
+          }
+        }, { passive: true });
+
+        let visible = true;
+        document.addEventListener('visibilitychange', () => {
+          visible = document.visibilityState === 'visible';
+          if (visible) requestAnimationFrame(render);
+        });
+
+        function render(now){
+          if (!visible) return;
+          const t = (now - start) / 1000;
+
+          // Smooth mouse
+          mCur.x += (mTgt.x - mCur.x) * 0.055;
+          mCur.y += (mTgt.y - mCur.y) * 0.055;
+
+          // Velocity magnitude, normalized
+          const dvx = mCur.x - mPrev.x;
+          const dvy = mCur.y - mPrev.y;
+          const inst = Math.min(Math.sqrt(dvx*dvx + dvy*dvy) * 60.0, 1.2);
+          mvel += (inst - mvel) * 0.15;
+          mPrev.x = mCur.x; mPrev.y = mCur.y;
+
+          const clickElapsed = t - click.at;
+
+          gl.uniform2f(uRes, canvas.width, canvas.height);
+          gl.uniform1f(uTime, reduceMotion ? 4.2 : t);
+          gl.uniform2f(uMouse, mCur.x, mCur.y);
+          gl.uniform1f(uMvel, mvel);
+          gl.uniform3f(uClick, click.x, click.y, clickElapsed);
+
+          gl.clear(gl.COLOR_BUFFER_BIT);
+          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+          requestAnimationFrame(render);
+        }
+        requestAnimationFrame(render);
+      }
+    }
+
+    // =========================================================
+    // Blob raf loop (runs regardless of WebGL)
+    // =========================================================
+    if (!isTouch && !reduceMotion) {
+      (function loop(){
+        bx += (btx - bx) * 0.14;
+        by += (bty - by) * 0.14;
+        blob.style.transform = `translate3d(${bx - 210}px, ${by - 210}px, 0)`;
+        requestAnimationFrame(loop);
+      })();
+    }
+
+    // =========================================================
+    // i18n
+    // =========================================================
+    const i18n = {
+      it: {
+        h1: 'Spectualize — Esperienze digitali immersive',
+        tagline: 'Esperienze digitali immersive',
+        status: 'In cantiere',
+        loc: 'Studio · Italia',
+        title: 'Spectualize — Esperienze digitali immersive',
+        desc: 'Spectualize è uno studio digitale che progetta esperienze immersive: interfacce, siti WebGL, brand experience. Con base in Italia.'
+      },
+      en: {
+        h1: 'Spectualize — Immersive digital experiences',
+        tagline: 'Immersive digital experiences',
+        status: 'In the making',
+        loc: 'Studio · Italy',
+        title: 'Spectualize — Immersive digital experiences',
+        desc: 'Spectualize is a digital studio designing immersive experiences: interfaces, WebGL sites, brand experiences. Based in Italy.'
+      }
+    };
+    function setLang(lang){
+      if (!i18n[lang]) return;
+      document.documentElement.lang = lang;
+      document.title = i18n[lang].title;
+      const meta = document.querySelector('meta[name="description"]');
+      if (meta) meta.setAttribute('content', i18n[lang].desc);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) el.textContent = i18n[lang][key];
+      });
+      document.querySelectorAll('.lang button').forEach(b => {
+        b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false');
+      });
+      try { localStorage.setItem('spec-lang', lang); } catch(e){}
+    }
+
+    let initial = 'it';
+    try {
+      const urlLang = new URLSearchParams(location.search).get('lang');
+      if (urlLang && i18n[urlLang]) initial = urlLang;
+      else {
+        const saved = localStorage.getItem('spec-lang');
+        if (saved && i18n[saved]) initial = saved;
+        else if (navigator.language && !navigator.language.toLowerCase().startsWith('it')) initial = 'en';
+      }
+    } catch(e){}
+    if (initial !== 'it') setLang(initial);
+
+    document.querySelectorAll('.lang button').forEach(b => {
+      b.addEventListener('click', () => setLang(b.dataset.lang));
+    });
+  })();
+  </script>
+</body>
+</html>
