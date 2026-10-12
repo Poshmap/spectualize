@@ -113,15 +113,16 @@
   .gate .logo { width: min(74vw, 460px); animation: float 9s ease-in-out infinite; transform-origin: 0 0; }
   .gate .logo img { width: 100%; height: auto; display: block; user-select: none; -webkit-user-drag: none; }
   @keyframes float { 0%,100% { translate: 0 -8px; } 50% { translate: 0 2px; } }
-  .tagline { font-weight: 300; font-size: clamp(11px,1.15vw,13px); letter-spacing: .32em; text-transform: uppercase; color: var(--ink-mid); transition: opacity .4s ease; }
+  .tagline { font-weight: 500; font-size: clamp(12.5px,1.3vw,15px); letter-spacing: .3em; text-transform: uppercase; color: var(--ink); transition: opacity .4s ease; }
+  /* "Entra" ha lo stesso aspetto di "Raccontaci il progetto": pillola scura e pallino arancio che pulsa */
   .enter {
-    position: relative; display: inline-flex; align-items: center; gap: 12px; padding: 14px 26px 14px 22px; border-radius: 999px;
-    font-family: var(--mono); font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
-    background: var(--panel); backdrop-filter: blur(6px); transition: opacity .4s ease, background .3s ease;
+    position: relative; display: inline-flex; align-items: center; gap: 12px; padding: 15px 24px 15px 22px; border-radius: 999px;
+    background: var(--ink); color: var(--cream); font-size: 15px; font-weight: 500;
+    transition: opacity .4s ease, transform .25s ease;
   }
-  .enter::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .enter .dot { width: 8px; height: 8px; background: var(--orange); box-shadow: 0 0 14px rgba(255,122,42,.8); }
   .enter .arrow { transition: transform .3s ease; }
-  .enter:hover { background: rgba(252,249,245,.96); }
+  .enter:hover { transform: translateY(-2px); }
   .enter:hover .arrow { transform: translateX(4px); }
   .gate.leaving { pointer-events: none; }
   .gate.leaving .tagline, .gate.leaving .enter, .gate.leaving .top, .gate.leaving .bottom { opacity: 0; }
@@ -514,19 +515,41 @@
     /* alone del colore dell'area nell'angolo; più acceso per le aree legate a Online / Dal vivo */
     .home .areas a::before { inset: 0; z-index: -1; border-radius: inherit; opacity: .55; background: radial-gradient(120% 95% at 100% 0%, color-mix(in srgb, var(--c) 32%, transparent), transparent 62%); transition: opacity .7s ease; }
     .home .areas a.hit::before { opacity: 1; }
-    .home .areas .name { font-size: 26px; font-weight: 400; letter-spacing: -.025em; gap: 12px; padding-right: 36px; }
+    .home .areas .name { font-size: 24px; font-weight: 400; letter-spacing: -.025em; gap: 12px; padding-right: 36px; }
     .home .areas .name i { width: 11px; height: 11px; box-shadow: 0 0 14px var(--c); }
     .home .areas .name::after { content: "0" counter(area); position: absolute; top: 24px; right: 20px; margin: 0; font-family: var(--mono); font-size: 12px; font-weight: 400; letter-spacing: .1em; opacity: 1; color: var(--ink-mid); }
-    .home .areas .desc { padding-right: 52px; color: var(--ink-strong); }
-    .home .areas a::after { content: "→"; position: absolute; right: 16px; bottom: 16px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: var(--cream); font-size: 17px; }
+    .home .areas .desc { padding-right: 40px; color: var(--ink-strong); }
+    .home .areas a::after { content: "→"; position: absolute; right: 16px; bottom: 18px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: var(--cream); font-size: 13px; }
   }
   @keyframes hint-drop { 0% { top: -60%; } 100% { top: 100%; } }
   @keyframes lead-float { 0%, 100% { transform: translateY(6px); } 50% { transform: translateY(-8px); } }
   @keyframes hl-flow { from { background-position: 0% 0; } to { background-position: 100% 0; } }
 
-  @media (prefers-reduced-motion: reduce) {
+
+  /* ---------- 12/10/2026: transizioni tra pagine e ingressi su mobile ---------- */
+  /* sono animazioni, non transizioni: restano anche con "Riduci movimento" attivo sul telefono */
+  .view.v-out { animation: v-out .28s cubic-bezier(.4,0,1,1) both; pointer-events: none; }
+  .view.v-in { animation: v-in .6s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes v-out { to { opacity: 0; transform: translateY(-12px); } }
+  @keyframes v-in { from { opacity: 0; transform: translateY(16px); } }
+  @media (max-width: 760px) {
+    .mode { padding: 3px; }
+    .mode .knob { top: 3px; bottom: 3px; left: 3px; }
+    .mode button { padding: 6px 10px; font-size: 10px; letter-spacing: .1em; }
+    .reveal.in > *, .areas.reveal.in > * { transition: none !important; animation: m-rise .9s cubic-bezier(.16,1,.3,1) backwards; animation-delay: calc(var(--i, 0) * 110ms + 120ms); }
+    .svc-main.reveal.in > * { animation-name: m-fade; animation-duration: .7s; }
+    .fade.in { transition: none !important; animation: m-fade .8s ease .2s backwards; }
+  }
+  @keyframes m-rise { from { opacity: 0; transform: translateY(26px); } }
+  @keyframes m-fade { from { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) and (hover: hover) {
+    .view.v-out, .view.v-in { animation-name: fade-in; animation-duration: .01ms; }
+  }
+  @media (prefers-reduced-motion: reduce) and (hover: hover) {
     .wz-step.is-in > * { animation: none; }
-    .gate .logo, .dot { animation: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gate .logo { animation: none; }
     .cursor-blob { display: none; }
     *, .reveal.in > * { transition-duration: .01ms !important; transition-delay: 0s !important; }
   }
@@ -717,7 +740,7 @@
     <div class="top mono"><span class="status"><span class="dot"></span>Un solo team · Italia</span><span></span></div>
     <div class="logo" id="gateLogo"><img src="logo.png" alt="Spectualize" width="2000" height="1115"></div>
     <p class="tagline">Esperienze online e dal vivo</p>
-    <button class="enter" id="enter"><span>Entra</span><span class="arrow" aria-hidden="true">→</span></button>
+    <button class="enter" id="enter"><span class="dot"></span><span>Entra</span><span class="arrow" aria-hidden="true">→</span></button>
     <div class="bottom mono"><span>Web · Advertising · Marketing · Eventi</span><span>MMXXVI</span></div>
   </section>
 </div>
@@ -987,7 +1010,7 @@
   function placeKnob(){
     const btn = live ? $('#mLive') : $('#mOn'), knob = $('.knob');
     knob.style.width = btn.offsetWidth + 'px';
-    knob.style.transform = `translateX(${btn.offsetLeft - 4}px)`;
+    knob.style.transform = `translateX(${btn.offsetLeft - knob.offsetLeft}px)`;
   }
   let subToken = 0;
   const words = (t, cls, step) => t.split(' ').map((w, i) => `<span class="w ${cls}" style="animation-delay:${i * step}ms">${w}</span>`).join(' ');
@@ -1075,11 +1098,28 @@
     if (!wiz.hidden) { wiz.hidden = true; document.body.classList.remove('in-wizard'); }
     showHome(); setLive(live);
   }
+  // passaggio tra pagine: la vista attuale sale e sfuma, il fumo pulsa, la nuova entra dal basso
+  const VIEWS = () => [gate, home, svcView, wiz];
+  let swapT = 0;
+  function swap(target, fn){
+    const from = VIEWS().find(v => !v.hidden && !v.classList.contains('v-out'));
+    if (!from || from === target || entering) { fn(); return; }
+    clearTimeout(swapT);
+    VIEWS().forEach(v => v.classList.remove('v-in'));
+    from.classList.add('v-out'); set({ amp: 1.22 });
+    swapT = setTimeout(() => {
+      from.classList.remove('v-out');
+      fn();
+      const to = VIEWS().find(v => !v.hidden);
+      if (to) { to.classList.add('v-in'); to.addEventListener('animationend', function done(e){ if (e.target === to) { to.classList.remove('v-in'); to.removeEventListener('animationend', done); } }); }
+    }, 280);
+  }
+  const targetOf = h => /^#servizi/.test(h || '') ? svcView : h === '#progetto' ? wiz : home;
   function go(h){
     try { history.pushState(null, '', h || location.pathname + location.search); } catch(e){}
-    route(h);
+    swap(targetOf(h), () => route(h));
   }
-  addEventListener('popstate', () => route(location.hash));
+  addEventListener('popstate', () => swap(targetOf(location.hash), () => route(location.hash)));
   function stepSvc(d, el){
     const i = (cur + d + SVC.length) % SVC.length;
     if (el) { const r = el.getBoundingClientRect(); ripple(r.left + r.width/2, r.top + r.height/2, false); }
@@ -1247,9 +1287,9 @@
     wiz.querySelectorAll('.wz-field.bad').forEach(f => f.classList.remove('bad'));
     wiz.querySelectorAll('[data-b]').forEach(dd => { dd.textContent = dd.dataset.ph; dd.classList.add('empty'); dd.classList.remove('flash'); });
   }
-  document.querySelectorAll('.js-brief').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openBrief(); }));
-  document.querySelectorAll('.js-brief-area').forEach(a => a.addEventListener('click', e => { e.preventDefault(); resetWizard(); openBrief(SVC[cur].name); }));
-  wiz.querySelectorAll('.js-home').forEach(b => b.addEventListener('click', closeBrief));
+  document.querySelectorAll('.js-brief').forEach(a => a.addEventListener('click', e => { e.preventDefault(); swap(wiz, () => openBrief()); }));
+  document.querySelectorAll('.js-brief-area').forEach(a => a.addEventListener('click', e => { e.preventDefault(); swap(wiz, () => { resetWizard(); openBrief(SVC[cur].name); }); }));
+  wiz.querySelectorAll('.js-home').forEach(b => b.addEventListener('click', () => swap(view === 'svc' ? svcView : home, closeBrief)));
 
 
   // ---------- Privacy ----------
