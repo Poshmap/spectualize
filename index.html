@@ -459,16 +459,16 @@
   }
   @media (max-width: 760px) {
     /* pagine servizio: più aria sotto il logo, come lo switch in home */
-    .svc-main { padding-top: clamp(48px, 15vh, 140px); }
+    .svc-main { padding-top: var(--home-gap, clamp(40px, 10vh, 120px)); }
     /* cambiando area il contenuto sfuma senza scivolare */
     .svc-main.reveal > * { transform: none !important; }
   }
-  @media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
-    /* home: il blocco di testo respira piano, e il gradiente scorre lento */
-    .home .lead { animation: lead-float 9s ease-in-out infinite; }
+  @media (max-width: 760px) {
+    /* home: il blocco di testo sale e scende piano, e il gradiente scorre lento (anche con "Riduci movimento") */
+    .home .lead { animation: lead-float 7s ease-in-out infinite; }
     .home .claim .hl { background-size: 180% 100%; animation: hl-flow 10s ease-in-out infinite alternate; }
   }
-  @keyframes lead-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes lead-float { 0%, 100% { transform: translateY(6px); } 50% { transform: translateY(-8px); } }
   @keyframes hl-flow { from { background-position: 0% 0; } to { background-position: 100% 0; } }
 
   @media (prefers-reduced-motion: reduce) {
@@ -809,11 +809,11 @@
       const k = reduce ? 1 : .04;
       U.amp.v += (U.amp.t-U.amp.v)*k; U.shift.v += (U.shift.t-U.shift.v)*k;
       U.live.v += (U.live.t-U.live.v)*(reduce ? 1 : .025);
-      if (touch && !reduce && now() - lastTouch > 1.5) { const w = now(); mT.x = .5 + .3*Math.sin(w*.21); mT.y = .5 + .24*Math.sin(w*.29 + 1.3); }
+      if (touch && now() - lastTouch > 1.5) { const w = now(); mT.x = .5 + .3*Math.sin(w*.21); mT.y = .5 + .24*Math.sin(w*.29 + 1.3); }
       mC.x+=(mT.x-mC.x)*.055; mC.y+=(mT.y-mC.y)*.055;
       const dx=mC.x-mP.x, dy=mC.y-mP.y; mvel+=(Math.min(Math.hypot(dx,dy)*60,1.2)-mvel)*.15; mP={...mC};
       gl.uniform2f(u.R, canvas.width, canvas.height);
-      gl.uniform1f(u.T, reduce ? 4.2 : now() * (touch ? 1.7 : 1));
+      gl.uniform1f(u.T, reduce && !touch ? 4.2 : now() * (touch ? 1.7 : 1));
       gl.uniform2f(u.M, mC.x, mC.y); gl.uniform1f(u.V, mvel);
       gl.uniform4f(u.C, click.x, click.y, now()-click.at, click.big);
       gl.uniform1f(u.AMP, U.amp.v); gl.uniform1f(u.SHIFT, U.shift.v); gl.uniform1f(u.LIVE, U.live.v);
@@ -828,10 +828,18 @@
   const TITLE = document.title, DESC = $('#metaDesc').content;
   let entering = false, view = 'home', baseShift = 0;
 
+  function syncGap(){
+    if (home.hidden || innerWidth > 760) return;
+    const head = home.querySelector('.site-head'), lead = $('#hero');
+    const gap = lead.offsetTop + parseFloat(getComputedStyle(lead).paddingTop) - (head.offsetTop + head.offsetHeight);
+    if (gap > 0) document.documentElement.style.setProperty('--home-gap', gap + 'px');
+  }
+  addEventListener('resize', () => syncGap());
+  try { document.fonts.ready.then(syncGap); } catch(e){}
   function resetHome(){ REVEAL.forEach(s => $(s).classList.remove('in')); }
   function revealHome(){
     resetHome(); REVEAL.forEach(s => void $(s).offsetWidth);
-    requestAnimationFrame(() => { REVEAL.forEach(s => $(s).classList.add('in')); placeKnob(); placeGlow(); });
+    requestAnimationFrame(() => { REVEAL.forEach(s => $(s).classList.add('in')); placeKnob(); placeGlow(); syncGap(); setTimeout(syncGap, 1600); });
   }
   function showGate(){
     setMenu && setMenu(false);
