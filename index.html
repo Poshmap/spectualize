@@ -545,6 +545,16 @@
   @media (prefers-reduced-motion: reduce) and (hover: hover) {
     .view.v-out, .view.v-in { animation-name: fade-in; animation-duration: .01ms; }
   }
+
+  /* ---------- Footer: stessa firma mono della soglia e del tasto privacy ---------- */
+  .site-foot { display: flex; align-items: center; gap: 10px; padding: 0 0 calc(var(--gut) + env(safe-area-inset-bottom,0px)); color: var(--ink-soft); }
+  .site-foot i { font-style: normal; }
+  .home .areas, .page .areas { padding-bottom: 18px; }
+  @media (max-width: 760px) {
+    .page .site-foot { order: 3; padding-top: 28px; }
+    .home .areas { padding-bottom: 28px; }
+    .site-foot { padding-bottom: calc(28px + env(safe-area-inset-bottom,0px)); }
+  }
   @media (prefers-reduced-motion: reduce) and (hover: hover) {
     .wz-step.is-in > * { animation: none; }
   }
@@ -587,6 +597,7 @@
       <a href="#servizi/marketing-brand" data-svc="marketing-brand" data-area="3" style="--i:3;--c:var(--magenta)"><span class="name"><i></i>Marketing &amp; Brand</span><span class="desc">Posizionamento, SEO, social e contenuti per far crescere il brand.</span></a>
       <a href="#servizi/eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi</span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
     </nav>
+    <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
 
   <!-- Pagina servizio: un solo modello, riempito con l'area scelta (#servizi/web-software, ...) -->
@@ -620,6 +631,7 @@
       <a href="#servizi/eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi <b class="go" aria-hidden="true">→</b></span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
     </nav>
     </div>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
 
   <section class="view wizard" id="wizard" hidden aria-label="Raccontaci il progetto">
@@ -901,7 +913,7 @@
 
   // ---------- Soglia e home ----------
   const gate = $('#gate'), home = $('#home'), gateLogo = $('#gateLogo'), mark = $('#mark'), svcView = $('#svc');
-  const REVEAL = ['#hero','#areas','#nav','#menuBtn'];
+  const REVEAL = ['#hero','#areas','#nav','#menuBtn','#homeFoot'];
   const TITLE = document.title, DESC = $('#metaDesc').content;
   let entering = false, view = 'home', baseShift = 0;
 
