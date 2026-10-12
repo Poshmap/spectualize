@@ -1,6 +1,6 @@
 # Spectualize
 
-> Immersive digital experiences · Esperienze digitali immersive
+> Esperienze online e dal vivo · Un unico partner per far crescere il tuo brand, online e dal vivo
 
 Splash placeholder for **[spectualize.com](https://spectualize.com)** — a single self-contained HTML page with a WebGL fluid shader, cursor tracking, and click interactions.
 
