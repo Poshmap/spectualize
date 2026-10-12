@@ -477,6 +477,23 @@
     .home .lead { animation: lead-float 7s ease-in-out infinite; }
     .home .claim .hl { background-size: 180% 100%; animation: hl-flow 10s ease-in-out infinite alternate; }
   }
+  /* home mobile: scroll che racconta. Primo schermo = titolo; scorrendo il titolo sale e sfuma, il fumo cambia, le aree salgono grandi */
+  .scroll-hint { display: none; }
+  @media (max-width: 760px) {
+    .home { grid-template-rows: auto minmax(calc(100svh - 72px - 64px), auto) auto auto; }
+    .scroll-hint { display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; color: var(--ink-mid); }
+    .scroll-hint i { position: relative; width: 1.5px; height: 22px; background: var(--hairline); overflow: hidden; border-radius: 2px; }
+    .scroll-hint i::after { content: ""; position: absolute; left: 0; right: 0; top: -60%; height: 60%; background: var(--grad); animation: hint-drop 1.8s cubic-bezier(.65,0,.35,1) infinite; }
+    .home.arriving .scroll-hint { visibility: hidden; }
+    .home .areas { grid-template-columns: 1fr; border-top: 0; column-gap: 0; padding-bottom: calc(40px + env(safe-area-inset-bottom,0px)); }
+    .home .areas a { padding: 24px 0 22px; border-top: 1px solid var(--hairline); gap: 8px; }
+    .home .areas .name { font-size: 27px; font-weight: 400; letter-spacing: -.025em; gap: 12px; }
+    .home .areas .name i { width: 10px; height: 10px; }
+    .home .areas .name::after { content: "→"; margin-left: auto; font-weight: 300; font-size: 22px; opacity: .55; }
+    .home .areas .desc { display: block; font-size: 16px; line-height: 1.45; max-width: 32ch; }
+    .home .areas a::before { inset: 0 -16px; }
+  }
+  @keyframes hint-drop { 0% { top: -60%; } 100% { top: 100%; } }
   @keyframes lead-float { 0%, 100% { transform: translateY(6px); } 50% { transform: translateY(-8px); } }
   @keyframes hl-flow { from { background-position: 0% 0; } to { background-position: 100% 0; } }
 
@@ -513,6 +530,7 @@
         <a class="btn btn-lg js-brief" href="#"><span class="dot"></span>Raccontaci il progetto</a>
       </div>
     </div>
+    <div class="scroll-hint mono" id="scrollHint" aria-hidden="true"><span>Scorri</span><i></i></div>
     <nav class="areas reveal" id="areas" aria-label="Aree">
       <a href="#servizi/web-software" data-svc="web-software" data-area="0" style="--i:2;--c:var(--orange)"><span class="name"><i></i>Web &amp; Software</span><span class="desc">Siti, e-commerce, piattaforme ed esperienze digitali immersive.</span></a>
       <a href="#servizi/advertising" data-svc="advertising" data-area="2" style="--i:2;--c:var(--coral)"><span class="name"><i></i>Advertising</span><span class="desc">Campagne Google, Meta e LinkedIn che portano contatti.</span></a>
@@ -848,7 +866,7 @@
   function resetHome(){ REVEAL.forEach(s => $(s).classList.remove('in')); }
   function revealHome(){
     resetHome(); REVEAL.forEach(s => void $(s).offsetWidth);
-    requestAnimationFrame(() => { REVEAL.forEach(s => $(s).classList.add('in')); placeKnob(); placeGlow(); syncGap(); setTimeout(syncGap, 1600); });
+    requestAnimationFrame(() => { REVEAL.forEach(s => $(s).classList.add('in')); placeKnob(); placeGlow(); syncGap(); setTimeout(syncGap, 1600); homeScroll(); });
   }
   function showGate(){
     setMenu && setMenu(false);
@@ -861,8 +879,27 @@
   function showHome(){
     gate.hidden = true; svcView.hidden = true; home.hidden = false; home.classList.remove('arriving');
     view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); document.title = TITLE; $('#metaDesc').content = DESC;
-    set({amp:1, shift:0}); revealHome();
+    home.scrollTop = 0; set({amp:1, shift:0}); revealHome(); homeScroll();
   }
+  // mobile: lo scroll della home muove titolo, fumo e aree
+  const small = matchMedia('(max-width: 760px)');
+  let scrollQueued = false;
+  function homeScroll(){
+    const lead = $('#hero'), hint = $('#scrollHint'), items = [...home.querySelectorAll('#areas > a')];
+    if (!small.matches) { lead.style.translate = lead.style.opacity = hint.style.opacity = ''; items.forEach(a => a.style.translate = a.style.opacity = ''); return; }
+    const vh = home.clientHeight, p = Math.min(1, home.scrollTop / (vh * .6));
+    lead.style.translate = `0 ${(-p * 90).toFixed(1)}px`;
+    lead.style.opacity = (1 - p * .8).toFixed(3);
+    hint.style.opacity = Math.max(0, 1 - p * 3).toFixed(3);
+    items.forEach(a => {
+      const t = Math.max(0, Math.min(1, (vh - a.getBoundingClientRect().top + 40) / (vh * .2)));
+      a.style.translate = `0 ${((1 - t) * 36).toFixed(1)}px`;
+      a.style.opacity = (.15 + t * .85).toFixed(3);
+    });
+    if (view === 'home' && !entering) set({ amp: 1 + p * .55, shift: p * .1 });
+  }
+  home.addEventListener('scroll', () => { if (scrollQueued) return; scrollQueued = true; requestAnimationFrame(() => { scrollQueued = false; homeScroll(); }); }, { passive: true });
+  addEventListener('resize', () => homeScroll());
   function enter(){
     if (entering) return; entering = true;
     try { localStorage.setItem(KEY, '1'); } catch(e){}
