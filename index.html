@@ -444,6 +444,33 @@
     .site-head nav a:not(.btn) { padding-block: 12px; }
   }
 
+  /* ---------- Correzioni mobile (12/10/2026) ---------- */
+  /* niente vetro sfocato sopra lo shader sui touch: su iPhone blocca il ridisegno del fondo */
+  @media (hover: none) {
+    .mode, .svc-list, .svc-arrow, .wz-opt, .wz-text, .wz-brief, .enter, .menu { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    .mode, .svc-arrow { background: rgba(241,234,224,.82); }
+    .svc-list { background: rgba(241,234,224,.8); }
+    .wz-opt, .wz-text { background: rgba(241,234,224,.82); }
+    .menu { background: rgba(241,234,224,.95); }
+    /* niente effetti hover "appiccicati" dopo il tocco: facevano saltare i testi delle aree */
+    .areas a:hover .name { transform: none; }
+    .areas a:not([aria-current]):hover .name i { transform: none; box-shadow: none; }
+    .svc-list li:hover { transform: none; }
+  }
+  @media (max-width: 760px) {
+    /* pagine servizio: più aria sotto il logo, come lo switch in home */
+    .svc-main { padding-top: clamp(48px, 15vh, 140px); }
+    /* cambiando area il contenuto sfuma senza scivolare */
+    .svc-main.reveal > * { transform: none !important; }
+  }
+  @media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
+    /* home: il blocco di testo respira piano, e il gradiente scorre lento */
+    .home .lead { animation: lead-float 9s ease-in-out infinite; }
+    .home .claim .hl { background-size: 180% 100%; animation: hl-flow 10s ease-in-out infinite alternate; }
+  }
+  @keyframes lead-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes hl-flow { from { background-position: 0% 0; } to { background-position: 100% 0; } }
+
   @media (prefers-reduced-motion: reduce) {
     .wz-step.is-in > * { animation: none; }
     .gate .logo, .dot { animation: none; }
@@ -702,7 +729,8 @@
   }
   addEventListener('pointerdown', e => { if (!e.target.closest('button, a')) ripple(e.clientX, e.clientY, false); });
   addEventListener('mousemove', e => { mT.x=e.clientX/innerWidth; mT.y=1-e.clientY/innerHeight; });
-  addEventListener('touchmove', e => { const t=e.touches[0]; if(t){ mT.x=t.clientX/innerWidth; mT.y=1-t.clientY/innerHeight; } }, {passive:true});
+  let lastTouch = -10;
+  addEventListener('touchmove', e => { const t=e.touches[0]; if(t){ lastTouch = now(); mT.x=t.clientX/innerWidth; mT.y=1-t.clientY/innerHeight; } }, {passive:true});
   document.querySelectorAll('a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 
   let gl = null;
@@ -781,10 +809,11 @@
       const k = reduce ? 1 : .04;
       U.amp.v += (U.amp.t-U.amp.v)*k; U.shift.v += (U.shift.t-U.shift.v)*k;
       U.live.v += (U.live.t-U.live.v)*(reduce ? 1 : .025);
+      if (touch && !reduce && now() - lastTouch > 1.5) { const w = now(); mT.x = .5 + .3*Math.sin(w*.21); mT.y = .5 + .24*Math.sin(w*.29 + 1.3); }
       mC.x+=(mT.x-mC.x)*.055; mC.y+=(mT.y-mC.y)*.055;
       const dx=mC.x-mP.x, dy=mC.y-mP.y; mvel+=(Math.min(Math.hypot(dx,dy)*60,1.2)-mvel)*.15; mP={...mC};
       gl.uniform2f(u.R, canvas.width, canvas.height);
-      gl.uniform1f(u.T, reduce ? 4.2 : now());
+      gl.uniform1f(u.T, reduce ? 4.2 : now() * (touch ? 1.7 : 1));
       gl.uniform2f(u.M, mC.x, mC.y); gl.uniform1f(u.V, mvel);
       gl.uniform4f(u.C, click.x, click.y, now()-click.at, click.big);
       gl.uniform1f(u.AMP, U.amp.v); gl.uniform1f(u.SHIFT, U.shift.v); gl.uniform1f(u.LIVE, U.live.v);
@@ -943,7 +972,7 @@
       $('#svcTitle').innerHTML = s.title; $('#svcSub').textContent = s.sub; $('#svcCta').textContent = s.cta;
       $('#svcItems').innerHTML = s.items.map((t, k) => `<li><span>0${k+1}</span>${t}</li>`).join('');
       svcView.querySelectorAll('#svcAreas [data-svc]').forEach(a => { if (a.dataset.svc === s.slug) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
-      svcView.scrollTop = 0;
+      if (svcView.scrollTop > 0) svcView.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
       requestAnimationFrame(() => { main.classList.add('in'); $('#svcAreas').classList.add('in'); });
     }
     $('#svcCount').innerHTML = `<b>${s.n}</b> / 0${SVC.length}`;
