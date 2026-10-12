@@ -464,6 +464,15 @@
     .svc-main.reveal > * { transform: none !important; }
   }
   @media (max-width: 760px) {
+    /* pagine servizio: le 4 aree salgono sotto il logo come schede, alla stessa distanza dello switch in home */
+    .page { grid-template-rows: auto auto 1fr; }
+    .page .site-head { order: 0; }
+    .page .svc-foot { order: 1; margin-top: var(--home-gap, clamp(40px, 10vh, 120px)); }
+    .page .svc-main { order: 2; padding-top: 32px; padding-bottom: 32px; }
+    .page .svc-nav { display: none; }
+    .page .areas { padding-bottom: 14px; border-bottom: 1px solid var(--hairline); }
+  }
+  @media (max-width: 760px) {
     /* home: il blocco di testo sale e scende piano, e il gradiente scorre lento (anche con "Riduci movimento") */
     .home .lead { animation: lead-float 7s ease-in-out infinite; }
     .home .claim .hl { background-size: 180% 100%; animation: hl-flow 10s ease-in-out infinite alternate; }
