@@ -547,13 +547,14 @@
   }
 
   /* ---------- Footer: stessa firma mono della soglia e del tasto privacy ---------- */
-  .site-foot { display: flex; align-items: center; gap: 10px; padding: 0 0 calc(var(--gut) + env(safe-area-inset-bottom,0px)); color: var(--ink-soft); }
+  .site-foot { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 26px 0 calc(14px + env(safe-area-inset-bottom,0px)); color: var(--ink-soft); }
   .site-foot i { font-style: normal; }
-  .home .areas, .page .areas { padding-bottom: 18px; }
+  .home .areas, .page .areas { padding-bottom: 10px; }
   @media (max-width: 760px) {
-    .page .site-foot { order: 3; padding-top: 28px; }
+    .page .site-foot { order: 3; padding-top: 48px; }
     .home .areas { padding-bottom: 28px; }
-    .site-foot { padding-bottom: calc(28px + env(safe-area-inset-bottom,0px)); }
+    .page .areas { padding-bottom: 14px; }
+    .site-foot { padding-top: 24px; padding-bottom: calc(28px + env(safe-area-inset-bottom,0px)); font-size: 9px; gap: 8px; }
   }
   @media (prefers-reduced-motion: reduce) and (hover: hover) {
     .wz-step.is-in > * { animation: none; }
