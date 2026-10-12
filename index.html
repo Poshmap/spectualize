@@ -185,7 +185,12 @@
   .row { margin-top: clamp(24px,4vh,40px); display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; }
   .row .btn { order: -1; }
   .sub { max-width: 42ch; font-weight: 400; font-size: clamp(16px,1.4vw,19px); line-height: 1.5; color: var(--ink-strong); transition: opacity .35s ease, transform .35s ease; }
-  .sub.swap { opacity: 0; transform: translateY(6px); }
+  /* cambio sottotitolo parola per parola: le vecchie salgono e sfumano, le nuove arrivano dal basso uscendo dallo sfocato */
+  .sub .w { display: inline-block; }
+  .sub .w-out { animation: w-out .42s cubic-bezier(.5,0,.75,0) both; }
+  .sub .w-in { animation: w-in .9s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes w-out { to { opacity: 0; transform: translateY(-10px); filter: blur(6px); } }
+  @keyframes w-in { from { opacity: 0; transform: translateY(12px); filter: blur(8px); } }
   .areas { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border-top: 1px solid var(--hairline); padding-bottom: var(--gut); margin-bottom: 0; }
   .areas a { text-decoration: none; padding: 18px 18px 4px 0; display: grid; gap: 8px; min-width: 0; border-right: 1px solid var(--hairline); margin-right: 18px; transition: opacity .6s ease; }
   .areas a:last-child { border-right: 0; margin-right: 0; }
@@ -984,6 +989,14 @@
     knob.style.width = btn.offsetWidth + 'px';
     knob.style.transform = `translateX(${btn.offsetLeft - 4}px)`;
   }
+  let subToken = 0;
+  const words = (t, cls, step) => t.split(' ').map((w, i) => `<span class="w ${cls}" style="animation-delay:${i * step}ms">${w}</span>`).join(' ');
+  function swapSub(text){
+    const sub = $('#sub'), token = ++subToken;
+    const n = sub.textContent.trim().split(/\s+/).length;
+    sub.innerHTML = words(sub.textContent.trim(), 'w-out', 16);
+    setTimeout(() => { if (token === subToken) sub.innerHTML = words(text, 'w-in', 38); }, 420 + n * 16);
+  }
   function setLive(v){
     const changed = v !== live; live = v;
     $('#mOn').setAttribute('aria-pressed', !v); $('#mLive').setAttribute('aria-pressed', v);
@@ -993,8 +1006,7 @@
     document.querySelectorAll('[data-area]').forEach(a => a.classList.toggle('hit', keep.includes(+a.dataset.area)));
     set({live: v ? 1 : 0});
     placeKnob();
-    const sub = $('#sub');
-    if (changed) { sub.classList.add('swap'); setTimeout(() => { sub.textContent = SUB[v ? 'live' : 'on']; sub.classList.remove('swap'); }, 300); }
+    if (changed) swapSub(SUB[v ? 'live' : 'on']);
   }
   $('#mOn').addEventListener('click', () => setLive(false));
   $('#mLive').addEventListener('click', () => { setLive(true); const b = $('#mLive').getBoundingClientRect(); click = { x:(b.left+b.width/2)/innerWidth, y:.98, at:now(), big:1 }; });
