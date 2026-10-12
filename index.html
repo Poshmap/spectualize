@@ -893,7 +893,7 @@
       gl.uniform1f(u.T, reduce && !touch ? 4.2 : now() * (touch ? 1.7 : 1));
       gl.uniform2f(u.M, mC.x, mC.y); gl.uniform1f(u.V, mvel);
       gl.uniform4f(u.C, click.x, click.y, now()-click.at, click.big);
-      gl.uniform1f(u.AMP, U.amp.v); gl.uniform1f(u.SHIFT, U.shift.v); gl.uniform1f(u.LIVE, U.live.v);
+      gl.uniform1f(u.AMP, U.amp.v * (innerWidth <= 760 ? .82 : 1)); // su telefono il fumo è più leggero: lo schermo è stretto e il testo ci sta sopra gl.uniform1f(u.SHIFT, U.shift.v); gl.uniform1f(u.LIVE, U.live.v);
       gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       requestAnimationFrame(frame);
     })();
@@ -946,7 +946,7 @@
       a.style.translate = `0 ${((1 - t) * 36).toFixed(1)}px`;
       a.style.opacity = (.15 + t * .85).toFixed(3);
     });
-    if (view === 'home' && !entering) set({ amp: 1 + p * .12, shift: p * .1 });
+    if (view === 'home' && !entering) set({ amp: 1, shift: p * .1 });
   }
   home.addEventListener('scroll', () => { if (scrollQueued) return; scrollQueued = true; requestAnimationFrame(() => { scrollQueued = false; homeScroll(); }); }, { passive: true });
   addEventListener('resize', () => homeScroll());
