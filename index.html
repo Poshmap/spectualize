@@ -526,6 +526,7 @@
     <div class="wz-progress" aria-hidden="true"><i id="wzBar"></i></div>
     <div class="wz-body">
       <form id="wzForm" novalidate>
+        <input type="text" id="wzHp" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
         <!-- 1 · aree -->
         <div class="wz-step" data-step="1">
           <p class="wz-count mono"><b>01</b> / 05 · Aree</p>
@@ -1035,12 +1036,34 @@
     const err = validate();
     if (err) { $('#wzErr').textContent = err; return; }
     if (step < STEPS) { showStep(step + 1); return; }
-    // invio (prototipo: nessun dato lascia la pagina)
+    send();
+  }
+  // invio del brief a Formspree; i messaggi arrivano all'email collegata al modulo
+  const ENDPOINT = 'https://formspree.io/f/mrpeaypk';
+  let sending = false;
+  async function send(){
+    if (sending) return; sending = true;
+    const btn = $('#wzNext'), label = $('#wzNextLabel');
+    btn.disabled = true; label.textContent = 'Invio in corso…';
     const nome = $('#wzNome').value.trim();
-    $('#wzThanks').innerHTML = `Grazie, ${nome.replace(/[<>&]/g,'')}. Ci sentiamo <em>presto</em>.`;
-    showStep(STEPS + 1);
-    ripple(innerWidth/2, innerHeight/2, true);
-    set({ amp: 1.6 }); setTimeout(() => set({ amp: 1 }), 900);
+    const payload = {
+      _subject: 'Nuovo brief dal sito: ' + nome + ($('#wzAzienda').value.trim() ? ' · ' + $('#wzAzienda').value.trim() : ''),
+      nome, azienda: $('#wzAzienda').value.trim(), email: $('#wzEmail').value.trim(), _replyto: $('#wzEmail').value.trim(),
+      telefono: $('#wzTel').value.trim(), aree: data.aree.join(', '), fase: data.fase, obiettivo: data.obiettivo,
+      tempi: data.tempi, progetto: data.racconto, consenso: 'sì', _gotcha: $('#wzHp').value
+    };
+    try {
+      const r = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      $('#wzThanks').innerHTML = `Grazie, ${nome.replace(/[<>&]/g,'')}. Ci sentiamo <em>presto</em>.`;
+      showStep(STEPS + 1);
+      ripple(innerWidth/2, innerHeight/2, true);
+      set({ amp: 1.6 }); setTimeout(() => set({ amp: 1 }), 900);
+    } catch(e) {
+      $('#wzErr').textContent = 'Non siamo riusciti a inviare il brief. Controlla la connessione e riprova.';
+    } finally {
+      sending = false; btn.disabled = false; label.textContent = 'Invia il brief';
+    }
   }
   form.addEventListener('submit', e => { e.preventDefault(); next(); });
   $('#wzBack').addEventListener('click', () => showStep(step - 1, -1));
