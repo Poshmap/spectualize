@@ -1009,14 +1009,29 @@
   };
   const AREAS = { on: [0,2,3], live: [1,3] };
   let live = false;
-  function placeGlow(){
+  let barAt = null;
+  function placeGlow(animate){
     const g = $('#bar'), w = $(live ? '#wLive' : '#wOn'), c = g.parentElement;
     if (!w.offsetWidth) return;
     const cr = c.getBoundingClientRect(), r = w.getBoundingClientRect();
-    g.style.width = r.width + 'px';
-    g.style.transform = `translate(${r.left - cr.left}px, ${r.bottom - cr.top - r.height*0.04}px)`;
+    const to = { x: r.left - cr.left, y: r.bottom - cr.top - r.height*0.04, w: r.width }, from = barAt;
+    barAt = to;
+    g.style.width = to.w + 'px';
+    g.style.transform = `translate(${to.x}px, ${to.y}px)`;
     g.style.backgroundPosition = live ? '100% 0' : '0 0';
     g.classList.add('on');
+    // mobile: la barra si allunga verso la nuova parola e poi ritira la coda, con un bagliore (animazione, resta anche con "Riduci movimento")
+    if (animate !== true || !small.matches || !from || !g.animate) return;
+    g.style.transition = 'opacity .5s ease';
+    const T = (x, y, w) => ({ transform: `translate(${x}px, ${y}px)`, width: w + 'px' });
+    const right = to.x > from.x, glow = '0 0 18px rgba(255,61,110,.75)';
+    const kf = Math.abs(to.y - from.y) < 4
+      ? [ { ...T(from.x, from.y, from.w), boxShadow: '0 0 0 rgba(255,61,110,0)', backgroundPosition: live ? '0 0' : '100% 0' },
+          { ...T(right ? from.x : to.x, to.y, right ? to.x + to.w - from.x : from.x + from.w - to.x), boxShadow: glow, offset: .48, easing: 'cubic-bezier(.3,0,.2,1)' },
+          { ...T(to.x, to.y, to.w), boxShadow: '0 0 0 rgba(255,61,110,0)', backgroundPosition: live ? '100% 0' : '0 0' } ]
+      : [ { ...T(from.x, from.y, from.w), opacity: 1 }, { ...T(from.x + from.w, from.y, 0), opacity: 0, offset: .45 },
+          { ...T(to.x, to.y, 0), opacity: 0, offset: .55 }, { ...T(to.x, to.y, to.w), opacity: 1 } ];
+    g.animate(kf, { duration: 950, easing: 'cubic-bezier(.65,0,.35,1)' });
   }
   addEventListener('resize', placeGlow);
   // ricalcola la barra quando il font è caricato o il titolo cambia misura (sennò resta sulla riga sbagliata)
@@ -1038,7 +1053,7 @@
     const changed = v !== live; live = v;
     $('#mOn').setAttribute('aria-pressed', !v); $('#mLive').setAttribute('aria-pressed', v);
     $('#wOn').setAttribute('aria-pressed', !v); $('#wLive').setAttribute('aria-pressed', v);
-    placeGlow();
+    placeGlow(changed);
     const keep = AREAS[v ? 'live' : 'on'];
     document.querySelectorAll('[data-area]').forEach(a => a.classList.toggle('hit', keep.includes(+a.dataset.area)));
     set({live: v ? 1 : 0});
