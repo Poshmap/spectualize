@@ -705,6 +705,13 @@
   .menu nav > .btn { animation-delay: .48s; }
   @keyframes menu-item { from { opacity: 0; transform: translateY(18px); } }
   @media (prefers-reduced-motion: reduce) and (hover: hover) { .menu nav > *, .menu-sub > a { animation: none; } }
+  /* fine "Chi siamo": oltre al brief, una via d'uscita verso i servizi */
+  .ab-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 30px; }
+  .ab-more { text-decoration: none; font-size: 17px; color: var(--ink); padding-block: 6px; background: var(--grad) left bottom / 0% 2px no-repeat; transition: background-size .45s cubic-bezier(.16,1,.3,1); }
+  .ab-more span { display: inline-block; margin-left: 4px; transition: transform .3s; }
+  .ab-more:hover, .ab-more:focus-visible { background-size: 100% 2px; }
+  .ab-more:hover span { transform: translateX(4px); }
+  @media (max-width: 760px) { .ab-actions { flex-direction: column; align-items: flex-start; gap: 14px; } .ab-more { background-size: 100% 1px; } }
 </style>
 
 <canvas id="shader" aria-hidden="true"></canvas>
@@ -836,7 +843,10 @@
     <div class="ab-sec ab-close">
       <h2 class="claim rv">Hai un'idea da mettere <span class="hl">in scena?</span></h2>
       <p class="rv" style="--d:1">Raccontacela. Ti rispondiamo entro 12 ore.</p>
-      <a class="btn btn-lg js-brief rv" style="--d:2" href="#"><span class="dot"></span>Raccontaci il progetto</a>
+      <div class="ab-actions">
+        <a class="btn btn-lg js-brief rv" style="--d:2" href="#"><span class="dot"></span>Raccontaci il progetto</a>
+        <a class="ab-more js-svc rv" style="--d:3" href="#servizi">Scopri i servizi <span aria-hidden="true">→</span></a>
+      </div>
     </div>
     <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
