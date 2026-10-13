@@ -1411,8 +1411,8 @@
     setMenu(false); view = 'about';
     gate.hidden = true; home.hidden = true; svcView.hidden = true; wiz.hidden = true; aboutView.hidden = false;
     document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
-    document.title = 'Chi siamo · Spectualize';
-    $('#metaDesc').content = "Spectualize è un solo team per siti, advertising, marketing ed eventi. Il nome viene da spectacle, visualize e actualize: rendere visibile un'idea e metterla in scena.";
+    document.title = 'Chi siamo: un solo team, online e dal vivo · Spectualize';
+    $('#metaDesc').content = "Un solo team per siti, advertising, marketing ed eventi. Il nome unisce spectacle, visualize e actualize: rendere visibile un'idea e metterla in scena.";
     aboutView.scrollTop = 0; abStep = -2;
     aboutView.querySelectorAll('.rv').forEach(el => el.classList.remove('in'));
     if (!abIO) abIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); abIO.unobserve(e.target); } }), { root: aboutView, rootMargin: '0px 0px -8% 0px' });
