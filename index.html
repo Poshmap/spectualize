@@ -479,6 +479,10 @@
     .page { grid-template-rows: auto auto 1fr; }
     .page .site-head { order: 0; }
     .page .svc-foot { order: 1; margin-top: var(--home-gap, clamp(40px, 10vh, 120px)); }
+    /* 13/10/2026: blocco aree più vicino al logo; nell'etichetta niente pallino, numero nel colore dell'area */
+    .page .svc-foot { margin-top: clamp(24px, calc(var(--home-gap, 120px) * .45), 64px); }
+    .svc-kicker i { display: none; }
+    .svc-kicker b { color: var(--c); font-weight: 600; }
     .page .svc-main { order: 2; padding-top: 56px; padding-bottom: 32px; }
     .page .svc-nav { display: none; }
     .page .areas { padding-bottom: 14px; border-bottom: 1px solid var(--hairline); }
