@@ -434,6 +434,112 @@
   .areas a[aria-current="page"] .name i { transform: scale(1.4); box-shadow: 0 0 14px var(--c); }
   .page .areas a.hit::before { opacity: 0; }
   body.on-svc .proto { display: none; }
+  /* ---------- Chi siamo (13/10/2026) ---------- */
+  .about { display: block; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+  .about .site-head { position: relative; z-index: 3; }
+  .ab-sec { max-width: 1240px; margin: 0 auto; }
+  .ab-kick { display: flex; align-items: center; gap: 10px; color: var(--ink-strong); font-size: 12px; }
+  .ab-kick i { width: 8px; height: 8px; border-radius: 50%; background: var(--grad); box-shadow: 0 0 14px rgba(255,61,110,.7); }
+  .about .rv { opacity: 0; }
+  .about .rv.in { opacity: 1; animation: ab-rise 1s cubic-bezier(.16,1,.3,1) backwards; animation-delay: calc(var(--d, 0) * 110ms); }
+  @keyframes ab-rise { from { opacity: 0; transform: translateY(28px); filter: blur(6px); } }
+
+  /* 1 · apertura */
+  .ab-hero { min-height: calc(100svh - var(--logo-h) - 2 * var(--gut)); display: grid; align-content: center; gap: clamp(18px, 3vh, 28px); padding-block: 24px 64px; }
+  .ab-hero .claim { font-size: clamp(42px, 7.4vw, 118px); max-width: 13ch; }
+  .ab-hero .lede { max-width: 52ch; font-size: clamp(17px, 1.45vw, 21px); line-height: 1.5; color: var(--ink-strong); }
+  .ab-down { display: flex; align-items: center; gap: 12px; color: var(--ink-mid); margin-top: 12px; }
+  .ab-down i { position: relative; width: 1.5px; height: 28px; background: var(--hairline); overflow: hidden; border-radius: 2px; }
+  .ab-down i::after { content: ""; position: absolute; left: 0; right: 0; top: -60%; height: 60%; background: var(--grad); animation: hint-drop 1.8s cubic-bezier(.65,0,.35,1) infinite; }
+
+  /* 2 · il nome: palco fisso mentre scorri, tre definizioni che si accendono */
+  .ab-name { position: relative; height: 320vh; }
+  .ab-stage { position: sticky; top: 0; height: 100svh; display: grid; align-content: center; gap: clamp(14px, 2.4vh, 26px); }
+  .ab-word { font-weight: 300; font-size: clamp(54px, 15.5vw, 236px); line-height: .9; letter-spacing: -.06em; margin-left: -.04em; white-space: nowrap;
+    background: linear-gradient(90deg, #FF7A2A, #FF3D6E 30%, #E91FA8 60%, #FF1CD6) 0 0 / var(--fill, 0%) 100% no-repeat, linear-gradient(var(--ink), var(--ink));
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ab-pron { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--ink-mid); font-size: 13px; }
+  .ab-pron b { font-weight: 500; color: var(--ink); }
+  .ab-defs { list-style: none; display: grid; gap: 4px; margin-top: clamp(8px, 2vh, 20px); counter-reset: d; }
+  .ab-defs li { counter-increment: d; position: relative; padding-left: 1.6em; font-size: clamp(22px, 3.2vw, 46px); font-weight: 300; letter-spacing: -.03em; line-height: 1.15; color: var(--ink-soft); opacity: .45; transform: translateX(-10px); transition: color .6s, opacity .6s, transform .8s cubic-bezier(.16,1,.3,1); }
+  .ab-defs li::before { content: counter(d); position: absolute; left: 0; top: .55em; font-family: var(--mono); font-size: 13px; letter-spacing: .1em; }
+  .ab-defs em { font-style: normal; }
+  .ab-defs li.on { color: var(--ink); opacity: 1; transform: none; }
+  .ab-defs li.on::before { color: var(--c, var(--coral)); }
+  .ab-defs li.now em { font-style: normal; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ab-meter { display: flex; gap: 6px; margin-top: 6px; }
+  .ab-meter i { width: 28px; height: 3px; border-radius: 3px; background: var(--hairline); overflow: hidden; position: relative; }
+  .ab-meter i::after { content: ""; position: absolute; inset: 0; background: var(--grad); transform: scaleX(var(--m, 0)); transform-origin: left; }
+
+  /* origine del nome */
+  .ab-origin { padding-block: clamp(64px, 12vh, 140px); display: grid; gap: clamp(28px, 5vh, 48px); }
+  .ab-roots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; align-items: end; gap: clamp(16px, 3vw, 40px); }
+  .ab-root { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--hairline); min-width: 0; }
+  .ab-root b { font-weight: 300; font-size: clamp(32px, 4.4vw, 64px); letter-spacing: -.045em; line-height: 1; color: var(--ink-soft); }
+  .ab-root b u { text-decoration: none; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ab-root span { font-size: 15px; color: var(--ink-strong); }
+  .ab-root .mono { color: var(--ink-mid); }
+  /* il logo è il risultato delle tre parole, sulla stessa riga */
+  .ab-eq { align-self: end; display: flex; align-items: center; gap: clamp(12px, 1.6vw, 22px); color: var(--ink-mid); white-space: nowrap; }
+  .ab-eq .mono { font-size: clamp(22px, 2.4vw, 34px); letter-spacing: 0; color: var(--ink-soft); }
+  .ab-eq img { height: clamp(64px, 6.6vw, 100px); width: auto; filter: drop-shadow(0 12px 28px rgba(233,31,168,.18)); }
+  .ab-origin p { max-width: 60ch; font-size: clamp(17px, 1.4vw, 20px); line-height: 1.55; color: var(--ink-strong); }
+
+  /* 3 · in cosa crediamo */
+  .ab-belief { padding-block: clamp(40px, 8vh, 100px); }
+  .ab-belief ol { list-style: none; margin-top: 22px; }
+  .ab-belief li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; padding-block: clamp(22px, 4vh, 40px); border-top: 1px solid var(--hairline); }
+  .ab-belief li:last-child { border-bottom: 1px solid var(--hairline); }
+  .ab-belief li .mono { padding-top: .9em; color: var(--ink-mid); }
+  .ab-belief li p { font-weight: 300; font-size: clamp(26px, 3.6vw, 56px); line-height: 1.04; letter-spacing: -.04em; color: var(--ink-mid); text-wrap: balance; max-width: 22ch; }
+  .ab-belief li p b { font-weight: 400; color: var(--ink); }
+
+  /* 4 · come lavoriamo */
+  .ab-method { padding-block: clamp(56px, 10vh, 120px); }
+  .ab-steps { list-style: none; position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); margin-top: 34px; }
+  .ab-steps::before { content: ""; position: absolute; left: 7px; right: 0; top: 7px; height: 2px; background: var(--hairline); }
+  .ab-steps::after { content: ""; position: absolute; left: 7px; right: 0; top: 7px; height: 2px; background: var(--grad); transform: scaleX(var(--prog, 0)); transform-origin: left; transition: transform .2s linear; }
+  .ab-steps li { position: relative; display: grid; gap: 10px; padding-top: 38px; min-width: 0; }
+  .ab-steps li::before { content: ""; position: absolute; top: 0; left: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--cream); box-shadow: inset 0 0 0 2px var(--c); z-index: 1; transition: background .4s, box-shadow .4s; }
+  .ab-steps li.on::before { background: var(--c); box-shadow: 0 0 16px var(--c); }
+  .ab-steps .mono { color: var(--ink-mid); }
+  .ab-steps h3 { font-weight: 400; font-size: clamp(24px, 2.4vw, 34px); letter-spacing: -.03em; }
+  .ab-steps p { font-size: 15.5px; line-height: 1.45; color: var(--ink-strong); max-width: 26ch; }
+
+  /* 5 · chiusura */
+  .ab-close { padding-block: clamp(64px, 14vh, 160px) clamp(40px, 8vh, 80px); display: grid; justify-items: start; gap: 22px; }
+  .ab-close .claim { font-size: clamp(40px, 6.4vw, 100px); max-width: 14ch; }
+  .ab-close p { font-size: clamp(17px, 1.4vw, 20px); color: var(--ink-strong); }
+  .about .site-foot { padding-top: 20px; }
+
+  .site-head nav a.js-about.on { color: var(--ink); padding-bottom: 5px; background: var(--grad) left bottom / 100% 2px no-repeat; }
+  @media (max-width: 760px) {
+    .ab-hero { min-height: calc(100svh - var(--logo-h) - 2 * var(--gut) - 40px); padding-bottom: 40px; }
+    .ab-word { font-size: 17.2vw; }
+    .ab-name { height: 300vh; }
+    .ab-roots { grid-template-columns: 1fr; }
+    .ab-eq { padding-top: 16px; }
+    .ab-eq img { height: 76px; }
+    .ab-belief li { grid-template-columns: 40px minmax(0, 1fr); }
+    .ab-steps { grid-template-columns: 1fr; gap: 26px; padding-left: 34px; }
+    .ab-steps::before, .ab-steps::after { left: 7px; right: auto; top: 8px; bottom: 8px; width: 2px; height: auto; }
+    .ab-steps::after { transform: scaleY(var(--prog, 0)); transform-origin: top; }
+    .ab-steps li { padding-top: 0; }
+    .ab-steps li::before { left: -34px; top: 4px; }
+    .ab-steps p { max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) and (hover: hover) { .about .rv.in { animation: none; } }
+  /* ---------- Leggibilità (13/10/2026) ---------- */
+  /* velo crema morbido dietro le colonne di testo: il fumo resta pieno ai lati e negli spazi vuoti */
+  #hero, .svc-lead, .ab-hero, .ab-origin, .ab-belief, .ab-method, .ab-close, .wz-step { position: relative; isolation: isolate; }
+  #hero::after, .svc-lead::after, .ab-hero::after, .ab-origin::after, .ab-belief::after, .ab-method::after, .ab-close::after, .wz-step::after {
+    content: ""; position: absolute; z-index: -1; inset: -14% -10%; pointer-events: none;
+    background: radial-gradient(farthest-side, rgba(241,234,224,.66) 35%, rgba(241,234,224,.32) 70%, rgba(241,234,224,0));
+  }
+  .ab-hero::after, .ab-close::after { inset: 0 -6% 0 -10%; }
+  /* il velo sborda ai lati: le viste non devono scorrere in orizzontale */
+  .home, .page, .wizard, .about { overflow-x: hidden; }
+  @media (max-width: 760px) { #hero::after, .svc-lead::after, .ab-hero::after, .ab-origin::after, .ab-belief::after, .ab-method::after, .ab-close::after, .wz-step::after { left: 0; right: 0; } }
   @media (max-width: 760px) {
     .svc-main { grid-template-columns: 1fr; gap: 28px; align-self: start; padding-block: 8px 28px; }
     .claim.svc-title { font-size: clamp(34px,9.6vw,54px); line-height: .98; letter-spacing: -.05em; }
@@ -571,6 +677,19 @@
     .cursor-blob { display: none; }
     *, .reveal.in > * { transition-duration: .01ms !important; transition-delay: 0s !important; }
   }
+  /* 13/10/2026: su mobile torna il menu, con tutte le voci */
+  .menu-sub { display: grid; gap: 2px; padding: 0 0 8px 4px; }
+  .menu nav .menu-sub a:not(.btn) { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 400; letter-spacing: -.01em; color: var(--ink-strong); padding-block: 7px; }
+  .menu-sub a i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+  /* il menu ha logo e "Chiudi" suoi, sempre sopra; fondo chiaro come il riquadro "Cosa facciamo", con il fumo sotto */
+  .menu { background: var(--panel) !important; }
+  .menu-head { position: absolute; top: calc(var(--gut) + env(safe-area-inset-top,0px)); left: var(--gut); right: var(--gut); display: flex; align-items: center; justify-content: space-between; }
+  .menu-head .mark { height: var(--logo-h); width: auto; display: block; }
+  body.menu-open .stage > .view { visibility: hidden; }
+  @media (max-width: 760px) {
+    .menu-btn { display: inline-flex; }
+    .site-head nav { display: none; }
+  }
 </style>
 
 <canvas id="shader" aria-hidden="true"></canvas>
@@ -585,7 +704,7 @@
     <header class="site-head">
       <a href="#" aria-label="Spectualize, home"><img class="mark" id="mark" src="logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <button class="menu-btn fade" id="menuBtn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
-      <nav class="fade" id="nav"><a class="js-svc" href="#servizi">Servizi</a><a class="btn sm js-brief" href="#">Raccontaci il progetto</a></nav>
+      <nav class="fade" id="nav"><a class="js-about" href="#chi-siamo">Chi siamo</a><a class="js-svc" href="#servizi">Servizi</a><a class="btn sm js-brief" href="#">Raccontaci il progetto</a></nav>
     </header>
     <div class="lead reveal" id="hero">
       <div class="mode" id="mode" role="group" aria-label="Mostra">
@@ -613,7 +732,7 @@
     <header class="site-head">
       <a href="#" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
-      <nav><a class="js-svc on" href="#servizi" aria-current="page">Servizi</a><a class="btn sm js-brief" href="#">Raccontaci il progetto</a></nav>
+      <nav><a class="js-about" href="#chi-siamo">Chi siamo</a><a class="js-svc on" href="#servizi" aria-current="page">Servizi</a><a class="btn sm js-brief" href="#">Raccontaci il progetto</a></nav>
     </header>
     <div class="svc-main reveal" id="svcMain">
       <div class="svc-lead" style="--i:0">
@@ -638,6 +757,71 @@
       <a href="#servizi/marketing-brand" data-svc="marketing-brand" data-area="3" style="--i:3;--c:var(--magenta)"><span class="name"><i></i>Marketing &amp; Brand <b class="go" aria-hidden="true">→</b></span><span class="desc">Posizionamento, SEO, social e contenuti per far crescere il brand.</span></a>
       <a href="#servizi/eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi <b class="go" aria-hidden="true">→</b></span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
     </nav>
+    </div>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+  </section>
+
+  <!-- Chi siamo (13/10/2026). Testi: Portale/chi-siamo-testi-v1.md -->
+  <section class="view about" id="about" hidden aria-label="Chi siamo">
+    <header class="site-head">
+      <a href="#" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
+      <nav><a class="js-about on" href="#chi-siamo" aria-current="page">Chi siamo</a><a class="js-svc" href="#servizi">Servizi</a></nav>
+    </header>
+    <div class="ab-sec ab-hero">
+      <p class="ab-kick mono rv" style="--d:0"><i></i>Chi siamo</p>
+      <h1 class="claim rv" style="--d:1">Un solo team per il tuo brand, <span class="hl">online e dal vivo.</span></h1>
+      <p class="lede rv" style="--d:2">Spectualize unisce in un'unica squadra quello che di solito richiede quattro fornitori: siti ed esperienze digitali, advertising, marketing ed eventi. Lavoriamo su un'idea semplice: un brand cresce quando ogni punto di contatto racconta la stessa storia, sullo schermo come in sala.</p>
+      <p class="ab-down mono rv" style="--d:3"><i></i>Il nome</p>
+    </div>
+
+    <div class="ab-name" id="abName">
+      <div class="ab-sec ab-stage">
+        <p class="ab-kick mono"><i></i>Il nome</p>
+        <div class="ab-word" id="abWord" aria-label="spectualize">spectualize</div>
+        <p class="ab-pron mono"><span>/ˈspɛk.tʃu.ə.laɪz/</span><b>verbo</b></p>
+        <ol class="ab-defs" id="abDefs">
+          <li style="--c:var(--orange)">rendere <em>visibile</em> un'idea.</li>
+          <li style="--c:var(--magenta)">trasformarla in qualcosa di <em>reale</em>.</li>
+          <li style="--c:var(--pink)">metterla <em>in scena</em>.</li>
+        </ol>
+        <div class="ab-meter" id="abMeter" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+    </div>
+
+    <div class="ab-sec ab-origin">
+      <div class="ab-roots">
+        <div class="ab-root rv" style="--d:0"><b><u>spect</u>acle</b><span>lo spettacolo</span></div>
+        <div class="ab-root rv" style="--d:1"><b>vis<u>ualize</u></b><span>dare forma a ciò che si immagina</span></div>
+        <div class="ab-root rv" style="--d:2"><b>act<u>ualize</u></b><span>renderlo reale</span></div>
+        <div class="ab-eq rv" style="--d:3"><span class="mono">=</span><img src="logo.png" alt="Spectualize" width="2000" height="1115"></div>
+      </div>
+      <p class="rv">Il nome nasce dall'incontro di tre parole inglesi: <i>spectacle</i>, lo spettacolo; <i>visualize</i>, dare forma a ciò che si immagina; <i>actualize</i>, renderlo reale. È anche il nostro metodo: partiamo da un'idea, le diamo una forma e la portiamo davanti al pubblico, online o dal vivo.</p>
+    </div>
+
+    <div class="ab-sec ab-belief">
+      <p class="ab-kick mono rv"><i></i>In cosa crediamo</p>
+      <ol>
+        <li class="rv"><span class="mono">01</span><p><b>Un brand si giudica da ciò che lascia vedere,</b> non da ciò che dichiara.</p></li>
+        <li class="rv"><span class="mono">02</span><p><b>Online e dal vivo sono la stessa scena:</b> un sito, una campagna e un evento devono parlare con la stessa voce.</p></li>
+        <li class="rv"><span class="mono">03</span><p><b>Lo spettacolo serve se porta risultati:</b> ogni progetto parte da obiettivi chiari e si misura.</p></li>
+      </ol>
+    </div>
+
+    <div class="ab-sec ab-method">
+      <p class="ab-kick mono rv"><i></i>Come lavoriamo</p>
+      <ol class="ab-steps" id="abSteps">
+        <li class="rv" style="--d:0;--c:var(--orange)"><span class="mono">01</span><h3>Ascolto</h3><p>Un brief chiaro e una prima proposta entro 24 ore.</p></li>
+        <li class="rv" style="--d:1;--c:var(--coral)"><span class="mono">02</span><h3>Strategia</h3><p>Un piano unico per tutte le aree coinvolte.</p></li>
+        <li class="rv" style="--d:2;--c:var(--magenta)"><span class="mono">03</span><h3>Realizzazione</h3><p>Un solo referente, dal sito all'evento.</p></li>
+        <li class="rv" style="--d:3;--c:var(--pink)"><span class="mono">04</span><h3>Misurazione</h3><p>Leggiamo i dati insieme e correggiamo la rotta.</p></li>
+      </ol>
+    </div>
+
+    <div class="ab-sec ab-close">
+      <h2 class="claim rv">Hai un'idea da mettere <span class="hl">in scena?</span></h2>
+      <p class="rv" style="--d:1">Raccontacela. Ti rispondiamo entro 12 ore.</p>
+      <a class="btn btn-lg js-brief rv" style="--d:2" href="#"><span class="dot"></span>Raccontaci il progetto</a>
     </div>
     <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
@@ -749,11 +933,22 @@
   </section>
 
   <div class="menu" id="menu" hidden>
+    <div class="menu-head">
+      <a href="#" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <button class="menu-btn" aria-expanded="true" aria-controls="menu"><span>Chiudi</span><i aria-hidden="true"></i></button>
+    </div>
     <nav aria-label="Menu">
+      <a class="js-home-link" href="#">Home</a>
+      <a class="js-about" href="#chi-siamo">Chi siamo</a>
       <a class="js-svc" href="#servizi">Servizi</a>
+      <div class="menu-sub">
+        <a href="#servizi/web-software" data-svc="web-software" style="--c:var(--orange)"><i></i>Web &amp; Software</a>
+        <a href="#servizi/advertising" data-svc="advertising" style="--c:var(--coral)"><i></i>Advertising</a>
+        <a href="#servizi/marketing-brand" data-svc="marketing-brand" style="--c:var(--magenta)"><i></i>Marketing &amp; Brand</a>
+        <a href="#servizi/eventi" data-svc="eventi" style="--c:var(--pink)"><i></i>Eventi</a>
+      </div>
       <a class="btn js-brief" href="#"><span class="dot"></span>Raccontaci il progetto</a>
     </nav>
-    <div class="menu-foot mono"><span>Un solo team · Italia</span></div>
   </div>
 
   <section class="view gate" id="gate" hidden aria-label="Benvenuto">
@@ -924,6 +1119,7 @@
   const gate = $('#gate'), home = $('#home'), gateLogo = $('#gateLogo'), mark = $('#mark'), svcView = $('#svc');
   const REVEAL = ['#hero','#areas','#nav','#menuBtn','#homeFoot'];
   const TITLE = document.title, DESC = $('#metaDesc').content;
+  const aboutView = $('#about');
   let entering = false, view = 'home', baseShift = 0;
 
   function syncGap(){
@@ -943,12 +1139,12 @@
     setMenu && setMenu(false);
     entering = false; resetHome(); setLive(false);
     gate.classList.remove('leaving'); gateLogo.style.transform = '';
-    gate.hidden = false; home.hidden = true; svcView.hidden = true; home.classList.remove('arriving');
+    gate.hidden = false; home.hidden = true; svcView.hidden = true; aboutView.hidden = true; home.classList.remove('arriving');
     view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); document.title = TITLE; $('#metaDesc').content = DESC;
     set({amp:1, shift:0});
   }
   function showHome(){
-    gate.hidden = true; svcView.hidden = true; home.hidden = false; home.classList.remove('arriving');
+    gate.hidden = true; svcView.hidden = true; aboutView.hidden = true; home.hidden = false; home.classList.remove('arriving');
     view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); document.title = TITLE; $('#metaDesc').content = DESC;
     home.scrollTop = 0; set({amp:1, shift:0}); revealHome(); homeScroll();
   }
@@ -1115,7 +1311,7 @@
   function showService(i){
     const s = SVC[i], changed = view !== 'svc' || i !== cur;
     setMenu(false); cur = i; view = 'svc';
-    gate.hidden = true; home.hidden = true; wiz.hidden = true; svcView.hidden = false;
+    gate.hidden = true; home.hidden = true; wiz.hidden = true; aboutView.hidden = true; svcView.hidden = false;
     document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
     if (changed) {
       const main = $('#svcMain'); main.classList.remove('in'); void main.offsetWidth;
@@ -1128,7 +1324,7 @@
       requestAnimationFrame(() => { main.classList.add('in'); $('#svcAreas').classList.add('in'); });
     }
     $('#svcCount').innerHTML = `<b>${s.n}</b> / 0${SVC.length}`;
-    baseShift = s.shift; set({ shift: s.shift, live: s.live, amp: 1 });
+    baseShift = s.shift; set({ shift: s.shift, live: s.live, amp: s.live ? 1 : .72 });
     document.title = s.seoTitle; $('#metaDesc').content = s.seoDesc;
   }
   // indirizzi: #servizi/<area>, #progetto; niente hash = home
@@ -1136,11 +1332,12 @@
     const m = (h || '').match(/^#servizi(?:\/([\w-]+))?/);
     if (m) { showService(Math.max(0, SVC.findIndex(s => s.slug === m[1]))); return; }
     if (h === '#progetto') { openBrief(); return; }
+    if (h === '#chi-siamo') { if (!wiz.hidden) { wiz.hidden = true; document.body.classList.remove('in-wizard'); } showAbout(); return; }
     if (!wiz.hidden) { wiz.hidden = true; document.body.classList.remove('in-wizard'); }
     showHome(); setLive(live);
   }
   // passaggio tra pagine: la vista attuale sale e sfuma, il fumo pulsa, la nuova entra dal basso
-  const VIEWS = () => [gate, home, svcView, wiz];
+  const VIEWS = () => [gate, home, svcView, aboutView, wiz];
   let swapT = 0;
   function swap(target, fn){
     const from = VIEWS().find(v => !v.hidden && !v.classList.contains('v-out'));
@@ -1155,7 +1352,7 @@
       if (to) { to.classList.add('v-in'); to.addEventListener('animationend', function done(e){ if (e.target === to) { to.classList.remove('v-in'); to.removeEventListener('animationend', done); } }); }
     }, 280);
   }
-  const targetOf = h => /^#servizi/.test(h || '') ? svcView : h === '#progetto' ? wiz : home;
+  const targetOf = h => /^#servizi/.test(h || '') ? svcView : h === '#progetto' ? wiz : h === '#chi-siamo' ? aboutView : home;
   function go(h){
     try { history.pushState(null, '', h || location.pathname + location.search); } catch(e){}
     swap(targetOf(h), () => route(h));
@@ -1180,6 +1377,47 @@
   }));
   document.querySelectorAll('.js-svc').forEach(a => a.addEventListener('click', e => { e.preventDefault(); if (view !== 'svc') go('#servizi/' + SVC[0].slug); else setMenu(false); }));
   document.querySelectorAll('.js-home-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(''); }));
+  // ---------- Chi siamo ----------
+  // il nome resta fermo mentre scorri: le tre definizioni si accendono una alla volta e il fumo cambia con loro
+  const abDefs = [...document.querySelectorAll('#abDefs li')], abMeter = [...document.querySelectorAll('#abMeter i')];
+  const AB_MOOD = [ { shift: 0, live: 0, amp: .9 }, { shift: .22, live: 0, amp: .94 }, { shift: .3, live: 1, amp: 1 } ];
+  let abStep = -2, abIO = null, abQueued = false;
+  function showAbout(){
+    setMenu(false); view = 'about';
+    gate.hidden = true; home.hidden = true; svcView.hidden = true; wiz.hidden = true; aboutView.hidden = false;
+    document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
+    document.title = 'Chi siamo · Spectualize';
+    $('#metaDesc').content = "Spectualize è un solo team per siti, advertising, marketing ed eventi. Il nome viene da spectacle, visualize e actualize: rendere visibile un'idea e metterla in scena.";
+    aboutView.scrollTop = 0; abStep = -2;
+    aboutView.querySelectorAll('.rv').forEach(el => el.classList.remove('in'));
+    if (!abIO) abIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); abIO.unobserve(e.target); } }), { root: aboutView, rootMargin: '0px 0px -8% 0px' });
+    requestAnimationFrame(() => { aboutView.querySelectorAll('.rv').forEach(el => abIO.observe(el)); aboutScroll(); });
+  }
+  function aboutScroll(){
+    if (aboutView.hidden) return;
+    const vh = aboutView.clientHeight, name = $('#abName'), r = name.getBoundingClientRect(), top = aboutView.getBoundingClientRect().top;
+    const p = Math.max(0, Math.min(1, (top - r.top) / (name.offsetHeight - vh)));
+    $('#abWord').style.setProperty('--fill', (Math.min(1, p / .8) * 100).toFixed(1) + '%');
+    const n = p <= 0 ? -1 : Math.min(2, Math.floor(p * 3.2));
+    abDefs.forEach((li, i) => { li.classList.toggle('on', i <= n); li.classList.toggle('now', i === n); });
+    abMeter.forEach((m, i) => m.style.setProperty('--m', Math.max(0, Math.min(1, p * 3.2 - i)).toFixed(3)));
+    const after = r.bottom < top + vh * .5;
+    const step = after ? 3 : n;
+    if (step !== abStep && !entering) {
+      abStep = step;
+      if (step >= 0 && step < 3) set(AB_MOOD[step]);
+      else set({ shift: after ? .12 : 0, live: 0, amp: after ? .62 : .9 });
+    }
+    // come lavoriamo: la linea si riempie scorrendo
+    const steps = $('#abSteps'), sr = steps.getBoundingClientRect();
+    const sp = Math.max(0, Math.min(1, (top + vh * .75 - sr.top) / (sr.height + vh * .2)));
+    steps.style.setProperty('--prog', sp.toFixed(3));
+    [...steps.children].forEach((li, i) => li.classList.toggle('on', sp >= i / 3.4));
+  }
+  aboutView.addEventListener('scroll', () => { if (abQueued) return; abQueued = true; requestAnimationFrame(() => { abQueued = false; aboutScroll(); }); }, { passive: true });
+  addEventListener('resize', () => aboutScroll());
+  document.querySelectorAll('.js-about').forEach(a => a.addEventListener('click', e => { e.preventDefault(); if (view !== 'about') go('#chi-siamo'); }));
+
 
 
   // ---------- Wizard ----------
@@ -1199,7 +1437,7 @@
     const sel = [...wiz.querySelectorAll('.wz-opt[aria-pressed="true"]')];
     const sh = sel.filter(b => b.dataset.shift).map(b => +b.dataset.shift);
     const lv = sel.some(b => b.dataset.live) ? 1 : 0;
-    set({ shift: sh.length ? sh.reduce((a,b)=>a+b,0)/sh.length : 0, live: lv, amp: 1 });
+    set({ shift: sh.length ? sh.reduce((a,b)=>a+b,0)/sh.length : 0, live: lv, amp: lv ? 1 : .75 });
   }
   function showStep(n, dir = 1){
     step = n;
@@ -1309,7 +1547,7 @@
   }
   function openBrief(area){
     setMenu(false);
-    home.hidden = true; gate.hidden = true; svcView.hidden = true; wiz.hidden = false;
+    home.hidden = true; gate.hidden = true; svcView.hidden = true; aboutView.hidden = true; wiz.hidden = false;
     document.body.classList.add('in-wizard');
     if (step > STEPS) step = 1;
     if (area) preselect(area);
@@ -1317,7 +1555,7 @@
   }
   function closeBrief(){
     wiz.hidden = true; document.body.classList.remove('in-wizard');
-    if (view === 'svc') { view = ''; showService(cur); } else { showHome(); setLive(live); }
+    if (view === 'svc') { view = ''; showService(cur); } else if (view === 'about') showAbout(); else { showHome(); setLive(live); }
   }
   // il tasto di un'area apre un brief nuovo con solo quell'area; "Raccontaci il progetto" riprende quello lasciato a metà
   function resetWizard(){
@@ -1330,7 +1568,7 @@
   }
   document.querySelectorAll('.js-brief').forEach(a => a.addEventListener('click', e => { e.preventDefault(); swap(wiz, () => openBrief()); }));
   document.querySelectorAll('.js-brief-area').forEach(a => a.addEventListener('click', e => { e.preventDefault(); swap(wiz, () => { resetWizard(); openBrief(SVC[cur].name); }); }));
-  wiz.querySelectorAll('.js-home').forEach(b => b.addEventListener('click', () => swap(view === 'svc' ? svcView : home, closeBrief)));
+  wiz.querySelectorAll('.js-home').forEach(b => b.addEventListener('click', () => swap(view === 'svc' ? svcView : view === 'about' ? aboutView : home, closeBrief)));
 
 
   // ---------- Privacy ----------
@@ -1348,7 +1586,7 @@
   try { seen = localStorage.getItem(KEY) === '1'; } catch(e){}
   // chi arriva direttamente su una pagina interna non passa dalla soglia
   const h0 = location.hash;
-  if (/^#(servizi|progetto)/.test(h0)) { try { localStorage.setItem(KEY, '1'); } catch(e){} proto('back', false); route(h0); }
+  if (/^#(servizi|progetto|chi-siamo)/.test(h0)) { try { localStorage.setItem(KEY, '1'); } catch(e){} proto('back', false); route(h0); }
   else proto(seen ? 'back' : 'first');
 })();
 </script>
