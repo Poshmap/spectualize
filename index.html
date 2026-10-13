@@ -980,15 +980,20 @@
     resetHome(); home.classList.add('arriving'); home.hidden = false;
     const from = gateLogo.getBoundingClientRect(), to = mark.getBoundingClientRect();
     gate.classList.add('leaving');
-    requestAnimationFrame(() => {
-      gateLogo.style.transform = `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / from.width})`;
-    });
+    const flight = `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / from.width})`;
+    // sui telefoni il volo del logo è un'animazione: resta anche con "Riduci movimento", come sul desktop
+    const anim = touch && gateLogo.animate;
+    if (anim) {
+      gateLogo.animate([{ transform: 'none' }, { transform: flight }], { duration: 1150, easing: 'cubic-bezier(.7,0,.15,1)', fill: 'forwards' });
+      gate.querySelectorAll('.tagline, .enter, .top, .bottom').forEach(el => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, easing: 'ease', fill: 'forwards' }));
+    } else requestAnimationFrame(() => { gateLogo.style.transform = flight; });
     setTimeout(() => set({amp:1, shift:0}), 700);
     setTimeout(() => {
       home.classList.remove('arriving'); gate.hidden = true;
       gateLogo.style.transform = ''; gate.classList.remove('leaving');
+      if (anim) gate.querySelectorAll('*').forEach(el => el.getAnimations().forEach(a => { if (a.effect && a.effect.getComputedTiming().fill === 'forwards') a.cancel(); }));
       revealHome(); entering = false; proto('back', false);
-    }, reduce ? 50 : 1200);
+    }, reduce && !anim ? 50 : 1200);
   }
   $('#enter').addEventListener('click', enter);
   const menu = $('#menu'), menuBtns = document.querySelectorAll('.menu-btn');
