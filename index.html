@@ -712,8 +712,9 @@
   .ab-more:hover, .ab-more:focus-visible { background-size: 100% 2px; }
   .ab-more:hover span { transform: translateX(4px); }
   @media (max-width: 760px) { .ab-actions { flex-direction: column; align-items: flex-start; gap: 14px; } .ab-more { background-size: 100% 1px; } }
-  /* bloop di "dal vivo": il gradiente va sulla parola stessa, così regge anche su Safari mentre si anima */
-  #wLive.bloop { display: inline-block; background-image: var(--grad); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; transform-origin: 50% 70%; }
+  /* bloop di "dal vivo": copia sovrapposta alla parola, con il suo gradiente (regge anche su Safari) */
+  .bloop-ghost { position: absolute; z-index: 2; pointer-events: none; white-space: nowrap; font-weight: 500; line-height: inherit; display: inline-block;
+    background-image: var(--grad); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; transform-origin: 50% 70%; }
 </style>
 
 <canvas id="shader" aria-hidden="true"></canvas>
@@ -1317,12 +1318,21 @@
       hinted = true;
       const w = $('#wLive'), k = $('.knob'), b = $('#mLive');
       if (!w.animate) return;
-      w.classList.add('bloop');
-      w.animate([
+      // il titolo è "bilanciato": toccare la parola cambierebbe gli a capo. Si anima una copia sovrapposta, il testo vero non si muove
+      const h1 = w.closest('.claim'), r = w.getBoundingClientRect(), c = h1.getBoundingClientRect();
+      const g = document.createElement('span');
+      g.className = 'bloop-ghost'; g.textContent = w.textContent; g.setAttribute('aria-hidden', 'true');
+      g.style.left = (r.left - c.left) + 'px'; g.style.top = (r.top - c.top) + 'px'; g.style.lineHeight = r.height + 'px';
+      h1.appendChild(g);
+      // dissolvenza dentro e fuori: la parola vera sparisce solo mentre la copia è piena
+      const t1 = setTimeout(() => { w.style.visibility = 'hidden'; }, 110), t2 = setTimeout(() => { w.style.visibility = ''; }, 790);
+      const done = () => { clearTimeout(t1); clearTimeout(t2); g.remove(); w.style.visibility = ''; };
+      g.animate([{ opacity: 0 }, { opacity: 1, offset: .12 }, { opacity: 1, offset: .88 }, { opacity: 0 }], { duration: 900 });
+      g.animate([
         { transform: 'scale(1)' }, { transform: 'scale(1.14) translateY(-3%)', offset: .32 },
         { transform: 'scale(.97)', offset: .62 }, { transform: 'scale(1)' }
-      ], { duration: 900, easing: 'cubic-bezier(.3,0,.2,1)' }).finished.then(() => w.classList.remove('bloop'), () => w.classList.remove('bloop'));
-      w.animate([{ backgroundPosition: '0% 0' }, { backgroundPosition: '100% 0' }, { backgroundPosition: '0% 0' }], { duration: 900, easing: 'ease-in-out' });
+      ], { duration: 900, easing: 'cubic-bezier(.3,0,.2,1)' }).finished.then(done, done);
+      g.animate([{ backgroundPosition: '0% 0' }, { backgroundPosition: '100% 0' }, { backgroundPosition: '0% 0' }], { duration: 900, easing: 'ease-in-out' });
       k.animate([{ translate: '0 0' }, { translate: '10px 0', offset: .35 }, { translate: '-2px 0', offset: .7 }, { translate: '0 0' }], { duration: 900, easing: 'cubic-bezier(.3,0,.2,1)', delay: 120 });
       const c0 = getComputedStyle(b).color;
       b.animate([{ color: c0 }, { color: '#FF3D6E', offset: .4 }, { color: c0 }], { duration: 1000, delay: 120 });
