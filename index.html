@@ -715,6 +715,18 @@
   /* bloop di "dal vivo": copia sovrapposta alla parola, con il suo gradiente (regge anche su Safari) */
   .bloop-ghost { position: absolute; z-index: 2; pointer-events: none; white-space: nowrap; font-weight: 500; line-height: inherit; display: inline-block;
     background-image: var(--grad); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; transform-origin: 50% 70%; }
+  /* home mobile: teaser del nome che porta al Chi siamo */
+  .home-name { display: none; }
+  @media (max-width: 760px) {
+    .home-name { display: grid; gap: 12px; text-decoration: none; color: var(--ink); padding: 34px 0 12px; border-top: 1px solid var(--hairline); }
+    .hn-kick { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-strong); }
+    .hn-word { font-weight: 300; font-size: 17.2vw; line-height: .9; letter-spacing: -.06em; margin-left: -.04em; white-space: nowrap;
+      background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hn-line { font-size: 17px; line-height: 1.45; color: var(--ink-strong); max-width: 30ch; }
+    .hn-more { justify-self: start; font-size: 17px; padding-block: 6px; margin-top: 4px; background: var(--grad) left bottom / 100% 1px no-repeat; }
+    .hn-more span { display: inline-block; margin-left: 4px; }
+    .home .areas { padding-bottom: 36px; }
+  }
 </style>
 
 <canvas id="shader" aria-hidden="true"></canvas>
@@ -749,6 +761,13 @@
       <a href="#servizi/marketing-brand" data-svc="marketing-brand" data-area="3" style="--i:3;--c:var(--magenta)"><span class="name"><i></i>Marketing &amp; Brand</span><span class="desc">Posizionamento, SEO, social e contenuti per far crescere il brand.</span></a>
       <a href="#servizi/eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi</span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
     </nav>
+    <!-- 13/10/2026: solo mobile, dopo le aree un invito alla pagina Chi siamo partendo dal nome -->
+    <a class="home-name js-about" id="homeName" href="#chi-siamo">
+      <span class="mono hn-kick">Il nome</span>
+      <span class="hn-word" aria-label="spectualize">spect·ualize</span>
+      <span class="hn-line">Spectacle, visualize, actualize: rendere visibile un'idea e metterla in scena.</span>
+      <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
+    </a>
     <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
 
@@ -1181,7 +1200,7 @@
   const small = matchMedia('(max-width: 760px)');
   let scrollQueued = false;
   function homeScroll(){
-    const lead = $('#hero'), hint = $('#scrollHint'), items = [...home.querySelectorAll('#areas > a')];
+    const lead = $('#hero'), hint = $('#scrollHint'), items = [...home.querySelectorAll('#areas > a, #homeName')];
     if (!small.matches) { lead.style.translate = lead.style.opacity = hint.style.opacity = ''; items.forEach(a => a.style.translate = a.style.opacity = ''); return; }
     const vh = home.clientHeight, p = Math.min(1, home.scrollTop / (vh * .6));
     lead.style.translate = `0 ${(-p * 90).toFixed(1)}px`;
