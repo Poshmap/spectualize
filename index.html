@@ -712,6 +712,8 @@
   .ab-more:hover, .ab-more:focus-visible { background-size: 100% 2px; }
   .ab-more:hover span { transform: translateX(4px); }
   @media (max-width: 760px) { .ab-actions { flex-direction: column; align-items: flex-start; gap: 14px; } .ab-more { background-size: 100% 1px; } }
+  /* bloop di "dal vivo": il gradiente va sulla parola stessa, così regge anche su Safari mentre si anima */
+  #wLive.bloop { display: inline-block; background-image: var(--grad); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; transform-origin: 50% 70%; }
 </style>
 
 <canvas id="shader" aria-hidden="true"></canvas>
@@ -1159,6 +1161,7 @@
   function revealHome(){
     resetHome(); REVEAL.forEach(s => void $(s).offsetWidth);
     requestAnimationFrame(() => { REVEAL.forEach(s => $(s).classList.add('in')); placeKnob(); placeGlow(); syncGap(); setTimeout(syncGap, 1600); homeScroll(); });
+    hintLive();
   }
   function showGate(){
     setMenu && setMenu(false);
@@ -1302,6 +1305,30 @@
     w.addEventListener('click', act);
     w.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(); } });
   });
+
+  // 13/10/2026: lo switch non deve passare inosservato. Poco dopo l'arrivo in home "dal vivo" fa un piccolo bloop
+  // e la pillola accenna verso "Dal vivo". Una volta per visita, mai dopo che lo switch è stato toccato.
+  let hinted = false, hintTimer = 0;
+  function hintLive(){
+    clearTimeout(hintTimer);
+    if (hinted) return;
+    hintTimer = setTimeout(() => {
+      if (hinted || live || home.hidden || entering || document.body.classList.contains('menu-open') || document.body.classList.contains('in-wizard')) return;
+      hinted = true;
+      const w = $('#wLive'), k = $('.knob'), b = $('#mLive');
+      if (!w.animate) return;
+      w.classList.add('bloop');
+      w.animate([
+        { transform: 'scale(1)' }, { transform: 'scale(1.14) translateY(-3%)', offset: .32 },
+        { transform: 'scale(.97)', offset: .62 }, { transform: 'scale(1)' }
+      ], { duration: 900, easing: 'cubic-bezier(.3,0,.2,1)' }).finished.then(() => w.classList.remove('bloop'), () => w.classList.remove('bloop'));
+      w.animate([{ backgroundPosition: '0% 0' }, { backgroundPosition: '100% 0' }, { backgroundPosition: '0% 0' }], { duration: 900, easing: 'ease-in-out' });
+      k.animate([{ translate: '0 0' }, { translate: '10px 0', offset: .35 }, { translate: '-2px 0', offset: .7 }, { translate: '0 0' }], { duration: 900, easing: 'cubic-bezier(.3,0,.2,1)', delay: 120 });
+      const c0 = getComputedStyle(b).color;
+      b.animate([{ color: c0 }, { color: '#FF3D6E', offset: .4 }, { color: c0 }], { duration: 1000, delay: 120 });
+    }, 3200);
+  }
+  ['#mOn', '#mLive', '#wOn', '#wLive'].forEach(sel => $(sel).addEventListener('pointerdown', () => { hinted = true; }));
 
   const shifts = [-.12, -.04, .04, .1];
   document.querySelectorAll('[data-area]').forEach(a => {
