@@ -437,7 +437,8 @@
   /* ---------- Chi siamo (13/10/2026) ---------- */
   .about { display: block; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
   .about .site-head { position: relative; z-index: 3; }
-  .ab-sec { max-width: 1240px; margin: 0 auto; }
+  /* stessi margini della testata, della home e dei servizi: il contenuto parte dal filo del logo */
+  .ab-sec { max-width: none; margin: 0; }
   .ab-kick { display: flex; align-items: center; gap: 10px; color: var(--ink-strong); font-size: 12px; }
   .ab-kick i { width: 8px; height: 8px; border-radius: 50%; background: var(--grad); box-shadow: 0 0 14px rgba(255,61,110,.7); }
   .about .rv { opacity: 0; }
