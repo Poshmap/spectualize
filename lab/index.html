@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="it_IT">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#F1EAE0">
+<meta name="theme-color" content="#F7F2EA">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -29,6 +29,7 @@
      Versione precedente con Fluido: lab-v1-fluido-luci.html */
   :root {
     --cream: #F1EAE0;
+    --page: #F7F2EA;
     --ink: #1A1210;
     --ink-mid: rgba(26,18,16,0.58);
     --ink-strong: rgba(26,18,16,0.82);
@@ -49,8 +50,9 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   [hidden] { display: none !important; }
-  html { background: var(--cream); }
-  body { background: var(--cream); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  /* 14/10/2026: il Lab ha un fondo un tono più chiaro del crema del sito */
+  html { background: var(--page); }
+  body { background: var(--page); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   button, a { color: inherit; font: inherit; cursor: pointer; }
   button { background: none; border: 0; }
   :focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
