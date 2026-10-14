@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="it">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab · Spectualize</title>
+<!-- Lab in prova: fuori dal menu, dalla sitemap e dai motori finché Matteo non decide -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F1EAE0">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* Prototipo Lab (14/10/2026). Testi: Portale/lab-testi-v1.md. Stessi colori, caratteri e fondo del portale.
+     Indice #/ + 6 esperimenti #/configuratore, #/scroll-di-prodotto, #/banner-interattivo, #/luci-di-scena, #/parete-digitale, #/invito-su-misura.
+     Versione precedente con Fluido: lab-v1-fluido-luci.html */
+  :root {
+    --cream: #F1EAE0;
+    --ink: #1A1210;
+    --ink-mid: rgba(26,18,16,0.58);
+    --ink-strong: rgba(26,18,16,0.82);
+    --ink-soft: rgba(26,18,16,0.35);
+    --hairline: rgba(26,18,16,0.12);
+    --panel: rgba(252,249,245,.88);
+    --stage: #140D0B;
+    --orange: #FF7A2A;
+    --coral: #FF3D6E;
+    --magenta: #E91FA8;
+    --pink: #FF1CD6;
+    --grad: linear-gradient(100deg, var(--orange) 0%, var(--coral) 35%, var(--magenta) 70%, var(--pink) 100%);
+    --sans: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --gut: clamp(16px, 3vw, 32px);
+    --logo-h: clamp(44px, 4.4vw, 60px);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html { background: var(--cream); }
+  body { background: var(--cream); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  button, a { color: inherit; font: inherit; cursor: pointer; }
+  button { background: none; border: 0; }
+  :focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
+  .grain {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: .22; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.07  0 0 0 0 0.06  0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 240px;
+  }
+  .wrap { padding-inline: var(--gut); max-width: 1680px; margin-inline: auto; }
+  .mono { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+  .hl { font-weight: 500; background-image: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* prototipo: etichetta in alto */
+  .proto-tag { position: fixed; top: 10px; left: 50%; translate: -50% 0; pointer-events: none; z-index: 60; padding: 6px 12px; border-radius: 999px; background: var(--ink); color: var(--cream); font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
+
+  .site-head { position: relative; z-index: 5; padding-block: var(--gut); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .site-head .mark { height: var(--logo-h); width: auto; display: block; }
+  .site-head nav { display: flex; align-items: center; gap: clamp(14px,2.4vw,32px); }
+  .site-head nav a { text-decoration: none; font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-strong); }
+  .site-head nav a.on { color: var(--ink); padding-bottom: 5px; margin-bottom: -5px; background: var(--grad) left bottom / 100% 2px no-repeat; }
+
+  .btn { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; white-space: nowrap; background: var(--ink); color: var(--cream); padding: 15px 22px; border-radius: 999px; font-size: 15px; font-weight: 500; transition: transform .25s ease; }
+  .btn .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 14px rgba(255,122,42,.8); }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.light { background: var(--cream); color: var(--ink); }
+  .btn.ghost { background: transparent; color: inherit; box-shadow: inset 0 0 0 1px currentColor; }
+
+  .kicker { display: flex; align-items: center; gap: 10px; color: var(--ink-strong); font-size: 12px; }
+  .kicker i { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--magenta)); box-shadow: 0 0 14px var(--c, var(--magenta)); }
+  .claim { font-weight: 300; font-size: clamp(40px, 6.4vw, 100px); line-height: .98; letter-spacing: -.045em; text-wrap: balance; }
+  .lede { margin-top: clamp(18px,3vh,28px); max-width: 34em; font-size: clamp(17px,1.4vw,20px); line-height: 1.5; color: var(--ink-strong); }
+
+  /* ---------- Indice ---------- */
+  .lab-hero { padding-block: clamp(24px,7vh,88px) clamp(32px,6vh,72px); }
+  .lab-hero .claim { margin-top: 18px; max-width: 13ch; }
+  .bento { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); grid-auto-rows: clamp(220px, 26vh, 300px); gap: 14px; }
+  .card { position: relative; overflow: hidden; border-radius: 22px; text-decoration: none; isolation: isolate; background: #EDE4D8; box-shadow: inset 0 0 0 1px var(--hairline); --c: var(--orange); }
+  .card.dark { background: var(--stage); color: var(--cream); box-shadow: none; }
+  .card:nth-child(1) { grid-column: span 4; grid-row: span 2; }
+  .card:nth-child(2) { grid-column: span 2; grid-row: span 2; }
+  .card:nth-child(3) { grid-column: span 2; }
+  .card:nth-child(4) { grid-column: span 4; }
+  .card:nth-child(5) { grid-column: span 3; }
+  .card:nth-child(6) { grid-column: span 3; }
+  .card .pv { position: absolute; inset: 0; z-index: -1; }
+  .card canvas, .card svg.pv { width: 100%; height: 100%; display: block; }
+  .card .meta { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(16px,1.6vw,24px); pointer-events: none; }
+  .card .top { display: flex; justify-content: space-between; gap: 12px; }
+  .card .chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: var(--panel); color: var(--ink); }
+  .card .chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+  .card .num { padding: 6px 0; }
+  .card .name { font-size: clamp(26px, 2.6vw, 40px); font-weight: 400; letter-spacing: -.03em; line-height: 1; display: flex; align-items: center; gap: 12px; }
+  .card:nth-child(1) .name { font-size: clamp(34px, 4vw, 64px); }
+  .card .name b { font-weight: 300; font-size: .6em; transition: transform .35s cubic-bezier(.16,1,.3,1); }
+  .card:hover .name b { transform: translateX(6px); }
+  .card .line { margin-top: 8px; max-width: 30ch; font-size: 15px; line-height: 1.4; opacity: .82; }
+  .card::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 58%; z-index: 0; pointer-events: none; background: linear-gradient(to top, rgba(241,234,224,.92) 8%, rgba(241,234,224,0)); }
+  .card.dark::after { background: linear-gradient(to top, rgba(20,13,11,.86) 8%, rgba(20,13,11,0)); }
+  .card .meta { z-index: 1; }
+  .origin { margin-top: 22px; display: inline-flex; align-items: center; gap: 10px; color: var(--ink-strong); text-decoration: none; }
+  .origin i { width: 8px; height: 8px; border-radius: 50%; background: var(--grad); }
+
+  /* configuratore */
+  .cfg { display: grid; grid-template-columns: minmax(0,1.35fr) minmax(300px,1fr); min-height: min(78vh, 760px); }
+  .cfg-stage { position: relative; display: grid; place-items: center; perspective: 900px; background: radial-gradient(60% 55% at 50% 50%, #FBF7F1 0%, #EDE4D8 75%); overflow: hidden; }
+  .cfg-stage svg { width: min(78%, 420px); height: auto; overflow: visible; transition: transform .5s cubic-bezier(.16,1,.3,1); }
+  .cfg-stage svg * { transition: fill .55s ease, stroke .55s ease, opacity .55s ease; }
+  .cfg-panel { padding: clamp(20px,3vw,40px); display: flex; flex-direction: column; gap: 26px; background: var(--panel); border-left: 1px solid var(--hairline); }
+  .cfg-g h3 { font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); display: flex; justify-content: space-between; }
+  .cfg-g h3 b { font-weight: 500; color: var(--ink); }
+  .cfg-g .row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .cfg-g .sw { width: 40px; height: 40px; }
+  .cfg-sum { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--hairline); }
+  .cfg-sum p:first-child { font-size: clamp(22px, 2vw, 30px); letter-spacing: -.02em; }
+  .cfg-sum .mono { display: block; margin-top: 8px; color: var(--ink-mid); }
+  .cfg-sum .btn { margin-top: 18px; }
+
+  /* invito */
+  .card canvas.inv-pv { position: absolute; top: 12%; right: 7%; height: 96%; width: auto; aspect-ratio: 4/5; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,.5); transform: rotate(-6deg); transform-origin: top right; }
+  .inv { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: clamp(20px,4vw,56px); align-items: center; padding: clamp(20px,3.5vw,48px); }
+  .inv canvas { width: 100%; max-width: 480px; aspect-ratio: 4/5; height: auto; display: block; justify-self: center; border-radius: 18px; box-shadow: 0 30px 70px rgba(26,18,16,.28); }
+  .inv-form { display: flex; flex-direction: column; gap: 22px; }
+  .inv-form label { display: flex; flex-direction: column; gap: 10px; }
+  .inv-form input[type=text] { font: inherit; font-size: clamp(20px, 1.8vw, 26px); font-weight: 300; padding: 14px 16px; border-radius: 14px; border: 0; background: var(--panel); box-shadow: inset 0 0 0 1px var(--hairline); color: var(--ink); width: 100%; }
+  .inv-form input[type=text]:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .inv-form .acts { display: flex; flex-wrap: wrap; gap: 10px; }
+  .inv-form .note { color: var(--ink-mid); font-size: 15px; line-height: 1.45; }
+
+  .lab-close { padding-block: clamp(72px, 14vh, 160px) clamp(48px,8vh,96px); }
+  .lab-close .claim { font-size: clamp(38px, 5.6vw, 88px); max-width: 14ch; }
+  .lab-close .btn { margin-top: clamp(24px,4vh,40px); }
+  .site-foot { padding-block: 28px 36px; text-align: center; color: var(--ink-soft); }
+
+  /* banner in anteprima */
+  /* anteprima del banner: il gradiente copre la scheda e un gesto lo "gratta" via, scoprendo il messaggio */
+  .pv-banner { background: #F6F0E7; }
+  .pv-banner .msg { position: absolute; left: 0; right: 0; top: 62px; text-align: center; font-size: clamp(20px, 1.7vw, 26px); letter-spacing: -.03em; line-height: 1.05; }
+  .pv-banner .msg .mono { display: block; margin-bottom: 8px; font-size: 10px; letter-spacing: .14em; color: var(--ink-mid); }
+  .pv-banner .veil { position: absolute; inset: 0; background: var(--grad); -webkit-mask: radial-gradient(circle at var(--x,50%) var(--y,50%), transparent var(--r,0px), #000 calc(var(--r,0px) + 1px)); mask: radial-gradient(circle at var(--x,50%) var(--y,50%), transparent var(--r,0px), #000 calc(var(--r,0px) + 1px)); }
+
+  /* ---------- Pagina esperimento ---------- */
+  .ex-hero { padding-block: clamp(16px,5vh,64px) clamp(24px,4vh,44px); display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap: clamp(20px,4vw,64px); align-items: end; }
+  .ex-hero .claim { margin-top: 14px; }
+  .ex-hero .lede { margin-top: 0; }
+  .back { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 22px; padding: 9px 16px 9px 9px; border-radius: 999px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--hairline); text-decoration: none; color: var(--ink-strong); transition: box-shadow .25s, transform .25s; }
+  .back b { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--cream); font-weight: 400; font-size: 15px; letter-spacing: 0; transition: transform .25s; }
+  .back:hover { box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .back:hover b { transform: translateX(-3px); }
+  .demo { position: relative; border-radius: 26px; overflow: hidden; isolation: isolate; }
+  .demo.cream { background: #EDE4D8; box-shadow: inset 0 0 0 1px var(--hairline); }
+  .demo.dark { background: var(--stage); color: var(--cream); }
+  .demo canvas.full { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  .demo.cream canvas.full { mix-blend-mode: multiply; }
+  .tall { height: min(76vh, 760px); min-height: 420px; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding: 14px; border-radius: 18px; background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px var(--hairline); color: var(--ink); }
+  .demo > .controls { position: absolute; left: 14px; right: 14px; bottom: 14px; z-index: 3; }
+  .ctl { display: flex; align-items: center; gap: 10px; }
+  .ctl > span { color: var(--ink-mid); }
+  .seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--hairline); }
+  .seg button { padding: 7px 12px; border-radius: 999px; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-strong); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--cream); }
+  .sw { width: 30px; height: 30px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(26,18,16,.2); position: relative; overflow: hidden; }
+  .sw[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--cream), 0 0 0 3.5px var(--ink); }
+  .colors { display: flex; gap: 8px; }
+  .colors label { position: relative; width: 34px; height: 34px; border-radius: 50%; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(26,18,16,.2); }
+  .colors input { position: absolute; inset: -8px; width: calc(100% + 16px); height: calc(100% + 16px); border: 0; padding: 0; cursor: pointer; }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 130px; height: 24px; background: transparent; }
+  input[type=range]::-webkit-slider-runnable-track { height: 2px; background: var(--ink-soft); }
+  input[type=range]::-moz-range-track { height: 2px; background: var(--ink-soft); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -8px; border-radius: 50%; background: var(--ink); }
+  input[type=range]::-moz-range-thumb { width: 18px; height: 18px; border: 0; border-radius: 50%; background: var(--ink); }
+  .controls .btn { padding: 11px 16px; font-size: 14px; margin-left: auto; }
+  .hint { position: absolute; top: 18px; left: 18px; z-index: 2; pointer-events: none; padding: 7px 12px; border-radius: 999px; background: var(--panel); color: var(--ink); }
+  .demo.dark .hint { background: rgba(241,234,224,.12); color: var(--cream); }
+
+  .use { padding-block: clamp(48px,9vh,110px) 0; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.4fr); gap: clamp(20px,4vw,64px); }
+  .use h2 { font-family: var(--mono); font-size: 12px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); padding-top: 10px; }
+  .use p { font-size: clamp(22px, 2.4vw, 36px); font-weight: 300; line-height: 1.22; letter-spacing: -.02em; text-wrap: pretty; }
+  .ex-next { margin-top: clamp(56px,10vh,120px); padding-block: 28px; border-top: 1px solid var(--hairline); display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .ex-next a.nx { text-decoration: none; display: flex; flex-direction: column; gap: 8px; }
+  .ex-next a.nx span:last-child { font-size: clamp(26px, 3vw, 44px); letter-spacing: -.03em; }
+  .ex-next a.nx:hover b { transform: translateX(6px); }
+  .ex-next a.nx b { display: inline-block; font-weight: 300; transition: transform .35s cubic-bezier(.16,1,.3,1); }
+
+  /* scroll di prodotto */
+  .sp-track { position: relative; height: 340vh; }
+  .sp-stage { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1fr); align-items: center; gap: clamp(16px,4vw,64px); padding-block: 24px; }
+  .sp-obj { position: relative; height: 100%; max-height: 760px; display: grid; place-items: center; border-radius: 26px; background: radial-gradient(60% 55% at 50% 55%, #F8F2EA 0%, #EDE4D8 70%); box-shadow: inset 0 0 0 1px var(--hairline); overflow: hidden; }
+  .sp-obj svg { position: absolute; inset: 6% 4%; width: 92%; height: 88%; overflow: visible; }
+  .sp-text { position: relative; min-height: 260px; }
+  .sp-ch { position: absolute; inset: 0 0 auto 0; }
+  .sp-ch h3 { margin-top: 14px; font-size: clamp(40px, 5vw, 80px); font-weight: 300; letter-spacing: -.045em; line-height: 1; }
+  .sp-ch p { margin-top: 18px; max-width: 26em; font-size: clamp(17px,1.4vw,20px); line-height: 1.5; color: var(--ink-strong); }
+  .sp-ch .ph { margin-top: 14px; color: var(--ink-soft); }
+  .sp-bar { display: flex; gap: 6px; margin-bottom: 26px; }
+  .sp-bar i { height: 2px; flex: 1; background: var(--hairline); position: relative; overflow: hidden; }
+  .sp-bar i::after { content: ""; position: absolute; inset: 0; background: var(--grad); transform-origin: left; transform: scaleX(var(--f, 0)); }
+  .sp-cue { position: absolute; bottom: 22px; left: 50%; translate: -50% 0; color: var(--ink-mid); }
+
+  /* banner interattivo */
+  .bn-area { padding: clamp(28px,5vw,64px) clamp(16px,3vw,40px); display: flex; flex-wrap: wrap; gap: clamp(24px,4vw,56px); align-items: flex-start; justify-content: center; }
+  .bn-col { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .bn-col > .mono { color: var(--ink-mid); }
+  .bn { position: relative; overflow: hidden; border-radius: 6px; background: #FBF7F1; box-shadow: 0 24px 60px rgba(26,18,16,.16), inset 0 0 0 1px var(--hairline); user-select: none; -webkit-user-select: none; }
+  .bn.m { width: 300px; height: 250px; }
+  .bn.s { width: 320px; height: 100px; }
+  .bn .ad { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 22px; gap: 8px; }
+  .bn.s .ad { flex-direction: row; align-items: center; justify-content: space-between; padding: 14px 16px; }
+  .bn .ad .k { color: var(--ink-mid); font-size: 10px; }
+  .bn .ad .h { font-size: 27px; line-height: 1.02; letter-spacing: -.035em; font-weight: 400; }
+  .bn.s .ad .h { font-size: 19px; }
+  .bn .ad .go { align-self: flex-start; margin-top: 8px; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: var(--cream); font-size: 13px; font-weight: 500; }
+  .bn.s .ad .go { margin: 0; align-self: center; }
+  .bn .ad .go.pop { animation: pop .6s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: none; opacity: 1; } }
+  .bn canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+  .bn .tag { position: absolute; top: 6px; right: 8px; z-index: 2; font-family: var(--mono); font-size: 9px; color: var(--ink-soft); letter-spacing: .1em; }
+  .stats { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); border-top: 1px solid var(--hairline); }
+  .stats div { padding: 18px clamp(12px,1.6vw,22px); border-left: 1px solid var(--hairline); }
+  .stats div:first-child { border-left: 0; }
+  .stats b { display: block; margin-top: 8px; font-size: clamp(26px, 2.6vw, 40px); font-weight: 300; letter-spacing: -.03em; }
+  .stats-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px clamp(12px,1.6vw,22px); border-top: 1px solid var(--hairline); color: var(--ink-mid); }
+  .stats-head button { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+
+  /* luci */
+  .stage-box { aspect-ratio: 16/8.4; min-height: 440px; max-height: 78vh; width: 100%; }
+  .stage-box::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; z-index: 1; pointer-events: none; background: linear-gradient(to top, rgba(0,0,0,.55), transparent); }
+  .stage-box .boards { position: absolute; left: 50%; bottom: 13%; translate: -50% 0; width: 46%; height: 3px; z-index: 2; border-radius: 3px; background: rgba(241,234,224,.16); }
+  .controls.dk { background: rgba(26,18,16,.72); color: var(--cream); box-shadow: inset 0 0 0 1px rgba(241,234,224,.14); }
+  .controls.dk .ctl > span { color: rgba(241,234,224,.6); }
+  .controls.dk .seg { box-shadow: inset 0 0 0 1px rgba(241,234,224,.2); }
+  .controls.dk .seg button { color: rgba(241,234,224,.85); }
+  .controls.dk .seg button[aria-pressed="true"] { background: var(--cream); color: var(--ink); }
+  .controls.dk .sw[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--stage), 0 0 0 3.5px var(--cream); }
+  .controls.dk .btn { background: var(--cream); color: var(--ink); }
+
+  /* parete */
+  .wall { height: min(74vh, 720px); min-height: 440px; }
+  .qr { position: absolute; z-index: 3; right: 18px; top: 18px; width: 200px; padding: 14px; border-radius: 16px; background: var(--cream); color: var(--ink); box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+  .qr .code { width: 100%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(21, 1fr); gap: 0; margin-bottom: 10px; }
+  .qr .code i { background: transparent; }
+  .qr .code i.on { background: var(--ink); }
+  .qr p { font-size: 13px; line-height: 1.35; }
+  .qr .mono { display: block; margin-top: 8px; color: var(--ink-soft); font-size: 9px; }
+  .people { position: absolute; z-index: 3; left: 18px; top: 18px; display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px; background: rgba(241,234,224,.12); color: var(--cream); }
+  .people i { width: 8px; height: 8px; border-radius: 50%; background: #3BE37A; box-shadow: 0 0 10px #3BE37A; }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; z-index: 70; translate: -50% 0; max-width: min(92vw, 520px); padding: 14px 18px; border-radius: 14px; background: var(--ink); color: var(--cream); font-size: 15px; line-height: 1.4; box-shadow: 0 20px 50px rgba(26,18,16,.3); }
+
+  @media (max-width: 900px) {
+    .bento { grid-template-columns: repeat(2, minmax(0,1fr)); grid-auto-rows: 210px; }
+    .card:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .card:nth-child(2) { grid-column: span 1; grid-row: span 2; }
+    .card:nth-child(3) { grid-column: span 1; grid-row: span 2; }
+    .card:nth-child(4) { grid-column: span 2; }
+    .card:nth-child(5), .card:nth-child(6) { grid-column: span 1; }
+    .ex-hero, .use { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .stats div:nth-child(odd) { border-left: 0; }
+    .stats div { border-top: 1px solid var(--hairline); }
+  }
+  @media (max-width: 760px) {
+    .site-head nav { display: none; }
+    .proto-tag { left: auto; right: 12px; translate: none; top: 12px; font-size: 9px; padding: 5px 10px; }
+    .bento { grid-template-columns: 1fr; grid-auto-rows: 230px; gap: 12px; }
+    .card:nth-child(n) { grid-column: auto; grid-row: auto; }
+    .card:nth-child(1) { grid-row: span 2; }
+    .card:nth-child(2) { grid-row: span 2; }
+    .tall { height: 72svh; min-height: 460px; }
+    .demo > .controls { position: relative; left: auto; right: auto; bottom: auto; margin: 0; border-radius: 0; }
+    .demo.withctl { display: flex; flex-direction: column; height: auto; }
+    .demo.withctl > .canvas-box { position: relative; height: 62svh; min-height: 380px; }
+    .controls { gap: 12px 14px; }
+    .controls .btn { margin-left: 0; }
+    input[type=range] { width: 110px; }
+    .sp-stage { grid-template-columns: 1fr; grid-template-rows: 1fr auto; padding-block: 12px 20px; gap: 14px; }
+    .sp-obj { max-height: none; min-height: 0; }
+    .sp-text { min-height: 210px; }
+    .sp-ch h3 { margin-top: 8px; }
+    .sp-ch p { margin-top: 10px; }
+    .sp-bar { margin-bottom: 14px; }
+    .bn-area { padding: 24px 12px; }
+    .stage-box { aspect-ratio: auto; min-height: 0; }
+    .qr { position: relative; right: auto; top: auto; width: auto; display: grid; grid-template-columns: 96px 1fr; gap: 14px; align-items: center; margin: 12px; }
+    .qr .code { margin: 0; }
+    .cfg { grid-template-columns: 1fr; }
+    .cfg-stage { min-height: 52svh; }
+    .cfg-panel { border-left: 0; border-top: 1px solid var(--hairline); }
+    .inv { grid-template-columns: 1fr; padding: 16px; }
+    .card canvas.inv-pv { top: -34%; right: 17%; height: 82%; }
+  }
+</style>
+<div class="grain" aria-hidden="true"></div>
+<div class="proto-tag">Prototipo Lab · non nel sito</div>
+<div id="app"></div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+(function(){
+  const $ = (s, r = document) => r.querySelector(s);
+  const app = $('#app');
+  const small = matchMedia('(max-width: 760px)');
+  const LIVE_SITE = 'https://spectualize.com';
+  const AREA = {
+    web: { name: 'Web & Software', c: 'var(--orange)' },
+    adv: { name: 'Advertising', c: 'var(--coral)' },
+    ev: { name: 'Eventi', c: 'var(--pink)' }
+  };
+  const EX = [
+    { slug: 'configuratore', n: '01', name: 'Configuratore di prodotto', area: 'web', line: 'Scegli colore, finitura e dettagli: il prodotto cambia sotto i tuoi occhi.',
+      use: 'E-commerce e pagine prodotto dove il cliente <span class="hl">compone il suo modello</span> prima di comprarlo, e ogni scelta racconta cosa piace di più.' },
+    { slug: 'scroll-di-prodotto', n: '02', name: 'Scroll di prodotto', area: 'web', line: 'Un oggetto che si rivela un dettaglio alla volta, mentre scorri.',
+      use: 'Pagine di lancio per un prodotto o una collezione, dove il racconto <span class="hl">segue lo scorrimento</span> invece di un elenco di caratteristiche.' },
+    { slug: 'banner-interattivo', n: '03', name: 'Banner interattivo', area: 'adv', line: 'Una pubblicità che si gioca invece di essere ignorata.',
+      use: 'Campagne display e social che attirano un gesto, non solo uno sguardo. Ogni interazione è <span class="hl">un dato in più</span> da leggere nei report.' },
+    { slug: 'luci-di-scena', n: '04', name: 'Luci di scena', area: 'ev', line: 'Un palco virtuale da accendere come un regista.',
+      use: 'Provare l\'atmosfera di un evento prima di allestirlo, e portare <span class="hl">la stessa luce</span> anche sul sito e sui social dell\'evento.' },
+    { slug: 'parete-digitale', n: '05', name: 'Parete digitale', area: 'ev', line: 'Una superficie che il pubblico anima insieme.',
+      use: 'Un momento condiviso durante lanci, convention e fiere: il pubblico lascia un segno, il brand ottiene <span class="hl">un\'immagine da raccontare</span> dopo.' },
+    { slug: 'invito-su-misura', n: '06', name: 'Invito su misura', area: 'ev', line: 'Scrivi il tuo nome e nasce il tuo pass per l\'evento.',
+      use: 'Lanci e convention che iniziano prima del giorno X: ogni invitato salva il suo pass e lo condivide, e l\'evento <span class="hl">gira sui social</span> prima ancora di aprire le porte.' }
+  ];
+
+  // ogni vista registra qui ciò che va fermato quando si cambia pagina (cicli, contesti WebGL, ascoltatori)
+  let cleanups = [];
+  const onLeave = fn => cleanups.push(fn);
+  function loop(fn){
+    let id = 0, last = performance.now();
+    const step = t => { const dt = Math.min(.05, (t - last) / 1000); last = t; fn(dt, t / 1000); id = requestAnimationFrame(step); };
+    id = requestAnimationFrame(step);
+    onLeave(() => cancelAnimationFrame(id));
+  }
+  function listen(target, type, fn, opts){ target.addEventListener(type, fn, opts); onLeave(() => target.removeEventListener(type, fn, opts)); }
+  const hex = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; };
+
+  // nella pagina pubblicata su claude.ai il salvataggio passa dal visualizzatore (chiede conferma); aperta come file, scarica e basta
+  const dlP = window.claude && window.claude.use ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
+  async function saveCanvas(canvas, filename, msg){
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+    const saver = await dlP;
+    try {
+      if (saver) await saver.save({ filename, data: blob });
+      else { const a = document.createElement('a'); a.download = filename; a.href = URL.createObjectURL(blob); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+      toast(msg);
+    } catch(e) { if (e && e.code !== 'declined') toast('Qui non si può salvare l\'immagine: prova ad aprire la pagina in claude.ai.'); }
+  }
+
+  let toastT = 0;
+  function toast(msg){
+    const t = $('#toast'); t.textContent = msg; t.hidden = false;
+    t.animate([{ opacity: 0, translate: '-50% 10px' }, { opacity: 1, translate: '-50% 0' }], { duration: 300, easing: 'ease-out' });
+    clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 3600);
+  }
+
+  // ---------- Fondo fluido e luci: lo shader del portale, con colori, velocità, fari e ritmo regolabili ----------
+  const FS = `precision mediump float;
+    uniform vec2 R; uniform float T; uniform float TB; uniform vec2 M; uniform float V; uniform vec4 C; uniform float AMP; uniform float LIVE;
+    uniform vec3 CA; uniform vec3 CB; uniform vec3 CC; uniform float REACT; uniform float NB; uniform float PULSE;
+    float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+    float n2(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);
+      return mix(mix(h(i),h(i+vec2(1,0)),u.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x),u.y);}
+    float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n2(p);p=p*2.02+vec2(1.7,9.2);a*=.5;}return v;}
+    float beam(vec2 p, vec2 o, vec2 d){
+      vec2 v=p-o; float al=dot(v,d); float pe=abs(v.x*d.y-v.y*d.x);
+      float w=.02+al*.2;
+      return smoothstep(w,w*.15,pe)*smoothstep(0.,.08,al)*smoothstep(2.1,.3,al);
+    }
+    void main(){
+      float asp=R.x/R.y;
+      vec2 p=(gl_FragCoord.xy-R*.5)/min(R.x,R.y);
+      float t=T*.05;
+      vec2 q=vec2(fbm(p*1.4+t),fbm(p*1.4-t+vec2(3.1,1.3)));
+      vec2 r=vec2(fbm(p*1.1+q*1.9+vec2(1.7,9.2)+t*.4),fbm(p*1.1+q*1.9+vec2(8.3,2.8)+t*.55));
+      float n=fbm(p+r*2.4);
+      vec2 mp=M-.5; mp.x*=asp; if(asp<1.){mp=(M-.5)*vec2(1.,1./asp);}
+      n+=smoothstep(.55,0.,distance(p,mp))*(.09+V*.07)*REACT;
+      float ring=0.;
+      float e=C.z;
+      if(e>0.&&e<3.){
+        vec2 cp=C.xy-.5; cp.x*=asp; if(asp<1.){cp=(C.xy-.5)*vec2(1.,1./asp);}
+        float cd=distance(p,cp);
+        float rad=e*mix(1.05,1.6,C.w);
+        ring=smoothstep(.075+C.w*.08,0.,abs(cd-rad))*(1.-smoothstep(0.,2.4,e))*(.28+C.w*.2);
+        n+=ring+smoothstep(rad,rad-.25,cd)*(1.-smoothstep(0.,.9,e))*(.12+C.w*.2);
+      }
+      vec3 col=CA; col=mix(col,CB,smoothstep(.44,.64,n)); col=mix(col,CC,smoothstep(.62,.8,n));
+      float al=smoothstep(.2,.6,n)*.78;
+      al*=mix(.65,1.,smoothstep(1.45,.45,length(p)));
+      if(LIVE>.001){
+        vec2 ext=vec2(.5*max(asp,1.),.5*max(1./asp,1.));
+        float top=ext.y+.05; float tt=TB*.32;
+        vec2 d1=normalize(vec2(sin(tt*.9)*.55-.25,-1.));
+        vec2 d2=normalize(vec2(mp.x*.9,mp.y-top));
+        vec2 d3=normalize(vec2(sin(tt*.7+2.)*.55+.25,-1.));
+        vec2 d4=normalize(vec2(sin(tt*.5+4.)*.8,-1.));
+        float b1=beam(p,vec2(-ext.x*.62,top),d1)*step(1.5,NB);
+        float b2=beam(p,vec2(0.,top),d2);
+        float b3=beam(p,vec2(ext.x*.62,top),d3)*step(2.5,NB);
+        float b4=beam(p,vec2(-ext.x*.15,top),d4)*.7*step(3.5,NB);
+        float haze=.45+.9*fbm(p*2.2+vec2(t*3.,-t*2.));
+        vec3 lc=CA*b1+CB*b2+CC*b3+mix(CB,CC,.5)*b4;
+        float bs=b1+b2+b3+b4;
+        float floorGlow=smoothstep(-ext.y+.35,-ext.y-.1,p.y)*(.35+.4*fbm(p*3.+t*4.))*min(1.,bs*1.5+.25);
+        vec3 lcol=bs>.001?lc/bs:CB; lcol=mix(lcol,mix(CA,CC,.5+.5*sin(p.x*2.+tt)),floorGlow/(bs+floorGlow+.001));
+        float lal=clamp((bs*haze)*.62+floorGlow*.45+ring*1.2,0.,.85)*PULSE;
+        col=mix(col,lcol,LIVE); al=mix(al,lal,LIVE);
+      }
+      float fa=clamp(al*AMP,0.,.92);
+      gl_FragColor=vec4(col*fa,fa);
+    }`;
+  const BRAND3 = ['#FF7A2A', '#FF3D6E', '#E91FA8'];
+  function shader(canvas, opt = {}){
+    let gl = null;
+    try { gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true, powerPreference: 'low-power' }); } catch(e){}
+    const st = Object.assign({ colors: BRAND3.slice(), speed: 1, react: 1, live: 0, beams: 3, motion: 1, pulse: 0, level: 1, amp: 1, interactive: true }, opt);
+    const api = { st, ripple(){} };
+    if (!gl) return api;
+    const sh = (ty, src) => { const s = gl.createShader(ty); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; };
+    const pr = gl.createProgram();
+    gl.attachShader(pr, sh(gl.VERTEX_SHADER, 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}'));
+    gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const u = {}; ['R','T','TB','M','V','C','AMP','LIVE','CA','CB','CC','REACT','NB','PULSE'].forEach(k => u[k] = gl.getUniformLocation(pr, k));
+    gl.clearColor(0, 0, 0, 0);
+    const box = canvas.parentElement;
+    function resize(){
+      const d = Math.min(devicePixelRatio || 1, innerWidth < 760 ? 1 : 1.5);
+      canvas.width = Math.max(2, Math.round(canvas.clientWidth * d)); canvas.height = Math.max(2, Math.round(canvas.clientHeight * d));
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    resize();
+    const ro = new ResizeObserver(resize); ro.observe(canvas); onLeave(() => ro.disconnect());
+    let mT = { x: .5, y: .5 }, mC = { x: .5, y: .5 }, mP = { x: .5, y: .5 }, mv = 0, lastMove = -10, T = Math.random() * 40, TB = 0, beat = 0;
+    let click = { x: .5, y: .5, at: -100, big: 0 }, now = 0;
+    const live = { v: st.live }, level = { v: st.level };
+    const rel = e => { const r = canvas.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width, y: 1 - (e.clientY - r.top) / r.height }; };
+    if (st.interactive) {
+      listen(box, 'pointermove', e => { const p = rel(e); mT = p; lastMove = now; });
+      listen(box, 'pointerdown', e => { if (e.target.closest('button, input, label, a')) return; const p = rel(e); mT = p; lastMove = now; api.ripple(p.x, p.y, false); });
+    }
+    api.ripple = (x, y, big) => { click = { x, y, at: now, big: big ? 1 : 0 }; };
+    loop((dt, t) => {
+      now = t;
+      T += dt * (touchLike ? 1.7 : 1) * st.speed;
+      // movimento dei fari: fermo, lento, a tempo (a tempo: scatti sul battere, 120 bpm)
+      const bpm = 2;
+      beat = (beat + dt * bpm) % 1;
+      if (st.motion === 0) TB += 0; else if (st.motion === 1) TB += dt; else TB += dt * (beat < .18 ? 9 : .4);
+      const pulseTarget = st.motion === 2 ? .6 + .4 * Math.pow(1 - beat, 3) : 1;
+      live.v += (st.live - live.v) * .06;
+      level.v += (st.level - level.v) * .045;
+      if (now - lastMove > 1.5) { mT.x = .5 + .3 * Math.sin(t * .21); mT.y = .5 + .24 * Math.sin(t * .29 + 1.3); }
+      mC.x += (mT.x - mC.x) * .055; mC.y += (mT.y - mC.y) * .055;
+      const dx = mC.x - mP.x, dy = mC.y - mP.y; mv += (Math.min(Math.hypot(dx, dy) * 60, 1.2) - mv) * .15; mP = { ...mC };
+      gl.uniform2f(u.R, canvas.width, canvas.height); gl.uniform1f(u.T, T); gl.uniform1f(u.TB, TB);
+      gl.uniform2f(u.M, mC.x, mC.y); gl.uniform1f(u.V, mv);
+      gl.uniform4f(u.C, click.x, click.y, now - click.at, click.big);
+      gl.uniform1f(u.AMP, st.amp * level.v); gl.uniform1f(u.LIVE, live.v); gl.uniform1f(u.REACT, st.react);
+      const [a, b, c] = st.colors.map(hex); gl.uniform3f(u.CA, ...a); gl.uniform3f(u.CB, ...b); gl.uniform3f(u.CC, ...c);
+      gl.uniform1f(u.NB, st.beams); gl.uniform1f(u.PULSE, pulseTarget);
+      gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    });
+    onLeave(() => { const x = gl.getExtension('WEBGL_lose_context'); if (x) x.loseContext(); });
+    return api;
+  }
+  const touchLike = matchMedia('(hover: none)').matches;
+
+  // ---------- Parete digitale: una griglia di luci che più persone accendono insieme ----------
+  const WALL_COLORS = ['#FF7A2A', '#FF3D6E', '#E91FA8', '#FF1CD6', '#FFB36B', '#FF6FAE'];
+  function wall(canvas, opt = {}){
+    const st = Object.assign({ ghosts: 6, step: 14, interactive: true }, opt);
+    const ctx = canvas.getContext('2d');
+    let W = 0, H = 0, cols = 0, rows = 0, R, G, B, S = 0, d = 1;
+    let base = null;
+    function resize(){
+      d = Math.min(devicePixelRatio || 1, 2);
+      W = canvas.clientWidth; H = canvas.clientHeight;
+      canvas.width = Math.round(W * d); canvas.height = Math.round(H * d);
+      S = st.step; cols = Math.ceil(W / S); rows = Math.ceil(H / S);
+      R = new Float32Array(cols * rows); G = new Float32Array(cols * rows); B = new Float32Array(cols * rows);
+      base = document.createElement('canvas'); base.width = canvas.width; base.height = canvas.height;
+      const b = base.getContext('2d'); b.scale(d, d); b.fillStyle = '#140D0B'; b.fillRect(0, 0, W, H);
+      b.fillStyle = 'rgba(241,234,224,.07)';
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) b.fillRect(x * S + S / 2 - 1.5, y * S + S / 2 - 1.5, 3, 3);
+    }
+    resize();
+    const ro = new ResizeObserver(resize); ro.observe(canvas); onLeave(() => ro.disconnect());
+    // persone simulate: girano piano, ogni tanto toccano la parete
+    const people = [];
+    const mk = i => ({ x: Math.random(), y: Math.random(), tx: Math.random(), ty: Math.random(), c: hex(WALL_COLORS[i % WALL_COLORS.length]), wait: Math.random() * 2, tap: 2 + Math.random() * 4, sp: .12 + Math.random() * .16 });
+    for (let i = 0; i < 12; i++) people.push(mk(i));
+    const fingers = new Map();
+    const rings = [];
+    function paint(px, py, c, rad, k){
+      const x0 = Math.max(0, Math.floor((px - rad) / S)), x1 = Math.min(cols - 1, Math.ceil((px + rad) / S));
+      const y0 = Math.max(0, Math.floor((py - rad) / S)), y1 = Math.min(rows - 1, Math.ceil((py + rad) / S));
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+        const dx = x * S + S / 2 - px, dy = y * S + S / 2 - py, dd = Math.sqrt(dx * dx + dy * dy);
+        if (dd > rad) continue;
+        const f = (1 - dd / rad) * k, i = y * cols + x;
+        R[i] = Math.min(1.4, R[i] + c[0] * f); G[i] = Math.min(1.4, G[i] + c[1] * f); B[i] = Math.min(1.4, B[i] + c[2] * f);
+      }
+    }
+    const api = { st, count: () => st.ghosts + fingers.size, clear(){ R.fill(0); G.fill(0); B.fill(0); rings.length = 0; }, canvas };
+    if (st.interactive) {
+      let mine = 0;
+      const pos = e => { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+      listen(canvas, 'pointerdown', e => { const p = pos(e); const c = hex(WALL_COLORS[mine++ % WALL_COLORS.length]); fingers.set(e.pointerId, { ...p, c, down: true }); rings.push({ x: p.x, y: p.y, c, t: 0 }); });
+      listen(canvas, 'pointermove', e => {
+        const p = pos(e); let f = fingers.get(e.pointerId);
+        if (!f) { if (e.pointerType !== 'mouse') return; f = { ...p, c: hex('#FF3D6E'), down: false }; fingers.set(e.pointerId, f); }
+        const steps = Math.ceil(Math.hypot(p.x - f.x, p.y - f.y) / 6);
+        for (let s = 1; s <= steps; s++) paint(f.x + (p.x - f.x) * s / steps, f.y + (p.y - f.y) * s / steps, f.c, f.down ? 46 : 34, f.down ? .22 : .12);
+        f.x = p.x; f.y = p.y;
+      });
+      const up = e => { const f = fingers.get(e.pointerId); if (!f) return; if (e.pointerType === 'mouse' && e.type === 'pointerup') { f.down = false; return; } fingers.delete(e.pointerId); };
+      listen(canvas, 'pointerup', up); listen(canvas, 'pointercancel', up); listen(canvas, 'pointerleave', up);
+    }
+    loop((dt, t) => {
+      const decay = Math.pow(.18, dt);
+      for (let i = 0; i < R.length; i++) { R[i] *= decay; G[i] *= decay; B[i] *= decay; }
+      for (let i = 0; i < st.ghosts; i++) {
+        const p = people[i];
+        p.wait -= dt;
+        if (p.wait <= 0) { p.tx = .08 + Math.random() * .84; p.ty = .1 + Math.random() * .8; p.wait = 1.5 + Math.random() * 3; }
+        const ox = p.x, oy = p.y;
+        p.x += (p.tx - p.x) * Math.min(1, dt * p.sp * 6); p.y += (p.ty - p.y) * Math.min(1, dt * p.sp * 6);
+        const steps = Math.max(1, Math.ceil(Math.hypot((p.x - ox) * W, (p.y - oy) * H) / 6));
+        for (let s = 1; s <= steps; s++) paint((ox + (p.x - ox) * s / steps) * W, (oy + (p.y - oy) * s / steps) * H, p.c, 34, .1);
+        p.tap -= dt;
+        if (p.tap <= 0) { rings.push({ x: p.x * W, y: p.y * H, c: p.c, t: 0 }); p.tap = 2.5 + Math.random() * 5; }
+      }
+      for (let k = rings.length - 1; k >= 0; k--) {
+        const r = rings[k]; r.t += dt;
+        const rad = 20 + r.t * 260, steps = Math.ceil(rad * 2 * Math.PI / 14);
+        for (let s = 0; s < steps; s++) { const a = s / steps * Math.PI * 2; paint(r.x + Math.cos(a) * rad, r.y + Math.sin(a) * rad, r.c, 14, .16 * (1 - r.t / .9)); }
+        if (r.t > .9) rings.splice(k, 1);
+      }
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(base, 0, 0); ctx.setTransform(d, 0, 0, d, 0, 0);
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+        const i = y * cols + x, e = Math.max(R[i], G[i], B[i]);
+        if (e < .03) continue;
+        const k = Math.min(1, e), s = 3 + k * (S - 6);
+        ctx.fillStyle = `rgb(${Math.min(255, R[i] / e * 255 * Math.min(1, .35 + k)) | 0},${Math.min(255, G[i] / e * 255 * Math.min(1, .35 + k)) | 0},${Math.min(255, B[i] / e * 255 * Math.min(1, .35 + k)) | 0})`;
+        ctx.globalAlpha = Math.min(1, .25 + k);
+        ctx.fillRect(x * S + (S - s) / 2, y * S + (S - s) / 2, s, s);
+      }
+      ctx.globalAlpha = 1;
+    });
+    return api;
+  }
+
+  // ---------- Flacone: forma, materia, dettaglio ----------
+  const BOTTLE = `
+    <svg viewBox="-60 0 320 440" aria-hidden="true">
+      <defs>
+        <linearGradient id="glass" x1="0" x2="1">
+          <stop offset="0" stop-color="#C9B9A8"/><stop class="hiA" offset=".3" stop-color="#FBF7F1"/><stop class="hiB" offset=".42" stop-color="#E9DED2"/><stop offset="1" stop-color="#B9A797"/>
+        </linearGradient>
+        <linearGradient id="liquid" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#FF7A2A"/><stop offset=".45" stop-color="#FF3D6E"/><stop offset="1" stop-color="#E91FA8"/>
+        </linearGradient>
+        <linearGradient id="shade" x1="0" x2="1">
+          <stop offset="0" stop-color="#1A1210" stop-opacity=".32"/><stop offset=".25" stop-color="#1A1210" stop-opacity="0"/><stop offset=".7" stop-color="#1A1210" stop-opacity="0"/><stop offset="1" stop-color="#1A1210" stop-opacity=".38"/>
+        </linearGradient>
+        <linearGradient id="metal" x1="0" x2="1">
+          <stop offset="0" stop-color="#2A201C"/><stop offset=".35" stop-color="#7A6A60"/><stop offset=".5" stop-color="#3A2E28"/><stop offset="1" stop-color="#1A1210"/>
+        </linearGradient>
+        <clipPath id="bodyClip"><path d="M40 168 C40 140 62 128 78 120 L78 96 L122 96 L122 120 C138 128 160 140 160 168 L160 384 C160 400 148 410 132 410 L68 410 C52 410 40 400 40 384 Z"/></clipPath>
+      </defs>
+      <ellipse class="shadow" cx="100" cy="418" rx="78" ry="9" fill="#1A1210" opacity=".14"/>
+      <g class="bottle">
+        <g clip-path="url(#bodyClip)">
+          <rect x="30" y="90" width="140" height="330" fill="url(#glass)"/>
+          <rect class="liq" x="30" y="420" width="140" height="330" fill="url(#liquid)" opacity=".9"/>
+          <g class="label"></g>
+          <rect x="30" y="90" width="140" height="330" fill="url(#shade)"/>
+          <rect class="glint" x="58" y="150" width="7" height="230" rx="3.5" fill="#fff" opacity=".55"/>
+        </g>
+        <g class="call" opacity="0">
+          <line x1="152" y1="34" x2="196" y2="10" stroke="#1A1210" stroke-width=".8"/><circle cx="152" cy="34" r="2.4" fill="#1A1210"/>
+          <text x="200" y="8" font-family="DM Mono, monospace" font-size="8" letter-spacing="1.2" fill="#1A1210">TAPPO</text>
+          <line x1="80" y1="108" x2="30" y2="128" stroke="#1A1210" stroke-width=".8"/><circle cx="80" cy="108" r="2.4" fill="#1A1210"/>
+          <text x="26" y="132" text-anchor="end" font-family="DM Mono, monospace" font-size="8" letter-spacing="1.2" fill="#1A1210">COLLO</text>
+        </g>
+        <g class="cap">
+          <rect x="72" y="40" width="56" height="62" rx="9" fill="url(#metal)"/>
+          <rect x="72" y="92" width="56" height="5" fill="#000" opacity=".25"/>
+        </g>
+      </g>
+    </svg>`;
+  function bottle(svg){
+    const label = svg.querySelector('.label');
+    // l'etichetta gira attorno al flacone: tre copie affiancate che scorrono e si comprimono verso i bordi
+    label.innerHTML = [0, 1, 2].map(k => `<g data-k="${k}"><rect y="244" height="80" fill="#1A1210"/><rect class="stripe" y="244" height="4" fill="url(#liquid)"/><text y="292" font-family="Space Grotesk, sans-serif" font-weight="300" font-size="21" fill="#F1EAE0" text-anchor="middle">N°0${k + 1}</text></g>`).join('');
+    const parts = [...label.children];
+    const hiA = svg.querySelector('.hiA'), hiB = svg.querySelector('.hiB'), liq = svg.querySelector('.liq'), cap = svg.querySelector('.cap'), call = svg.querySelector('.call'), btl = svg.querySelector('.bottle'), glint = svg.querySelector('.glint');
+    return function set(rot, fill, open, zoom){
+      const w = 120;
+      parts.forEach((g, k) => {
+        let x = ((k * 1.5 - rot * 3) % 3 + 3) % 3 - 1.5;
+        const cx = 100 + Math.sin(x * Math.PI / 3) * 74, ww = Math.max(0, Math.cos(x * Math.PI / 3)) * w * .62;
+        const rects = g.querySelectorAll('rect'), t = g.querySelector('text');
+        rects.forEach(r => { r.setAttribute('x', cx - ww / 2); r.setAttribute('width', ww); });
+        t.setAttribute('x', cx); t.setAttribute('transform', `translate(${cx} 0) scale(${Math.max(.01, ww / (w * .62))} 1) translate(${-cx} 0)`);
+        g.setAttribute('opacity', Math.max(0, Math.cos(x * Math.PI / 3)).toFixed(3));
+      });
+      const hp = (.22 + .16 * Math.sin(rot * Math.PI * 2)).toFixed(3);
+      hiA.setAttribute('offset', hp); hiB.setAttribute('offset', (+hp + .12).toFixed(3));
+      glint.setAttribute('x', (54 + 10 * Math.sin(rot * Math.PI * 2)).toFixed(1));
+      liq.setAttribute('y', (410 - fill * 250).toFixed(1));
+      cap.setAttribute('transform', `translate(${(open * 30).toFixed(1)} ${(-open * 48).toFixed(1)}) rotate(${(open * 14).toFixed(1)} 100 70)`);
+      call.setAttribute('opacity', Math.max(0, open * 1.4 - .4).toFixed(3));
+      btl.setAttribute('transform', `translate(100 ${100 + zoom * 90}) scale(${1 + zoom * .55}) translate(-100 -100)`);
+    };
+  }
+
+  // ---------- Configuratore: una cassa che cambia colore, finitura e dettagli ----------
+  const CFG = {
+    color: [['Crema', '#E9DFD0'], ['Nero', '#2A2220'], ['Arancio', '#FF7A2A'], ['Magenta', '#E91FA8'], ['Salvia', '#9FB09B']],
+    finish: [['Opaco', 'op'], ['Lucido', 'lu'], ['Tessuto', 'te']],
+    accent: [['Ottone', '#C9A15A'], ['Argento', '#C9CDD2'], ['Gradiente', 'url(#cfgAcc)']]
+  };
+  const SPEAKER = `
+    <svg viewBox="0 0 300 380" aria-hidden="true">
+      <defs>
+        <pattern id="cfgFab" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M0 5L5 0M-1 1L1-1M4 6L6 4" stroke="#000" stroke-opacity=".22" stroke-width="1.1"/></pattern>
+        <linearGradient id="cfgMatte" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></linearGradient>
+        <linearGradient id="cfgGloss" x1="0" x2="1" y1="0" y2=".35"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".18" stop-color="#fff" stop-opacity=".55"/><stop offset=".27" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
+        <linearGradient id="cfgAcc" x1="0" x2="1"><stop offset="0" stop-color="#FF7A2A"/><stop offset=".5" stop-color="#FF3D6E"/><stop offset="1" stop-color="#FF1CD6"/></linearGradient>
+        <radialGradient id="cfgDome" cx=".38" cy=".35" r=".7"><stop offset="0" stop-color="#8C7B70"/><stop offset="1" stop-color="#1A1210"/></radialGradient>
+      </defs>
+      <ellipse cx="150" cy="356" rx="104" ry="11" fill="#1A1210" opacity=".16"/>
+      <g class="spk">
+        <rect class="body" x="50" y="20" width="200" height="320" rx="46"/>
+        <rect class="fab" x="50" y="20" width="200" height="320" rx="46" fill="url(#cfgFab)"/>
+        <rect class="mat" x="50" y="20" width="200" height="320" rx="46" fill="url(#cfgMatte)"/>
+        <rect class="glo" x="50" y="20" width="200" height="320" rx="46" fill="url(#cfgGloss)"/>
+        <circle class="acc" cx="150" cy="218" r="83" fill="none" stroke-width="6"/>
+        <circle cx="150" cy="218" r="78" fill="#1A1210"/>
+        <g class="dots"></g>
+        <circle cx="150" cy="218" r="26" fill="url(#cfgDome)"/>
+        <circle class="acc" cx="150" cy="84" r="27" fill="none" stroke-width="4"/>
+        <circle cx="150" cy="84" r="23" fill="#1A1210"/>
+        <circle cx="150" cy="84" r="9" fill="url(#cfgDome)"/>
+        <circle class="led" cx="150" cy="320" r="4"/>
+      </g>
+    </svg>`;
+  function speaker(svg){
+    let d = '';
+    for (let y = -72; y <= 72; y += 9) for (let x = -72; x <= 72; x += 9) if (x * x + y * y < 70 * 70 && x * x + y * y > 30 * 30) d += `<circle cx="${150 + x}" cy="${218 + y}" r="2.2"/>`;
+    svg.querySelector('.dots').innerHTML = d;
+    const body = svg.querySelector('.body'), fab = svg.querySelector('.fab'), mat = svg.querySelector('.mat'), glo = svg.querySelector('.glo');
+    const dots = svg.querySelector('.dots'), accs = svg.querySelectorAll('.acc'), led = svg.querySelector('.led');
+    return function set(c, f, a){
+      body.style.fill = c;
+      fab.style.opacity = f === 'te' ? 1 : 0;
+      mat.style.opacity = f === 'lu' ? .35 : 1;
+      glo.style.opacity = f === 'lu' ? 1 : 0;
+      dots.style.fill = c; dots.style.opacity = c === '#2A2220' ? .5 : .32;
+      accs.forEach(x => { x.style.stroke = a; });
+      led.style.fill = a.startsWith('url') ? '#FF3D6E' : a;
+    };
+  }
+
+  // ---------- Invito: il pass dell'evento, disegnato su canvas così si può salvare ----------
+  const INV = {
+    lancio: { label: 'Lancio', title: 'Notte del lancio', when: '12.11.2026 · Milano', dark: false },
+    convention: { label: 'Convention', title: 'Convention 2027', when: '23.01.2027 · Bologna', dark: true },
+    gala: { label: 'Gala', title: 'Gala d\'inverno', when: '14.12.2026 · Roma', dark: true }
+  };
+  function invite(canvas, st){
+    const W = 1080, H = 1350; canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const qr = Array.from({ length: 21 * 21 }, () => rnd() > .5);
+    const wrap = (text, max, size, weight) => {
+      let f = size; ctx.font = `${weight} ${f}px 'Space Grotesk', sans-serif`;
+      while (ctx.measureText(text).width > max && f > 60) { f -= 4; ctx.font = `${weight} ${f}px 'Space Grotesk', sans-serif`; }
+      return f;
+    };
+    loop((dt, t) => {
+      const v = INV[st.style], ink = v.dark ? '#F1EAE0' : '#FFF8EE';
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
+      if (st.style === 'lancio') {
+        const a = t * .25, g = ctx.createLinearGradient(W / 2 - Math.cos(a) * 900, H / 2 - Math.sin(a) * 900, W / 2 + Math.cos(a) * 900, H / 2 + Math.sin(a) * 900);
+        g.addColorStop(0, '#FF7A2A'); g.addColorStop(.38, '#FF3D6E'); g.addColorStop(.72, '#E91FA8'); g.addColorStop(1, '#FF1CD6');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+        const r = ctx.createRadialGradient(W * (.3 + .2 * Math.sin(t * .4)), H * .35, 0, W * .3, H * .35, 700);
+        r.addColorStop(0, 'rgba(255,240,225,.35)'); r.addColorStop(1, 'rgba(255,240,225,0)');
+        ctx.fillStyle = r; ctx.fillRect(0, 0, W, H);
+      } else if (st.style === 'convention') {
+        ctx.fillStyle = '#140D0B'; ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = 'rgba(241,234,224,.07)'; ctx.lineWidth = 2;
+        for (let x = 0; x <= W; x += 90) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+        for (let y = (t * 30) % 90; y <= H; y += 90) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+        const g = ctx.createLinearGradient(0, H * .1, W, H * .6);
+        g.addColorStop(0, 'rgba(255,122,42,0)'); g.addColorStop(.5, 'rgba(233,31,168,.55)'); g.addColorStop(1, 'rgba(255,28,214,0)');
+        ctx.fillStyle = g; ctx.beginPath(); const o = Math.sin(t * .5) * 120;
+        ctx.moveTo(0, 520 + o); ctx.lineTo(W, 260 + o); ctx.lineTo(W, 420 + o); ctx.lineTo(0, 680 + o); ctx.fill();
+      } else {
+        ctx.fillStyle = '#140D0B'; ctx.fillRect(0, 0, W, H);
+        for (let k = 0; k < 5; k++) {
+          const ox = W * (.1 + k * .2), oy = -60, a = Math.PI / 2 + Math.sin(t * .35 + k * 1.3) * .38, w = .13, len = 1700;
+          const g = ctx.createLinearGradient(ox, oy, ox + Math.cos(a) * len, oy + Math.sin(a) * len);
+          g.addColorStop(0, k % 2 ? 'rgba(255,179,107,.24)' : 'rgba(255,61,110,.2)'); g.addColorStop(1, 'rgba(255,179,107,0)');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(ox, oy);
+          ctx.lineTo(ox + Math.cos(a - w) * len, oy + Math.sin(a - w) * len);
+          ctx.lineTo(ox + Math.cos(a + w) * len, oy + Math.sin(a + w) * len);
+          ctx.fill();
+        }
+        ctx.strokeStyle = 'rgba(255,179,107,.55)'; ctx.lineWidth = 2; ctx.strokeRect(36, 36, W - 72, H - 72);
+      }
+      // luce che passa sul pass
+      const sx = ((t * .28) % 1.6 - .3) * (W + H);
+      const sg = ctx.createLinearGradient(sx - 200, 0, sx + 200, 400);
+      sg.addColorStop(0, 'rgba(255,255,255,0)'); sg.addColorStop(.5, 'rgba(255,255,255,.16)'); sg.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = sg; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = ink; ctx.textBaseline = 'alphabetic';
+      ctx.font = "400 26px 'DM Mono', monospace"; ctx.globalAlpha = .82;
+      ctx.fillText('INVITO DI ESEMPIO · SPECTUALIZE LAB', 80, 112);
+      ctx.globalAlpha = 1;
+      ctx.font = "300 104px 'Space Grotesk', sans-serif"; ctx.fillText(v.title, 76, 300);
+      ctx.font = "400 36px 'Space Grotesk', sans-serif"; ctx.globalAlpha = .9; ctx.fillText(v.when, 80, 370); ctx.globalAlpha = 1;
+      ctx.font = "400 26px 'DM Mono', monospace"; ctx.globalAlpha = .75; ctx.fillText('OSPITE', 80, 700); ctx.globalAlpha = 1;
+      const name = (st.name || '').trim() || 'Il tuo nome';
+      wrap(name, W - 160, 150, 400); ctx.fillText(name, 74, 840);
+      if ((st.company || '').trim()) { ctx.font = "300 46px 'Space Grotesk', sans-serif"; ctx.globalAlpha = .9; ctx.fillText(st.company.trim(), 80, 910); ctx.globalAlpha = 1; }
+      ctx.fillRect(80, 1070, W - 160, 2);
+      ctx.font = "400 30px 'DM Mono', monospace"; ctx.fillText('PASS N° ' + st.num, 80, 1150);
+      ctx.font = "400 22px 'DM Mono', monospace"; ctx.globalAlpha = .7; ctx.fillText('INGRESSO CON QR PERSONALE', 80, 1196); ctx.globalAlpha = 1;
+      const q = 190, qx = W - 80 - q, qy = H - 80 - q, m = q / 21;
+      ctx.fillStyle = '#FFF8EE'; ctx.fillRect(qx - 14, qy - 14, q + 28, q + 28);
+      ctx.fillStyle = '#1A1210';
+      for (let i = 0; i < 441; i++) {
+        const x = i % 21, y = (i / 21) | 0;
+        const fin = [[0, 0], [14, 0], [0, 14]].find(([a, b]) => x >= a && x < a + 7 && y >= b && y < b + 7);
+        let on = qr[i];
+        if (fin) { const dx = x - fin[0], dy = y - fin[1]; on = dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4); }
+        if (on) ctx.fillRect(qx + x * m, qy + y * m, m + .5, m + .5);
+      }
+    });
+  }
+
+  // ---------- Viste ----------
+  const head = () => `
+    <header class="site-head wrap">
+      <a href="#/" aria-label="Lab, indice"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <nav><a href="${LIVE_SITE}/chi-siamo/">Chi siamo</a><a href="${LIVE_SITE}/servizi/">Servizi</a><a class="on" href="#/" aria-current="page">Lab</a></nav>
+    </header>`;
+  const foot = () => `<footer class="site-foot mono">Spectualize · Esperienze online e dal vivo</footer>`;
+
+  function viewIndex(){
+    document.title = 'Lab: esperimenti per brand da mettere in scena · Spectualize';
+    app.innerHTML = head() + `
+      <main class="wrap">
+        <section class="lab-hero">
+          <p class="kicker mono"><i></i>Lab</p>
+          <h1 class="claim">Esperimenti per brand da mettere <span class="hl">in scena.</span></h1>
+          <p class="lede">Nel Lab proviamo idee prima di portarle nei progetti. Ogni esperimento è dal vivo: provalo, poi immagina cosa potrebbe fare per il tuo brand.</p>
+          <p class="origin mono"><i></i>Lo sfondo e le luci di questo sito sono nati qui, nel nostro Lab</p>
+        </section>
+        <section class="bento" aria-label="Esperimenti">
+          ${EX.map((x, i) => `
+            <a class="card${i >= 3 ? ' dark' : ''}" href="#/${x.slug}" style="--c:${AREA[x.area].c}">
+              <div class="pv" data-pv="${x.slug}"></div>
+              <div class="meta">
+                <div class="top"><span class="chip mono"><i></i>${AREA[x.area].name}</span><span class="num mono">${x.n}</span></div>
+                <div class="foot"><p class="name">${x.name} <b aria-hidden="true">→</b></p><p class="line">${x.line}</p></div>
+              </div>
+            </a>`).join('')}
+        </section>
+        <section class="lab-close">
+          <h2 class="claim">Hai un'idea da <span class="hl">sperimentare?</span></h2>
+          <a class="btn btn-lg js-brief" href="#/" data-area=""><span class="dot"></span>Raccontaci il progetto</a>
+        </section>
+      </main>` + foot();
+    // anteprime vive
+    const pv = s => $(`[data-pv="${s}"]`);
+    pv('configuratore').style.cssText = 'background:radial-gradient(60% 55% at 62% 45%, #FBF7F1 0%, #EDE4D8 75%)';
+    pv('configuratore').innerHTML = SPEAKER.replace('<svg ', '<svg style="position:absolute;right:8%;top:10%;height:72%;width:auto;overflow:visible" ');
+    pv('configuratore').querySelectorAll('svg *').forEach(el => el.style.transition = 'fill .7s ease, stroke .7s ease, opacity .7s ease');
+    const setS = speaker(pv('configuratore').firstElementChild);
+    let ci = 3; setS(CFG.color[3][1], 'lu', CFG.accent[2][1]);
+    const cyc = setInterval(() => { ci = (ci + 1) % CFG.color.length; setS(CFG.color[ci][1], CFG.finish[ci % 3][1], CFG.accent[ci % 3][1]); }, 2200);
+    onLeave(() => clearInterval(cyc));
+    pv('scroll-di-prodotto').style.cssText = 'background:radial-gradient(60% 55% at 50% 45%, #F8F2EA 0%, #EDE4D8 70%)';
+    pv('scroll-di-prodotto').innerHTML = BOTTLE.replace('<svg ', '<svg style="position:absolute;inset:16% 0 30%;width:100%;height:54%;overflow:visible" ');
+    const setB = bottle(pv('scroll-di-prodotto').firstElementChild);
+    loop((dt, t) => { const f = .5 + .5 * Math.sin(t * .6); setB(t * .12, .25 + f * .5, 0, 0); });
+    pv('banner-interattivo').classList.add('pv-banner');
+    pv('banner-interattivo').innerHTML = '<p class="msg"><span class="mono">Nuova collezione</span>Scoprila con <span class="hl">un gesto.</span></p><div class="veil"></div>';
+    const veil = pv('banner-interattivo').querySelector('.veil');
+    // un dito invisibile passa sul banner: il buco si allarga, resta aperto un attimo, poi il velo torna
+    loop((dt, t) => {
+      const k = (t % 6) / 6, sweep = Math.min(1, k / .45), open = k < .45 ? 0 : k < .55 ? (k - .45) / .1 : k < .85 ? 1 : 1 - (k - .85) / .15;
+      const x = 20 + 60 * sweep, y = 30 + 22 * Math.sin(sweep * Math.PI * 2);
+      const r = (k < .45 ? 26 + sweep * 30 : 56) + open * 700;
+      veil.style.setProperty('--x', x.toFixed(1) + '%'); veil.style.setProperty('--y', y.toFixed(1) + '%'); veil.style.setProperty('--r', r.toFixed(0) + 'px');
+    });
+    pv('luci-di-scena').innerHTML = '<canvas></canvas>';
+    shader(pv('luci-di-scena').firstChild, { live: 1, beams: 3, amp: 1, interactive: true });
+    pv('parete-digitale').innerHTML = '<canvas style="touch-action:auto"></canvas>';
+    wall(pv('parete-digitale').firstChild, { ghosts: 5, step: 12, interactive: false });
+    pv('invito-su-misura').style.cssText = 'background:#140D0B;overflow:hidden';
+    pv('invito-su-misura').innerHTML = '<canvas class="inv-pv"></canvas>';
+    const ist = { style: 'lancio', name: 'Il tuo nome', company: '', num: '0427' };
+    invite(pv('invito-su-misura').firstChild, ist);
+    const icyc = setInterval(() => { ist.style = ist.style === 'lancio' ? 'convention' : ist.style === 'convention' ? 'gala' : 'lancio'; }, 3000);
+    onLeave(() => clearInterval(icyc));
+  }
+
+  function exPage(x, demo, after){
+    const i = EX.indexOf(x), nx = EX[(i + 1) % EX.length];
+    document.title = `${x.name} · Lab · Spectualize`;
+    app.innerHTML = head() + `
+      <main class="wrap" style="--c:${AREA[x.area].c}">
+        <section class="ex-hero">
+          <div>
+            <a class="back mono" href="#/"><b aria-hidden="true">←</b>Tutti gli esperimenti</a>
+            <p class="kicker mono"><i></i>Lab · ${x.n} · ${AREA[x.area].name}</p>
+            <h1 class="claim">${x.name}</h1>
+          </div>
+          <p class="lede">${x.line}</p>
+        </section>
+        ${demo}
+        <section class="use">
+          <h2>A cosa può servire al tuo brand</h2>
+          <p>${x.use}</p>
+        </section>
+        <nav class="ex-next">
+          <a class="nx" href="#/${nx.slug}"><span class="mono">Esperimento successivo · ${nx.n}</span><span>${nx.name} <b aria-hidden="true">→</b></span></a>
+          <a class="btn js-brief" href="#/${x.slug}" data-area="${AREA[x.area].name}"><span class="dot"></span>Raccontaci il progetto</a>
+        </nav>
+      </main>` + foot();
+    after();
+  }
+
+  function viewConfig(x){
+    const sw = (k, list, sel) => list.map(([n, v], i) => `<button class="sw" aria-pressed="${i === sel}" data-k="${k}" data-i="${i}" aria-label="${n}" title="${n}" style="background:${v.startsWith('url') ? 'var(--grad)' : v}"></button>`).join('');
+    exPage(x, `
+      <div class="demo cream">
+        <div class="cfg">
+          <div class="cfg-stage" id="cfgStage">${SPEAKER}<p class="hint mono">${touchLike ? 'Trascina per inclinarla' : 'Muovi il cursore per inclinarla'}</p></div>
+          <div class="cfg-panel">
+            <div class="cfg-g"><h3>Colore <b id="cfgC"></b></h3><div class="row">${sw('color', CFG.color, 3)}</div></div>
+            <div class="cfg-g"><h3>Finitura <b id="cfgF"></b></h3><div class="row seg" style="box-shadow:none;padding:0;gap:8px">${CFG.finish.map(([n], i) => `<button aria-pressed="${i === 1}" data-k="finish" data-i="${i}" style="box-shadow:inset 0 0 0 1px var(--hairline)">${n}</button>`).join('')}</div></div>
+            <div class="cfg-g"><h3>Dettagli <b id="cfgA"></b></h3><div class="row">${sw('accent', CFG.accent, 2)}</div></div>
+            <div class="cfg-sum"><p id="cfgName"></p><span class="mono" id="cfgCode"></span><a class="btn" href="#/configuratore" id="cfgBuy"><span class="dot"></span>Aggiungi al carrello</a></div>
+          </div>
+        </div>
+      </div>`, () => {
+      const stage = $('#cfgStage'), svg = stage.querySelector('svg'), set = speaker(svg);
+      const sel = { color: 3, finish: 1, accent: 2 };
+      const apply = pop => {
+        const c = CFG.color[sel.color], f = CFG.finish[sel.finish], a = CFG.accent[sel.accent];
+        set(c[1], f[1], a[1]);
+        $('#cfgC').textContent = c[0]; $('#cfgF').textContent = f[0]; $('#cfgA').textContent = a[0];
+        $('#cfgName').textContent = `Cassa Uno · ${c[0]} · ${f[0]} · ${a[0]}`;
+        $('#cfgCode').textContent = 'Modello CU-' + [c[0], f[0], a[0]].map(w => w.slice(0, 2).toUpperCase()).join('-') + ' · prodotto di esempio';
+        if (pop) svg.animate([{ scale: 1 }, { scale: 1.04 }, { scale: 1 }], { duration: 500, easing: 'cubic-bezier(.3,0,.2,1)' });
+      };
+      apply(false);
+      document.querySelectorAll('.cfg-panel [data-k]').forEach(b => b.addEventListener('click', () => {
+        const k = b.dataset.k; sel[k] = +b.dataset.i;
+        document.querySelectorAll(`.cfg-panel [data-k="${k}"]`).forEach(o => o.setAttribute('aria-pressed', o === b));
+        apply(true);
+      }));
+      // la cassa si inclina verso il cursore o il dito
+      const tilt = e => { const r = stage.getBoundingClientRect(); const dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5; svg.style.transform = `rotateY(${(dx * 28).toFixed(1)}deg) rotateX(${(-dy * 14).toFixed(1)}deg)`; };
+      listen(stage, 'pointermove', tilt);
+      listen(stage, 'pointerleave', () => { svg.style.transform = ''; });
+      $('#cfgBuy').addEventListener('click', e => { e.preventDefault(); toast('Nel negozio vero, qui parte l\'acquisto. E ogni combinazione scelta finisce nei dati di vendita.'); });
+    });
+  }
+
+  function viewScroll(x){
+    const CH = [
+      ['Forma', 'Linee pulite e proporzioni studiate: il primo sguardo racconta già il carattere del prodotto.'],
+      ['Materia', 'Vetro, colore, superficie. Ogni materiale entra in scena quando serve al racconto.'],
+      ['Dettaglio', 'Lo zoom arriva dove conta: il prodotto si apre e mostra ciò che lo rende unico.']
+    ];
+    exPage(x, `
+      <section class="sp-track" id="sp">
+        <div class="sp-stage">
+          <div class="sp-obj">${BOTTLE}<p class="sp-cue mono">Scorri ↓</p></div>
+          <div class="sp-text">
+            <div class="sp-bar">${CH.map(() => '<i></i>').join('')}</div>
+            <div style="position:relative">
+              ${CH.map(([t, p], k) => `<div class="sp-ch" data-ch="${k}"><p class="kicker mono"><i></i>Capitolo ${k + 1} di 3</p><h3>${t}</h3><p>${p}</p><p class="ph mono">Testo segnaposto</p></div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </section>`, () => {
+      const track = $('#sp'), svg = track.querySelector('svg'), set = bottle(svg);
+      const chs = [...track.querySelectorAll('.sp-ch')], bars = [...track.querySelectorAll('.sp-bar i')], cue = track.querySelector('.sp-cue');
+      const sm = { p: 0 };
+      const ease = v => v < .5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2;
+      const seg = (p, a, b) => Math.max(0, Math.min(1, (p - a) / (b - a)));
+      let shown = -1;
+      loop((dt, t) => {
+        const r = track.getBoundingClientRect();
+        const target = Math.max(0, Math.min(1, -r.top / (r.height - innerHeight)));
+        sm.p += (target - sm.p) * Math.min(1, dt * 8);
+        const p = sm.p;
+        // capitolo 1: il flacone gira; 2: si riempie di colore; 3: si apre e la camera si avvicina
+        const rot = p * 1.6 + t * .015;
+        set(rot, ease(seg(p, .3, .62)), ease(seg(p, .7, .92)), ease(seg(p, .66, .95)));
+        const k = p < .33 ? 0 : p < .66 ? 1 : 2;
+        bars.forEach((b, i) => b.style.setProperty('--f', seg(p, i / 3, (i + 1) / 3).toFixed(3)));
+        cue.style.opacity = Math.max(0, 1 - p * 12).toFixed(2);
+        if (k !== shown) {
+          chs.forEach((c, i) => {
+            if (i === k) { c.style.visibility = 'visible'; c.animate([{ opacity: 0, transform: 'translateY(18px)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' }); }
+            else if (i === shown) c.animate([{ opacity: 1 }, { opacity: 0, transform: 'translateY(-14px)' }], { duration: 300, fill: 'both' });
+            else { c.style.visibility = 'hidden'; }
+          });
+          shown = k;
+        }
+      });
+    });
+  }
+
+  function viewBanner(x){
+    exPage(x, `
+      <div class="demo cream">
+        <div class="bn-area">
+          <div class="bn-col"><span class="mono">300 × 250 · riquadro</span>
+            <div class="bn m" data-f="300×250"><span class="tag">AD</span>
+              <div class="ad"><p class="k mono">Nuova collezione</p><p class="h">Scoprila con<br><span class="hl">un gesto.</span></p><a class="go" href="#/banner-interattivo" hidden>Scopri</a></div>
+              <canvas></canvas></div>
+          </div>
+          <div class="bn-col"><span class="mono">320 × 100 · mobile</span>
+            <div class="bn s" data-f="320×100"><span class="tag">AD</span>
+              <div class="ad"><div><p class="k mono">Nuova collezione</p><p class="h">Scoprila con <span class="hl">un gesto.</span></p></div><a class="go" href="#/banner-interattivo" hidden>Scopri</a></div>
+              <canvas></canvas></div>
+          </div>
+        </div>
+        <div class="stats-head mono"><span>Cosa misuriamo, da questi due banner (dati di questa prova)</span><button class="mono" id="bnReplay">Rigioca</button></div>
+        <div class="stats">
+          <div><span class="mono">Passaggi</span><b id="sPass">0</b></div>
+          <div><span class="mono">Gesti</span><b id="sGest">0</b></div>
+          <div><span class="mono">Banner scoperti</span><b id="sDone">0</b></div>
+          <div><span class="mono">Clic su Scopri</span><b id="sClick">0</b></div>
+          <div><span class="mono">Tempo di gioco</span><b id="sTime">0,0 s</b></div>
+        </div>
+      </div>`, () => {
+      const stats = { pass: 0, gest: 0, done: 0, click: 0, time: 0 };
+      const show = () => {
+        $('#sPass').textContent = stats.pass; $('#sGest').textContent = stats.gest; $('#sDone').textContent = stats.done; $('#sClick').textContent = stats.click;
+        $('#sTime').textContent = stats.time.toFixed(1).replace('.', ',') + ' s';
+      };
+      const banners = [...document.querySelectorAll('.bn')].map(bn => {
+        const cv = bn.querySelector('canvas'), ctx = cv.getContext('2d'), go = bn.querySelector('.go');
+        let w = 0, h = 0, d = 1, done = false, active = false, lastT = 0, moves = 0;
+        function cover(){
+          d = Math.min(devicePixelRatio || 1, 2); w = bn.clientWidth; h = bn.clientHeight;
+          cv.width = w * d; cv.height = h * d; ctx.setTransform(d, 0, 0, d, 0, 0);
+          ctx.globalCompositeOperation = 'source-over'; cv.getAnimations().forEach(a => a.cancel()); cv.style.opacity = 1; done = false; moves = 0; go.hidden = true;
+          const g = ctx.createLinearGradient(0, 0, w, h);
+          g.addColorStop(0, '#FF7A2A'); g.addColorStop(.35, '#FF3D6E'); g.addColorStop(.7, '#E91FA8'); g.addColorStop(1, '#FF1CD6');
+          ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.font = `500 ${h > 150 ? 20 : 16}px 'Space Grotesk', sans-serif`;
+          ctx.fillText(touchLike ? 'Passa il dito qui sopra' : 'Passa qui sopra', w / 2, h / 2 - (h > 150 ? 10 : 8));
+          ctx.font = `400 ${h > 150 ? 11 : 9}px 'DM Mono', monospace`;
+          ctx.fillText('SCOPRI IL MESSAGGIO', w / 2, h / 2 + (h > 150 ? 18 : 12));
+        }
+        cover();
+        function cleared(){
+          const data = ctx.getImageData(0, 0, cv.width, cv.height).data; let clear = 0, n = 0;
+          for (let i = 3; i < data.length; i += 4 * 37) { n++; if (data[i] < 20) clear++; }
+          return clear / n;
+        }
+        function reveal(){
+          done = true; stats.done++; show();
+          cv.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: 'forwards' }).finished.then(() => { cv.style.opacity = 0; });
+          go.hidden = false; go.classList.remove('pop'); void go.offsetWidth; go.classList.add('pop');
+        }
+        const erase = e => {
+          if (done) return;
+          const r = cv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.beginPath(); ctx.arc(px, py, h > 150 ? 30 : 22, 0, Math.PI * 2); ctx.fill();
+          if (++moves % 6 === 0 && cleared() > .5) reveal();
+          const now = performance.now(); if (lastT) stats.time += Math.min(.1, (now - lastT) / 1000); lastT = now; show();
+        };
+        listen(cv, 'pointerenter', e => { if (!done) { stats.pass++; active = true; lastT = 0; show(); } });
+        listen(cv, 'pointerdown', e => { if (done) return; stats.gest++; show(); cv.setPointerCapture(e.pointerId); erase(e); });
+        listen(cv, 'pointermove', e => { if (e.pointerType === 'mouse' || e.buttons) erase(e); });
+        listen(cv, 'pointerleave', () => { active = false; lastT = 0; });
+        listen(cv, 'pointerup', () => { lastT = 0; });
+        listen(go, 'click', e => { e.preventDefault(); stats.click++; show(); toast('Nel banner vero, qui si apre la pagina della campagna. E il clic finisce nel report.'); });
+        return { cover };
+      });
+      $('#bnReplay').addEventListener('click', () => banners.forEach(b => b.cover()));
+    });
+  }
+
+  function viewLuci(x){
+    const PAL = [
+      { name: 'Gradiente', c: ['#FF7A2A', '#FF3D6E', '#E91FA8'] },
+      { name: 'Magenta', c: ['#FF1CD6', '#E91FA8', '#FF3D6E'] },
+      { name: 'Arancio', c: ['#FFB36B', '#FF7A2A', '#FF3D6E'] },
+      { name: 'Bianco caldo', c: ['#FFE9C9', '#FFF4E2', '#FFD9A8'] }
+    ];
+    exPage(x, `
+      <div class="demo dark withctl" id="lc">
+        <div class="canvas-box stage-box" style="position:relative">
+          <canvas class="full"></canvas><div class="boards" aria-hidden="true"></div>
+          <p class="hint mono">${touchLike ? 'Trascina: il faro centrale ti segue' : 'Muovi il cursore: il faro centrale ti segue'}</p>
+        </div>
+        <div class="controls dk">
+          <div class="ctl"><span class="mono">Fari</span><div class="seg" id="lcN">${[1, 2, 3, 4].map(n => `<button aria-pressed="${n === 3}" data-v="${n}">${n}</button>`).join('')}</div></div>
+          <div class="ctl"><span class="mono">Colore</span><div class="colors" id="lcC">${PAL.map((p, k) => `<button class="sw" aria-pressed="${k === 0}" data-k="${k}" aria-label="${p.name}" title="${p.name}" style="background:linear-gradient(135deg, ${p.c.join(',')})"></button>`).join('')}</div></div>
+          <div class="ctl"><span class="mono">Movimento</span><div class="seg" id="lcM">${['Fermo', 'Lento', 'A tempo'].map((m, k) => `<button aria-pressed="${k === 1}" data-v="${k}">${m}</button>`).join('')}</div></div>
+          <button class="btn" id="lcGo">Buio in sala</button>
+        </div>
+      </div>`, () => {
+      const box = $('#lc');
+      const s = shader(box.querySelector('canvas'), { live: 1, beams: 3, motion: 1 });
+      const seg = (id, fn) => box.querySelectorAll(`#${id} button`).forEach(b => b.addEventListener('click', () => {
+        box.querySelectorAll(`#${id} button`).forEach(x => x.setAttribute('aria-pressed', x === b)); fn(b);
+      }));
+      seg('lcN', b => { s.st.beams = +b.dataset.v; });
+      seg('lcC', b => { s.st.colors = PAL[+b.dataset.k].c.slice(); });
+      seg('lcM', b => { s.st.motion = +b.dataset.v; });
+      let on = true;
+      $('#lcGo').addEventListener('click', () => {
+        on = !on; s.st.level = on ? 1 : 0;
+        $('#lcGo').textContent = on ? 'Buio in sala' : 'Si va in scena';
+        if (on) s.ripple(.5, .2, true);
+      });
+    });
+  }
+
+  function viewParete(x){
+    exPage(x, `
+      <div class="demo dark withctl" id="wl">
+        <div class="canvas-box wall" style="position:relative">
+          <canvas class="full"></canvas>
+          <p class="people mono"><i></i><span id="wlN">7</span> in sala</p>
+        </div>
+        <div class="qr" aria-label="QR di esempio">
+          <div class="code" id="wlQR" aria-hidden="true"></div>
+          <div><p>All'evento, ognuno partecipa dal proprio telefono inquadrando il QR code.</p><span class="mono">QR di esempio · simulazione nel browser</span></div>
+        </div>
+        <div class="controls dk">
+          <label class="ctl"><span class="mono">Persone simulate</span><input type="range" id="wlG" min="0" max="12" step="1" value="6"></label>
+          <button class="btn ghost" id="wlClear" style="margin-left:auto;background:transparent;color:var(--cream)">Pulisci</button>
+          <button class="btn" id="wlSave" style="margin-left:0">Salva l'immagine</button>
+        </div>
+      </div>`, () => {
+      const box = $('#wl');
+      const w = wall(box.querySelector('canvas'), { ghosts: 6 });
+      // QR finto: angoli di riferimento veri e moduli casuali, non porta da nessuna parte
+      const N = 21, q = $('#wlQR'), fin = (x, y) => [[0, 0], [N - 7, 0], [0, N - 7]].some(([a, b]) => x >= a && x < a + 7 && y >= b && y < b + 7);
+      const finOn = (x, y) => { for (const [a, b] of [[0, 0], [N - 7, 0], [0, N - 7]]) { const dx = x - a, dy = y - b; if (dx >= 0 && dx < 7 && dy >= 0 && dy < 7) return dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4); } return false; };
+      let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+      q.innerHTML = Array.from({ length: N * N }, (_, i) => { const x = i % N, y = (i / N) | 0; return `<i class="${(fin(x, y) ? finOn(x, y) : rnd() > .52) ? 'on' : ''}"></i>`; }).join('');
+      const people = () => { $('#wlN').textContent = w.count() + 1; };
+      $('#wlG').addEventListener('input', e => { w.st.ghosts = +e.target.value; people(); });
+      $('#wlClear').addEventListener('click', () => w.clear());
+      $('#wlSave').addEventListener('click', () => saveCanvas(w.canvas, 'parete-digitale.png', 'Immagine salvata: è il ricordo condiviso della serata, da usare sui social dell\'evento.'));
+      people();
+    });
+  }
+
+  function viewInvito(x){
+    exPage(x, `
+      <div class="demo cream">
+        <div class="inv">
+          <canvas id="invC" role="img" aria-label="Anteprima del pass"></canvas>
+          <form class="inv-form" id="invF">
+            <label><span class="mono" style="color:var(--ink-mid)">Il tuo nome</span><input type="text" id="invName" maxlength="28" placeholder="Il tuo nome" autocomplete="off"></label>
+            <label><span class="mono" style="color:var(--ink-mid)">Azienda (facoltativa)</span><input type="text" id="invCo" maxlength="34" placeholder="La tua azienda" autocomplete="off"></label>
+            <div class="ctl" style="flex-wrap:wrap"><span class="mono">Evento</span><div class="seg" id="invS">${Object.entries(INV).map(([k, v], i) => `<button type="button" aria-pressed="${i === 0}" data-v="${k}">${v.label}</button>`).join('')}</div></div>
+            <div class="acts"><button type="button" class="btn" id="invSave"><span class="dot"></span>Salva il pass</button><button type="button" class="btn ghost" id="invNew">Nuovo numero</button></div>
+            <p class="note">All'evento vero il pass ha un QR personale per l'ingresso, e la grafica è quella del tuo evento. Qui eventi, date e luoghi sono di esempio.</p>
+          </form>
+        </div>
+      </div>`, () => {
+      const st = { style: 'lancio', name: '', company: '', num: String(1000 + Math.floor(Math.random() * 8999)).padStart(4, '0') };
+      const cv = $('#invC');
+      invite(cv, st);
+      $('#invF').addEventListener('submit', e => e.preventDefault());
+      $('#invName').addEventListener('input', e => { st.name = e.target.value; });
+      $('#invCo').addEventListener('input', e => { st.company = e.target.value; });
+      document.querySelectorAll('#invS button').forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll('#invS button').forEach(o => o.setAttribute('aria-pressed', o === b)); st.style = b.dataset.v;
+      }));
+      $('#invNew').addEventListener('click', () => { st.num = String(1000 + Math.floor(Math.random() * 8999)); });
+      $('#invSave').addEventListener('click', () => saveCanvas(cv, 'pass-evento.png', 'Pass salvato: all\'evento vero lo condividi sui social prima di arrivare.'));
+    });
+  }
+
+  const VIEWS = { configuratore: viewConfig, 'scroll-di-prodotto': viewScroll, 'banner-interattivo': viewBanner, 'luci-di-scena': viewLuci, 'parete-digitale': viewParete, 'invito-su-misura': viewInvito };
+  function route(){
+    cleanups.forEach(fn => { try { fn(); } catch(e){} }); cleanups = [];
+    const slug = location.hash.replace(/^#\/?/, '');
+    const x = EX.find(e => e.slug === slug);
+    if (x) VIEWS[slug](x); else viewIndex();
+    scrollTo(0, 0);
+    app.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.16,1,.3,1)' });
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.js-brief'); if (!b) return;
+    e.preventDefault();
+    toast(b.dataset.area ? `Nel sito questo tasto apre il brief con ${b.dataset.area} già scelto.` : 'Nel sito questo tasto apre il brief "Raccontaci il progetto".');
+  });
+  addEventListener('hashchange', route);
+  route();
+})();
+</script>
