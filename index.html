@@ -716,30 +716,35 @@
   /* bloop di "dal vivo": copia sovrapposta alla parola, con il suo gradiente (regge anche su Safari) */
   .bloop-ghost { position: absolute; z-index: 2; pointer-events: none; white-space: nowrap; font-weight: 500; line-height: inherit; display: inline-block;
     background-image: var(--grad); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; transform-origin: 50% 70%; }
-  /* home mobile: teaser del nome che porta al Chi siamo */
+  /* ---------- Home mobile: teaser "Il nome" (riscritto 14/10/2026) ----------
+     Il blocco è centrato sotto le card, il testo allineato a sinistra.
+     SPECTUALIZE è nero; entra lettera per lettera una volta, poi una lente di gradiente lo attraversa da sinistra a destra
+     (circa 4 s), resta nero 3 s e ripassa. Due strati sovrapposti con le stesse lettere:
+     .hn-base = le lettere nere che entrano (solo opacità e movimento, nessun ritaglio del testo);
+     .hn-lens = una copia ferma sopra, trasparente, con il gradiente ritagliato sul testo: fuori dalla fascia è trasparente,
+     quindi non copre mai il nero e non c'è nulla da accendere o spegnere. Si anima solo la posizione del suo sfondo, in CSS. */
   .home-name { display: none; }
   @media (max-width: 760px) {
-    /* il blocco è centrato sotto le card, il testo resta allineato a sinistra */
     .home-name { display: grid; grid-template-columns: fit-content(100%); justify-content: center; gap: 12px; text-decoration: none; color: var(--ink); padding: 34px 0 12px; border-top: 1px solid var(--hairline); }
     .hn-kick { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-strong); }
-    .hn-word { font-weight: 300; font-size: 17.2vw; line-height: .9; letter-spacing: -.06em; margin-left: -.04em; white-space: nowrap;
-      background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hn-word { position: relative; justify-self: start; white-space: nowrap; color: var(--ink); font-kerning: none; font-variant-ligatures: none; }
+    .hn-word b { display: inline-block; font-weight: inherit; }
+    .hn-base b { opacity: 0; }
+    .home-name.in .hn-base b { opacity: 1; animation: hn-in .8s cubic-bezier(.16,1,.3,1) backwards; animation-delay: calc(var(--k) * 55ms); }
+    .hn-lens { position: absolute; inset: 0; pointer-events: none; color: transparent;
+      background-image: linear-gradient(90deg, transparent 0 41%, #FF7A2A 44.5%, #FF3D6E 48%, #E91FA8 52%, #FF1CD6 55.5%, transparent 59% 100%);
+      background-repeat: no-repeat; background-size: 300% 100%; background-position: 95% 0;
+      -webkit-background-clip: text; background-clip: text; }
+    .hn-lens b { color: transparent; }
+    /* sfondo largo 3 volte la parola: 95% = fascia fuori a sinistra, 5% = fuori a destra. Passaggio nel 58% del ciclo (4,2 s), poi 3 s fermo */
+    .home-name.lens .hn-lens { animation: hn-sweep 7.2s linear infinite; }
     .hn-line { font-size: 17px; line-height: 1.45; color: var(--ink-strong); max-width: 30ch; }
     .hn-more { justify-self: start; font-size: 17px; padding-block: 6px; margin-top: 4px; background: var(--grad) left bottom / 100% 1px no-repeat; }
     .hn-more span { display: inline-block; margin-left: 4px; }
     .home .areas { padding-bottom: 36px; }
   }
-  /* teaser del nome: le lettere entrano una dopo l'altra, poi il gradiente scorre piano.
-     Ogni lettera porta il suo pezzo di gradiente (così regge anche su Safari mentre si anima) */
-  @media (max-width: 760px) {
-    .hn-word.split { background: none; color: var(--ink); justify-self: start; }
-    .hn-word.split b { display: inline-block; font-weight: inherit; opacity: 0; }
-    .hn-word.split.go b { opacity: 1; animation: hn-in .8s cubic-bezier(.16,1,.3,1) backwards; animation-delay: calc(var(--k) * 55ms); }
-    /* finita l'entrata la lente sta sulla parola intera: un solo sfondo, nessuna giunzione tra le lettere */
-    .hn-word.split.lens { background-image: linear-gradient(90deg, var(--ink) 0 41%, #FF7A2A 44.5%, #FF3D6E 48%, #E91FA8 52%, #FF1CD6 55.5%, var(--ink) 59% 100%); background-repeat: no-repeat; background-size: 300% 100%; background-position: 200% 0; -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .hn-word.split.lens b { animation: none; display: inline; }
-  }
   @keyframes hn-in { from { opacity: 0; transform: translateX(-.18em) translateY(.12em); } }
+  @keyframes hn-sweep { 0% { background-position: 95% 0; } 58%, 100% { background-position: 5% 0; } }
   /* 14/10/2026: il nome in Bungee come accento, solo nelle sezioni "Il nome" (regola in BRAND.md) */
   .ab-word, .hn-word { font-family: 'Bungee', var(--sans); font-weight: 400; letter-spacing: 0; margin-left: 0; line-height: 1; text-transform: uppercase; }
   .ab-word { font-size: clamp(44px, 11.2vw, 172px); }
@@ -781,7 +786,7 @@
     <!-- 13/10/2026: solo mobile, dopo le aree un invito alla pagina Chi siamo partendo dal nome -->
     <a class="home-name js-about" id="homeName" href="#chi-siamo">
       <span class="mono hn-kick">Il nome</span>
-      <span class="hn-word" aria-label="spectualize">spectualize</span>
+      <span class="hn-word" role="img" aria-label="Spectualize"><span class="hn-base" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span><span class="hn-lens" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span></span>
       <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
@@ -1376,52 +1381,24 @@
   }
   ['#mOn', '#mLive', '#wOn', '#wLive'].forEach(sel => $(sel).addEventListener('pointerdown', () => { hinted = true; }));
 
-  // home mobile: il nome entra lettera per lettera ed è nero; ogni tanto una "lente a raggi X" di gradiente lo attraversa da sinistra a destra.
-  // Durante l'entrata le lettere sono nere e si muovono da sole; la lente arriva dopo, su tutta la parola (così regge anche su Safari)
+  // home mobile, teaser "Il nome": quando è a metà schermo (e il font Bungee è pronto) le lettere entrano una volta;
+  // finita l'entrata parte la lente, che si ferma quando il blocco esce dallo schermo e riparte quando rientra
   (() => {
-    const word = $('#homeName .hn-word');
-    if (!word || !word.animate) return;
-    const txt = word.textContent;
-    word.innerHTML = [...txt].map((ch, k) => `<b aria-hidden="true" style="--k:${k}">${ch}</b>`).join('');
-    word.classList.add('split');
-    const letters = [...word.children];
-    let flows = [];
-    // lo sfondo è largo 3 volte la parola con la fascia al centro: spostandolo, la fascia passa da fuori a sinistra a fuori a destra
-    const at = (W, x) => (x - 1.5 * W) + 'px 0';
-    const place = () => {
-      const W = word.getBoundingClientRect().width;
-      word.style.backgroundSize = 3 * W + 'px 100%'; word.style.backgroundPosition = at(W, -W);
-      return W;
-    };
-    const sweep = () => {
-      flows.forEach(f => f.cancel());
-      const W = place();
-      // passaggio lento (4,2 s), poi 3 s di nero, e si riparte
-      flows = [word.animate(
-        [{ backgroundPosition: at(W, -.4 * W) }, { backgroundPosition: at(W, 1.4 * W), offset: .58 }, { backgroundPosition: at(W, 1.4 * W) }],
-        { duration: 7200, delay: 400, iterations: Infinity, easing: 'linear' })];
-    };
-    // l'entrata lettera per lettera parte una sola volta, in nero; quando è finita arriva la lente.
-    // Uscendo dallo schermo la lente si ferma e rientrando riparte
-    let shown = false, ready = false, entered = false, seen = 0;
-    // il nome aspetta il suo font: niente cambio di carattere a metà entrata
+    const box = $('#homeName');
+    if (!box) return;
+    let ready = false, entered = false, ratio = 0;
     const fontOk = (document.fonts && document.fonts.load) ? document.fonts.load("400 1em 'Bungee'", 'SPECTUALIZE').catch(() => {}) : Promise.resolve();
-    Promise.race([fontOk, new Promise(r => setTimeout(r, 2500))]).then(() => { ready = true; if (seen) start(seen); });
-    function start(ratio){
+    Promise.race([fontOk, new Promise(r => setTimeout(r, 2500))]).then(() => { ready = true; update(); });
+    function update(){
       if (!ready) return;
-      if (!shown && ratio >= .5) {
-        shown = true; word.classList.add('go');
-        // prima metto la fascia fuori dalla parola, poi accendo la lente: altrimenti per un istante la fascia compare in mezzo ("ualize")
-        setTimeout(() => { entered = true; place(); word.classList.add('lens'); if (seen) sweep(); }, (letters.length - 1) * 55 + 850);
+      if (!box.classList.contains('in') && ratio >= .5) {
+        box.classList.add('in');
+        setTimeout(() => { entered = true; update(); }, 10 * 55 + 850);
       }
-      if (entered && !flows.length) sweep();
+      box.classList.toggle('lens', entered && ratio > 0);
     }
-    new IntersectionObserver(es => es.forEach(e => {
-      seen = e.isIntersecting ? e.intersectionRatio : 0;
-      if (e.isIntersecting) { start(e.intersectionRatio); return; }
-      flows.forEach(f => f.cancel()); flows = [];
-    }), { root: home, threshold: [0, .25, .5, .75, 1] }).observe(word);
-    addEventListener('resize', () => { if (flows.length) sweep(); });
+    new IntersectionObserver(es => es.forEach(e => { ratio = e.isIntersecting ? e.intersectionRatio : 0; update(); }),
+      { root: home, threshold: [0, .25, .5, .75, 1] }).observe(box.querySelector('.hn-word'));
   })();
 
   const shifts = [-.12, -.04, .04, .1];
