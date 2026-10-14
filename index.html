@@ -1517,7 +1517,9 @@
     try { history.pushState(null, '', h || location.pathname + location.search); } catch(e){}
     swap(targetOf(h), () => route(h));
   }
-  addEventListener('popstate', () => swap(targetOf(location.hash), () => route(location.hash)));
+  // uso interno: spectualize.com/#soglia riporta alla soglia e rifà l'intro (non è una pagina, i motori non la vedono)
+  function replayGate(){ if (introOn) return history.replaceState(null, '', location.pathname + location.search); history.replaceState(null, '', location.pathname + location.search); proto('first'); introName(); }
+  addEventListener('popstate', () => { if (location.hash === '#soglia') return replayGate(); swap(targetOf(location.hash), () => route(location.hash)); });
   function stepSvc(d, el){
     const i = (cur + d + SVC.length) % SVC.length;
     if (el) { const r = el.getBoundingClientRect(); ripple(r.left + r.width/2, r.top + r.height/2, false); }
@@ -1744,8 +1746,10 @@
   // ---------- Intro "Nasce il nome" (solo alla prima visita, sulla soglia) ----------
   // passano spectacle, visualize, actualize; poi il logo nasce dal centro con un'esplosione di fumo e arriva il resto della soglia.
   // Circa 3 s, una volta sola. Durante l'intro la soglia non risponde ai tocchi, così "Entra" non si preme prima di vederlo
+  let introOn = false;
   function introName(){
-    if (!gateLogo.animate || (reduce && !touch)) return;
+    if (introOn || !gateLogo.animate || (reduce && !touch)) return;
+    introOn = true;
     const anims = [];
     const an = (el, kf, o) => anims.push(el.animate(kf, Object.assign({ fill: 'both' }, o)));
     const bits = [gate.querySelector('.top'), gate.querySelector('.tagline'), $('#enter'), gate.querySelector('.bottom')];
@@ -1771,7 +1775,7 @@
     bits.forEach((el, i) => an(el, [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 2200 + i * 110, easing: 'cubic-bezier(.16,1,.3,1)' }));
     setTimeout(() => {
       anims.forEach(a => a.cancel()); words.remove();
-      gateLogo.style.transformOrigin = ''; gate.style.pointerEvents = ''; introHold = null;
+      gateLogo.style.transformOrigin = ''; gate.style.pointerEvents = ''; introHold = null; introOn = false;
     }, 3100);
   }
 
@@ -1782,6 +1786,7 @@
   // chi arriva direttamente su una pagina interna non passa dalla soglia
   const h0 = location.hash;
   if (/^#(servizi|progetto|chi-siamo)/.test(h0)) { try { localStorage.setItem(KEY, '1'); } catch(e){} proto('back', false); route(h0); }
+  else if (h0 === '#soglia') replayGate();
   else { proto(seen ? 'back' : 'first'); if (!seen) introName(); }
 })();
 </script>
