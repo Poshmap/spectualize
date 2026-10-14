@@ -3,8 +3,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lab · Spectualize</title>
-<!-- Lab in prova: fuori dal menu, dalla sitemap e dai motori finché Matteo non decide -->
-<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Esperimenti interattivi per brand da mettere in scena: configuratori di prodotto, banner che si giocano, luci di scena, pareti digitali e inviti su misura.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://spectualize.com/lab/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Spectualize">
+<meta property="og:title" content="Lab · Spectualize">
+<meta property="og:description" content="Esperimenti interattivi per brand da mettere in scena, da provare dal vivo.">
+<meta property="og:url" content="https://spectualize.com/lab/">
+<meta property="og:image" content="https://spectualize.com/og-image.jpg?v=4">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="it_IT">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#F1EAE0">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
@@ -13,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  /* Prototipo Lab (14/10/2026). Testi: Portale/lab-testi-v1.md. Stessi colori, caratteri e fondo del portale.
+  /* Lab (pubblicato il 14/10/2026 su /lab/, copia di lavoro in Portale/prototipi/lab.html). Testi: Portale/lab-testi-v1.md. Stessi colori, caratteri e fondo del portale.
      Indice #/ + 6 esperimenti #/configuratore, #/scroll-di-prodotto, #/banner-interattivo, #/luci-di-scena, #/parete-digitale, #/invito-su-misura.
      Versione precedente con Fluido: lab-v1-fluido-luci.html */
   :root {
@@ -53,7 +64,6 @@
   .hl { font-weight: 500; background-image: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
   /* prototipo: etichetta in alto */
-  .proto-tag { position: fixed; top: 10px; left: 50%; translate: -50% 0; pointer-events: none; z-index: 60; padding: 6px 12px; border-radius: 999px; background: var(--ink); color: var(--cream); font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
 
   .site-head { position: relative; z-index: 5; padding-block: var(--gut); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   .site-head .mark { height: var(--logo-h); width: auto; display: block; }
@@ -178,7 +188,8 @@
   .use { padding-block: clamp(48px,9vh,110px) 0; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.4fr); gap: clamp(20px,4vw,64px); }
   .use h2 { font-family: var(--mono); font-size: 12px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); padding-top: 10px; }
   .use p { font-size: clamp(22px, 2.4vw, 36px); font-weight: 300; line-height: 1.22; letter-spacing: -.02em; text-wrap: pretty; }
-  .ex-next { margin-top: clamp(56px,10vh,120px); padding-block: 28px; border-top: 1px solid var(--hairline); display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .ex-next { margin-top: clamp(56px,10vh,120px); padding-block: clamp(32px,5vh,48px); border-top: 1px solid var(--hairline); display: flex; align-items: center; justify-content: space-between; gap: 40px 48px; flex-wrap: wrap; }
+  @media (max-width: 760px) { .ex-next { flex-direction: column; align-items: flex-start; gap: 44px; } }
   .ex-next a.nx { text-decoration: none; display: flex; flex-direction: column; gap: 8px; }
   .ex-next a.nx span:last-child { font-size: clamp(26px, 3vw, 44px); letter-spacing: -.03em; }
   .ex-next a.nx:hover b { transform: translateX(6px); }
@@ -263,8 +274,7 @@
   }
   @media (max-width: 760px) {
     .site-head nav { display: none; }
-    .proto-tag { left: auto; right: 12px; translate: none; top: 12px; font-size: 9px; padding: 5px 10px; }
-    .bento { grid-template-columns: 1fr; grid-auto-rows: 230px; gap: 12px; }
+      .bento { grid-template-columns: 1fr; grid-auto-rows: 230px; gap: 12px; }
     .card:nth-child(n) { grid-column: auto; grid-row: auto; }
     .card:nth-child(1) { grid-row: span 2; }
     .card:nth-child(2) { grid-row: span 2; }
@@ -293,7 +303,6 @@
   }
 </style>
 <div class="grain" aria-hidden="true"></div>
-<div class="proto-tag">Prototipo Lab · non nel sito</div>
 <div id="app"></div>
 <div class="toast" id="toast" hidden role="status"></div>
 
@@ -344,7 +353,7 @@
       if (saver) await saver.save({ filename, data: blob });
       else { const a = document.createElement('a'); a.download = filename; a.href = URL.createObjectURL(blob); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
       toast(msg);
-    } catch(e) { if (e && e.code !== 'declined') toast('Qui non si può salvare l\'immagine: prova ad aprire la pagina in claude.ai.'); }
+    } catch(e) { if (e && e.code !== 'declined') toast('Non è stato possibile salvare l\'immagine.'); }
   }
 
   let toastT = 0;
@@ -749,7 +758,7 @@
   // ---------- Viste ----------
   const head = () => `
     <header class="site-head wrap">
-      <a href="#/" aria-label="Lab, indice"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <a href="/" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <nav><a href="${LIVE_SITE}/chi-siamo/">Chi siamo</a><a href="${LIVE_SITE}/servizi/">Servizi</a><a class="on" href="#/" aria-current="page">Lab</a></nav>
     </header>`;
   const foot = () => `<footer class="site-foot mono">Spectualize · Esperienze online e dal vivo</footer>`;
@@ -776,7 +785,7 @@
         </section>
         <section class="lab-close">
           <h2 class="claim">Hai un'idea da <span class="hl">sperimentare?</span></h2>
-          <a class="btn btn-lg js-brief" href="#/" data-area=""><span class="dot"></span>Raccontaci il progetto</a>
+          <a class="btn btn-lg" href="/#progetto"><span class="dot"></span>Raccontaci il progetto</a>
         </section>
       </main>` + foot();
     // anteprime vive
@@ -808,7 +817,7 @@
     wall(pv('parete-digitale').firstChild, { ghosts: 5, step: 12, interactive: false });
     pv('invito-su-misura').style.cssText = 'background:#140D0B;overflow:hidden';
     pv('invito-su-misura').innerHTML = '<canvas class="inv-pv"></canvas>';
-    const ist = { style: 'lancio', name: 'Il tuo nome', company: '', num: '0427' };
+    const ist = { style: 'lancio', name: 'Il tuo nome', company: '', num: '1883' };
     invite(pv('invito-su-misura').firstChild, ist);
     const icyc = setInterval(() => { ist.style = ist.style === 'lancio' ? 'convention' : ist.style === 'convention' ? 'gala' : 'lancio'; }, 3000);
     onLeave(() => clearInterval(icyc));
@@ -834,7 +843,7 @@
         </section>
         <nav class="ex-next">
           <a class="nx" href="#/${nx.slug}"><span class="mono">Esperimento successivo · ${nx.n}</span><span>${nx.name} <b aria-hidden="true">→</b></span></a>
-          <a class="btn js-brief" href="#/${x.slug}" data-area="${AREA[x.area].name}"><span class="dot"></span>Raccontaci il progetto</a>
+          <a class="btn" href="/#progetto"><span class="dot"></span>Raccontaci il progetto</a>
         </nav>
       </main>` + foot();
     after();
@@ -845,7 +854,7 @@
     exPage(x, `
       <div class="demo cream">
         <div class="cfg">
-          <div class="cfg-stage" id="cfgStage">${SPEAKER}<p class="hint mono">${touchLike ? 'Trascina per inclinarla' : 'Muovi il cursore per inclinarla'}</p></div>
+          <div class="cfg-stage" id="cfgStage">${SPEAKER}<p class="hint mono">${touchLike ? 'Scegli qui sotto: cambia subito' : 'Muovi il cursore per inclinarla'}</p></div>
           <div class="cfg-panel">
             <div class="cfg-g"><h3>Colore <b id="cfgC"></b></h3><div class="row">${sw('color', CFG.color, 3)}</div></div>
             <div class="cfg-g"><h3>Finitura <b id="cfgF"></b></h3><div class="row seg" style="box-shadow:none;padding:0;gap:8px">${CFG.finish.map(([n], i) => `<button aria-pressed="${i === 1}" data-k="finish" data-i="${i}" style="box-shadow:inset 0 0 0 1px var(--hairline)">${n}</button>`).join('')}</div></div>
@@ -872,8 +881,13 @@
       }));
       // la cassa si inclina verso il cursore o il dito
       const tilt = e => { const r = stage.getBoundingClientRect(); const dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5; svg.style.transform = `rotateY(${(dx * 28).toFixed(1)}deg) rotateX(${(-dy * 14).toFixed(1)}deg)`; };
-      listen(stage, 'pointermove', tilt);
-      listen(stage, 'pointerleave', () => { svg.style.transform = ''; });
+      if (touchLike) {
+        // sul telefono niente trascinamento: la cassa ondeggia da sola
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) loop((dt, t) => { svg.style.transform = `rotateY(${(Math.sin(t * .7) * 12).toFixed(1)}deg) rotateX(${(Math.sin(t * .45) * 4).toFixed(1)}deg)`; });
+      } else {
+        listen(stage, 'pointermove', tilt);
+        listen(stage, 'pointerleave', () => { svg.style.transform = ''; });
+      }
       $('#cfgBuy').addEventListener('click', e => { e.preventDefault(); toast('Nel negozio vero, qui parte l\'acquisto. E ogni combinazione scelta finisce nei dati di vendita.'); });
     });
   }
@@ -1079,12 +1093,12 @@
             <label><span class="mono" style="color:var(--ink-mid)">Il tuo nome</span><input type="text" id="invName" maxlength="28" placeholder="Il tuo nome" autocomplete="off"></label>
             <label><span class="mono" style="color:var(--ink-mid)">Azienda (facoltativa)</span><input type="text" id="invCo" maxlength="34" placeholder="La tua azienda" autocomplete="off"></label>
             <div class="ctl" style="flex-wrap:wrap"><span class="mono">Evento</span><div class="seg" id="invS">${Object.entries(INV).map(([k, v], i) => `<button type="button" aria-pressed="${i === 0}" data-v="${k}">${v.label}</button>`).join('')}</div></div>
-            <div class="acts"><button type="button" class="btn" id="invSave"><span class="dot"></span>Salva il pass</button><button type="button" class="btn ghost" id="invNew">Nuovo numero</button></div>
+            <div class="acts"><button type="button" class="btn" id="invSave"><span class="dot"></span>Salva il pass</button></div>
             <p class="note">All'evento vero il pass ha un QR personale per l'ingresso, e la grafica è quella del tuo evento. Qui eventi, date e luoghi sono di esempio.</p>
           </form>
         </div>
       </div>`, () => {
-      const st = { style: 'lancio', name: '', company: '', num: String(1000 + Math.floor(Math.random() * 8999)).padStart(4, '0') };
+      const st = { style: 'lancio', name: '', company: '', num: '1883' };
       const cv = $('#invC');
       invite(cv, st);
       $('#invF').addEventListener('submit', e => e.preventDefault());
@@ -1093,7 +1107,6 @@
       document.querySelectorAll('#invS button').forEach(b => b.addEventListener('click', () => {
         document.querySelectorAll('#invS button').forEach(o => o.setAttribute('aria-pressed', o === b)); st.style = b.dataset.v;
       }));
-      $('#invNew').addEventListener('click', () => { st.num = String(1000 + Math.floor(Math.random() * 8999)); });
       $('#invSave').addEventListener('click', () => saveCanvas(cv, 'pass-evento.png', 'Pass salvato: all\'evento vero lo condividi sui social prima di arrivare.'));
     });
   }
@@ -1107,11 +1120,6 @@
     scrollTo(0, 0);
     app.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.16,1,.3,1)' });
   }
-  document.addEventListener('click', e => {
-    const b = e.target.closest('.js-brief'); if (!b) return;
-    e.preventDefault();
-    toast(b.dataset.area ? `Nel sito questo tasto apre il brief con ${b.dataset.area} già scelto.` : 'Nel sito questo tasto apre il brief "Raccontaci il progetto".');
-  });
   addEventListener('hashchange', route);
   route();
 })();
