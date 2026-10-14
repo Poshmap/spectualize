@@ -757,6 +757,13 @@
   html.tt, html.tt body { height: auto; }
   html.tt body { overflow: visible; min-height: calc(100vh + 2px); }
   html.tt .view { overscroll-behavior-y: contain; }
+  /* ---------- Intro "Nasce il nome" (14/10/2026): alla prima visita, sulla soglia ----------
+     su crema passano spectacle, visualize, actualize; poi il logo nasce dal centro con un'esplosione di fumo.
+     Circa 3 s, si salta con un tocco. Animazioni (non transizioni): girano anche con "Riduci movimento" sui telefoni */
+  .ix-words { position: fixed; inset: 0; z-index: 84; display: grid; place-items: center; pointer-events: none; }
+  .ix-words span { grid-area: 1 / 1; font-weight: 300; font-size: clamp(44px, 10vw, 128px); letter-spacing: -.05em; color: var(--ink-soft); opacity: 0; }
+  .ix-words span u { text-decoration: none; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ix-skip { position: fixed; z-index: 86; right: var(--gut); top: calc(var(--gut) + env(safe-area-inset-top,0px)); font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); pointer-events: none; }
 </style>
 
 <canvas id="shader" aria-hidden="true"></canvas>
@@ -1732,12 +1739,48 @@
   priv.addEventListener('click', e => { if (e.target === priv) closePrivacy(); });
   addEventListener('keydown', e => { if (e.key === 'Escape' && !priv.hidden) closePrivacy(); });
 
+  // ---------- Intro "Nasce il nome" (solo alla prima visita, sulla soglia) ----------
+  function introName(){
+    if (!gateLogo.animate || (reduce && !touch)) return;
+    const anims = [], timers = [], nodes = [];
+    const an = (el, kf, o) => { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); anims.push(a); return a; };
+    const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+    const add = html => { const d = document.createElement('div'); d.innerHTML = html.trim(); const n = d.firstChild; document.body.appendChild(n); nodes.push(n); return n; };
+    const bits = [gate.querySelector('.top'), gate.querySelector('.tagline'), $('#enter'), gate.querySelector('.bottom')];
+    const end = () => {
+      anims.forEach(a => a.cancel()); timers.forEach(clearTimeout); nodes.forEach(n => n.remove());
+      removeEventListener('pointerdown', skip, true);
+    };
+    // un tocco salta l'intro; il clic che segue non deve premere "Entra" per sbaglio
+    const skip = e => {
+      e.preventDefault(); end(); set({ amp: 1, shift: 0 });
+      const eat = ev => { ev.stopPropagation(); ev.preventDefault(); };
+      addEventListener('click', eat, { capture: true, once: true });
+      setTimeout(() => removeEventListener('click', eat, true), 500);
+    };
+    [gateLogo, ...bits].forEach(el => an(el, [{ opacity: 0 }, { opacity: 0 }], { duration: 1 }));
+    U.amp.v = 0; U.amp.t = 0;
+    const w = add('<div class="ix-words" aria-hidden="true"><span><u>spect</u>acle</span><span>vis<u>ualize</u></span><span>act<u>ualize</u></span></div>');
+    add('<span class="ix-skip" aria-hidden="true">Tocca per saltare</span>');
+    [...w.children].forEach((el, i) => an(el, [
+      { opacity: 0, filter: 'blur(10px)', transform: 'translateY(16px)' },
+      { opacity: 1, filter: 'none', transform: 'none', offset: .3 },
+      { opacity: 1, filter: 'none', transform: 'none', offset: .7 },
+      { opacity: 0, filter: 'blur(8px)', transform: i < 2 ? 'translateY(-14px)' : 'scale(.7)' }], { duration: 620, delay: 150 + i * 520, easing: 'ease-in-out' }));
+    an(gateLogo, [{ opacity: 0, transform: 'scale(.6)', filter: 'blur(12px)' }, { opacity: 1, transform: 'scale(1.04)', filter: 'none', offset: .6 }, { opacity: 1, transform: 'none', filter: 'none' }], { duration: 900, delay: 1600, easing: 'cubic-bezier(.16,1,.3,1)' });
+    at(1650, () => { set({ amp: 1.7 }); const r = gateLogo.getBoundingClientRect(); ripple(r.left + r.width / 2, r.top + r.height / 2, true); });
+    at(2300, () => set({ amp: 1 }));
+    bits.forEach((el, i) => an(el, [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 2200 + i * 110, easing: 'cubic-bezier(.16,1,.3,1)' }));
+    at(3100, end);
+    setTimeout(() => addEventListener('pointerdown', skip, true), 30);
+  }
+
   setLive(false);
   let seen = false;
   try { seen = localStorage.getItem(KEY) === '1'; } catch(e){}
   // chi arriva direttamente su una pagina interna non passa dalla soglia
   const h0 = location.hash;
   if (/^#(servizi|progetto|chi-siamo)/.test(h0)) { try { localStorage.setItem(KEY, '1'); } catch(e){} proto('back', false); route(h0); }
-  else proto(seen ? 'back' : 'first');
+  else { proto(seen ? 'back' : 'first'); if (!seen) introName(); }
 })();
 </script>
