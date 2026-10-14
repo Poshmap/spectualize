@@ -51,9 +51,12 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   [hidden] { display: none !important; }
   /* 14/10/2026: il Lab ha un fondo un tono più chiaro del crema del sito */
-  /* come le altre pagine: niente "tira giù per aggiornare" né rimbalzo in cima e in fondo */
-  html { background: var(--page); overscroll-behavior-y: none; }
-  body { overscroll-behavior-y: none; background: var(--page); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  /* come le altre pagine del sito: scorre un riquadro a tutto schermo, non la pagina.
+     Così c'è il rimbalzo ma non la rotellina "tira giù per aggiornare" */
+  html, body { height: 100%; }
+  html { background: var(--page); }
+  #app { position: fixed; inset: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
+  body { overflow: hidden; background: var(--page); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
   button, a { color: inherit; font: inherit; cursor: pointer; }
   button { background: none; border: 0; }
   :focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
@@ -1179,7 +1182,7 @@
     const slug = location.hash.replace(/^#\/?/, '');
     const x = EX.find(e => e.slug === slug);
     if (x) VIEWS[slug](x); else viewIndex();
-    scrollTo(0, 0);
+    app.scrollTo(0, 0);
     app.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.16,1,.3,1)' });
   }
   const menu = document.getElementById('menu');
