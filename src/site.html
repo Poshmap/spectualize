@@ -1,0 +1,1812 @@
+<!doctype html>
+<html lang="it">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--HEAD-->
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<!--LD-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* Layout: alla prima visita la splash fa da soglia; dopo "Entra" (e alle visite successive) hero editoriale su griglia a terzi.
+     Switch Online / Dal vivo: lo stesso fondo passa da fluido digitale a luci di palco. Tema unico crema, per scelta di brand. */
+  :root {
+    --cream: #F1EAE0;
+    --ink: #1A1210;
+    --ink-mid: rgba(26,18,16,0.58);
+    --ink-strong: rgba(26,18,16,0.82);
+    --ink-soft: rgba(26,18,16,0.35);
+    --hairline: rgba(26,18,16,0.12);
+    --panel: rgba(252,249,245,.88);   /* fondo unico di switch, scelte del wizard, pannelli e frecce */
+    --orange: #FF7A2A;
+    --coral: #FF3D6E;
+    --magenta: #E91FA8;
+    --pink: #FF1CD6;
+    --grad: linear-gradient(100deg, var(--orange) 0%, var(--coral) 35%, var(--magenta) 70%, var(--pink) 100%);
+    --sans: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --gut: clamp(16px, 3vw, 32px);
+    --logo-h: clamp(44px, 4.4vw, 60px);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body { background: var(--cream); color: var(--ink); font-family: var(--sans); overflow: hidden; -webkit-font-smoothing: antialiased; cursor: none; }
+  @media (hover: none) { body { cursor: auto; } }
+  button, a { cursor: none; color: inherit; font: inherit; }
+  @media (hover: none) { button, a { cursor: pointer; } }
+  button { background: none; border: 0; }
+  :focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
+
+  #shader { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; mix-blend-mode: multiply; }
+  .cursor-blob {
+    position: fixed; top: 0; left: 0; width: 420px; height: 420px; pointer-events: none; z-index: 1;
+    background: radial-gradient(circle, rgba(255,122,42,.32) 0%, rgba(255,61,110,.24) 22%, rgba(233,31,168,.14) 48%, rgba(255,28,214,.06) 65%, transparent 78%);
+    filter: blur(24px); mix-blend-mode: multiply; opacity: 0; transition: opacity .5s ease; transform: translate3d(-1000px,-1000px,0);
+  }
+  .cursor-blob.on { opacity: 1; }
+  @media (hover: none) { .cursor-blob { display: none; } }
+  .grid {
+    position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: .5;
+    background-image: linear-gradient(to right, var(--hairline) 1px, transparent 1px), linear-gradient(to bottom, var(--hairline) 1px, transparent 1px);
+    background-size: 33.333vw 33.333vh;
+  }
+  .grain {
+    position: fixed; inset: 0; z-index: 4; pointer-events: none; opacity: .28; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.07  0 0 0 0 0.06  0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 240px;
+  }
+  .ripples { position: fixed; inset: 0; z-index: 6; pointer-events: none; }
+  .ripple { position: absolute; width: 6px; height: 6px; border-radius: 50%; border: 2px solid rgba(255,61,110,.7); transform: translate(-50%,-50%); animation: ripple 1.1s cubic-bezier(.16,1,.3,1) forwards; mix-blend-mode: multiply; }
+  .ripple.b { border-color: rgba(255,28,214,.55); animation-duration: 1.4s; animation-delay: 90ms; }
+  .ripple.c { border-color: rgba(255,122,42,.5); animation-duration: .9s; animation-delay: 40ms; }
+  @keyframes ripple { 0% { width: 6px; height: 6px; opacity: 1; } 100% { width: 520px; height: 520px; opacity: 0; border-width: .5px; } }
+  .ripple.big { animation-name: ripple-big; animation-duration: 1.8s; }
+  @keyframes ripple-big { 0% { width: 6px; height: 6px; opacity: 1; } 100% { width: 220vmax; height: 220vmax; opacity: 0; border-width: .5px; } }
+
+  .mono { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 12px rgba(255,61,110,.55); animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .55; transform: scale(.85); } }
+
+  .stage { position: fixed; inset: 0; z-index: 5; }
+  .view { position: absolute; inset: 0; padding: env(safe-area-inset-top,0px) var(--gut) env(safe-area-inset-bottom,0px); }
+
+  /* ---------- Soglia (solo prima visita) ---------- */
+  .gate { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: clamp(28px,4.5vh,48px); z-index: 2; }
+  .gate .top, .gate .bottom { position: absolute; left: var(--gut); right: var(--gut); display: flex; justify-content: space-between; color: var(--ink-soft); transition: opacity .4s ease; }
+  .gate .top { top: calc(var(--gut) + env(safe-area-inset-top,0px)); color: var(--ink-mid); }
+  .gate .bottom { bottom: calc(var(--gut) + env(safe-area-inset-bottom,0px)); }
+  .gate .status { display: flex; align-items: center; gap: 8px; }
+  .gate .logo { width: min(74vw, 460px); animation: float 9s ease-in-out infinite; transform-origin: 0 0; }
+  .gate .logo img { width: 100%; height: auto; display: block; user-select: none; -webkit-user-drag: none; }
+  @keyframes float { 0%,100% { translate: 0 -8px; } 50% { translate: 0 2px; } }
+  .tagline { font-weight: 500; font-size: clamp(12.5px,1.3vw,15px); letter-spacing: .3em; text-transform: uppercase; color: var(--ink); transition: opacity .4s ease; }
+  /* "Entra" ha lo stesso aspetto di "Raccontaci il progetto": pillola scura e pallino arancio che pulsa */
+  .enter {
+    position: relative; display: inline-flex; align-items: center; gap: 12px; padding: 15px 24px 15px 22px; border-radius: 999px;
+    background: var(--ink); color: var(--cream); font-size: 15px; font-weight: 500;
+    transition: opacity .4s ease, transform .25s ease;
+  }
+  .enter .dot { width: 8px; height: 8px; background: var(--orange); box-shadow: 0 0 14px rgba(255,122,42,.8); }
+  .enter .arrow { transition: transform .3s ease; }
+  .enter:hover { transform: translateY(-2px); }
+  .enter:hover .arrow { transform: translateX(4px); }
+  .gate.leaving { pointer-events: none; }
+  .gate.leaving .tagline, .gate.leaving .enter, .gate.leaving .top, .gate.leaving .bottom { opacity: 0; }
+  .gate.leaving .logo { animation: none; transition: transform 1.15s cubic-bezier(.7,0,.15,1); }
+
+  /* ---------- Home ---------- */
+  .home { display: grid; grid-template-rows: auto 1fr auto; overflow-y: auto; }
+  .site-head { position: relative; padding-block: var(--gut); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .site-head .mark { height: var(--logo-h); width: auto; display: block; }
+  .site-head nav { display: flex; align-items: center; gap: clamp(14px,2.4vw,32px); }
+  .site-head nav a:not(.btn) { text-decoration: none; font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-strong); transition: color .2s; }
+  .site-head nav a:not(.btn):hover { color: var(--ink); }
+  /* durante il volo del logo la home è vuota: si vede solo il logo che arriva */
+  .home.arriving .mark, .home.arriving .lead, .home.arriving .areas, .home.arriving .fade { visibility: hidden; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 12px; text-decoration: none; white-space: nowrap;
+    background: var(--ink); color: var(--cream); padding: 15px 22px; border-radius: 999px;
+    font-size: 15px; font-weight: 500; transition: transform .25s ease;
+  }
+  .btn .dot { width: 8px; height: 8px; background: var(--orange); box-shadow: 0 0 14px rgba(255,122,42,.8); }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.sm { padding: 10px 16px; font-size: 13px; }
+
+  /* Switch Online / Dal vivo */
+  /* sopra il titolo, come etichetta: piccola pillola chiara con cursore scuro */
+  .mode {
+    position: relative; display: inline-flex; gap: 2px; padding: 4px; margin-bottom: clamp(16px,2.6vh,26px); border-radius: 999px;
+    background: var(--panel); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: inset 0 0 0 1px rgba(26,18,16,.16);
+  }
+  .mode button { position: relative; z-index: 1; padding: 7px 14px; border-radius: 999px; font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-strong); white-space: nowrap; transition: color .35s; }
+  .mode button:hover { color: var(--ink); }
+  .mode button[aria-pressed="true"] { color: var(--cream); }
+  .mode .knob { position: absolute; top: 4px; bottom: 4px; left: 4px; border-radius: 999px; background: var(--ink); transition: transform .5s cubic-bezier(.65,0,.2,1), width .5s cubic-bezier(.65,0,.2,1); }
+  .lead .mode { --i: 0; }
+  /* le due parole del titolo cambiano modalità al clic */
+  .claim [role="button"] { cursor: none; transition: opacity .3s; }
+  .claim [role="button"][aria-pressed="false"]:hover { opacity: .7; }
+  @media (hover: none) { .claim [role="button"] { cursor: pointer; } }
+
+  .lead { align-self: center; width: min(100%, 66.666vw); padding-block: 16px; }
+  .claim { font-weight: 300; font-size: clamp(38px, 6.6vw, 104px); line-height: .98; letter-spacing: -.045em; text-wrap: balance; }
+  .claim { position: relative; isolation: isolate; }
+  .claim .hl { font-weight: 500; background-image: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .claim .nw { white-space: nowrap; }
+  /* barra in gradiente sotto la parola della modalità attiva: scivola tra "online" e "dal vivo" */
+  .claim .bar {
+    position: absolute; left: 0; top: 0; width: 0; height: max(4px, .075em); border-radius: 99px; pointer-events: none;
+    background: var(--grad); background-size: 220% 100%; opacity: 0;
+    transition: transform .8s cubic-bezier(.65,0,.2,1), width .8s cubic-bezier(.65,0,.2,1), background-position .8s ease, opacity .5s ease;
+  }
+  .claim .bar.on { opacity: 1; }
+  /* cursore: pallino in gradiente che segue il puntatore */
+  .cursor-dot {
+    position: fixed; left: 0; top: 0; z-index: 60; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; pointer-events: none;
+    background: linear-gradient(160deg, var(--orange), var(--magenta) 60%, var(--pink));
+    box-shadow: 0 0 0 1.5px rgba(241,234,224,.9), 0 2px 10px rgba(233,31,168,.35);
+    transform: translate3d(-100px,-100px,0); transition: width .25s ease, height .25s ease, margin .25s ease, opacity .3s ease;
+  }
+  .cursor-dot.big { width: 34px; height: 34px; margin: -17px 0 0 -17px; opacity: .55; }
+  @media (hover: none) { .cursor-dot { display: none; } }
+  .row { margin-top: clamp(24px,4vh,40px); display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; }
+  .row .btn { order: -1; }
+  .sub { max-width: 42ch; font-weight: 400; font-size: clamp(16px,1.4vw,19px); line-height: 1.5; color: var(--ink-strong); transition: opacity .35s ease, transform .35s ease; }
+  /* cambio sottotitolo parola per parola: le vecchie salgono e sfumano, le nuove arrivano dal basso uscendo dallo sfocato */
+  .sub .w { display: inline-block; }
+  .sub .w-out { animation: w-out .42s cubic-bezier(.5,0,.75,0) both; }
+  .sub .w-in { animation: w-in .9s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes w-out { to { opacity: 0; transform: translateY(-10px); filter: blur(6px); } }
+  @keyframes w-in { from { opacity: 0; transform: translateY(12px); filter: blur(8px); } }
+  .areas { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border-top: 1px solid var(--hairline); padding-bottom: var(--gut); margin-bottom: 0; }
+  .areas a { text-decoration: none; padding: 18px 18px 4px 0; display: grid; gap: 8px; min-width: 0; border-right: 1px solid var(--hairline); margin-right: 18px; transition: opacity .6s ease; }
+  .areas a:last-child { border-right: 0; margin-right: 0; }
+  .areas .name { display: flex; align-items: center; gap: 10px; font-size: clamp(17px,1.6vw,22px); font-weight: 500; letter-spacing: -.015em; transition: transform .35s cubic-bezier(.16,1,.3,1); }
+  .areas .name i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex: none; transition: transform .35s ease, box-shadow .35s ease; }
+  .areas .desc { font-size: 14.5px; line-height: 1.45; color: var(--ink-strong); font-weight: 400; transition: color .3s; }
+  .areas a:hover .name { transform: translateX(6px); }
+  .areas a:hover .name i { transform: scale(1.6); box-shadow: 0 0 16px var(--c); }
+  .areas a:hover .desc { color: var(--ink); }
+
+  .reveal > * { opacity: 0; transform: translateY(22px); }
+  .reveal.in > * { opacity: 1; transform: none; transition: opacity .9s ease, transform 1.1s cubic-bezier(.16,1,.3,1); transition-delay: calc(var(--i, 0) * 120ms + 150ms); }
+  .areas.reveal.in > * { transition: opacity .9s ease, transform 1.1s cubic-bezier(.16,1,.3,1); transition-delay: calc(var(--i, 0) * 120ms + 150ms); }
+  /* le aree non legate alla modalità restano leggibili: cambia solo il pallino, da pieno a vuoto */
+  /* aree legate alla modalità: stessa sfumatura chiara dietro */
+  .areas a { position: relative; isolation: isolate; }
+  .areas a::before { content: ""; position: absolute; z-index: -1; inset: -10px 0 -6px -24px; background: radial-gradient(closest-side, rgba(241,234,224,.7), rgba(241,234,224,.4) 55%, rgba(241,234,224,0)); opacity: 0; transition: opacity .7s ease; }
+  .areas a.hit::before { opacity: 1; }
+  .fade { opacity: 0; }
+  .fade.in { opacity: 1; transition: opacity .8s ease .2s; }
+
+  /* ---------- Controlli del prototipo ---------- */
+  .proto {
+    position: fixed; z-index: 20; left: 50%; transform: translateX(-50%); top: calc(var(--gut) + 6px + env(safe-area-inset-top,0px));
+    display: flex; align-items: center; gap: 4px; padding: 4px; background: rgba(26,18,16,.72); color: #F1EAE0;
+    border-radius: 999px; box-shadow: 0 10px 30px rgba(26,18,16,.25); cursor: auto;
+  }
+  .proto button { padding: 8px 14px; border-radius: 999px; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: rgba(241,234,224,.6); white-space: nowrap; }
+  .proto button[aria-pressed="true"] { background: #F1EAE0; color: #1A1210; }
+  .proto button:hover { color: #F1EAE0; }
+  .proto button[aria-pressed="true"]:hover { color: #1A1210; }
+
+  /* Menu compatto (solo mobile) */
+  * { -webkit-tap-highlight-color: transparent; }
+  .menu-btn { display: none; align-items: center; gap: 10px; height: 44px; padding: 0 4px 0 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+  .menu-btn i { position: relative; width: 22px; height: 10px; }
+  .menu-btn i::before, .menu-btn i::after { content: ""; position: absolute; left: 0; right: 0; height: 1.5px; background: var(--ink); transition: transform .4s cubic-bezier(.65,0,.2,1), top .4s; }
+  .menu-btn i::before { top: 0; } .menu-btn i::after { top: 8.5px; }
+  .menu-btn[aria-expanded="true"] i::before { top: 4.25px; transform: rotate(45deg); }
+  .menu-btn[aria-expanded="true"] i::after { top: 4.25px; transform: rotate(-45deg); }
+  .menu {
+    position: fixed; inset: 0; z-index: 12; display: flex; flex-direction: column; justify-content: space-between;
+    padding: calc(var(--logo-h) + 56px + env(safe-area-inset-top,0px)) var(--gut) calc(84px + env(safe-area-inset-bottom,0px));
+    background: rgba(241,234,224,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    animation: menu-in .45s cubic-bezier(.16,1,.3,1);
+  }
+  @keyframes menu-in { from { opacity: 0; transform: translateY(-8px); } }
+  .menu nav { display: grid; gap: 8px; align-content: start; justify-items: start; }
+  .menu nav a:not(.btn) { text-decoration: none; font-size: 40px; font-weight: 300; letter-spacing: -.03em; padding-block: 4px; }
+  .menu nav .btn { margin-top: 20px; }
+  .menu-foot { display: flex; justify-content: space-between; color: var(--ink-mid); }
+  .home .site-head { z-index: 13; }
+  body.menu-open .mode, body.menu-open .proto { opacity: 0; pointer-events: none; }
+
+  @media (max-width: 760px) {
+    :root { --logo-h: 46px; }
+    .menu-btn { display: inline-flex; }
+    .home { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .areas a { min-height: 44px; padding-top: 14px; }
+    .areas .name { font-size: 17.5px; gap: 8px; white-space: nowrap; }
+    .claim { font-size: clamp(36px, 10.8vw, 60px); line-height: .96; letter-spacing: -.05em; }
+    .row { margin-top: clamp(18px,3vh,28px); flex-direction: column; align-items: flex-start; flex-wrap: nowrap; gap: 20px; }
+    .row .btn { order: 0; padding: 17px 26px; font-size: 16px; }
+    .sub { font-size: 17px; line-height: 1.45; max-width: 44ch; }
+    .gate .bottom { font-size: 10px; letter-spacing: .06em; }
+    .grid { background-size: 50vw 50vh; opacity: .4; }
+    .site-head nav { display: none; }
+    .mode button { padding: 7px 12px; font-size: 11px; }
+    .lead { width: 100%; align-self: center; padding-block: 8px 20px; }
+    .areas { grid-template-columns: auto auto; justify-content: space-between; column-gap: 16px; margin-bottom: 0; }
+    .areas a { margin-right: 0; padding-right: 12px; border-right: 0; }
+    .areas .desc { display: none; }
+    .proto { left: 50%; transform: translateX(-50%); bottom: auto; top: calc(var(--gut) + 6px + env(safe-area-inset-top,0px)); }
+    .proto button { padding: 7px 10px; letter-spacing: .04em; font-size: 10px; }
+  }
+  @media (max-height: 700px) and (min-width: 761px) { .areas .desc { display: none; } }
+
+  /* ---------- Wizard "Raccontaci il progetto" ---------- */
+  .wizard { display: grid; grid-template-rows: auto auto 1fr; overflow-y: auto; z-index: 3; }
+  .wz-head { display: flex; align-items: center; justify-content: space-between; padding-block: var(--gut); }
+  .wz-head .mark { height: var(--logo-h); width: auto; display: block; }
+  .wz-close { display: inline-flex; align-items: center; gap: 10px; height: 44px; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); }
+  .wz-close:hover { color: var(--ink); }
+  .wz-progress { height: 2px; background: var(--hairline); border-radius: 2px; overflow: hidden; }
+  .wz-progress i { display: block; height: 100%; width: 0; background: var(--grad); transition: width .7s cubic-bezier(.65,0,.2,1); }
+  .wz-body { display: grid; grid-template-columns: minmax(0,1fr) minmax(260px, 340px); gap: clamp(32px, 6vw, 96px); align-items: start; padding-block: clamp(28px, 6vh, 72px) 48px; }
+  .wz-step { min-width: 0; }
+  .wz-step[hidden] { display: none !important; }
+  .wz-step.is-in > * { animation: wz-in .7s cubic-bezier(.16,1,.3,1) both; }
+  .wz-step.is-in > *:nth-child(2) { animation-delay: .06s; } .wz-step.is-in > *:nth-child(3) { animation-delay: .12s; } .wz-step.is-in > *:nth-child(4) { animation-delay: .18s; } .wz-step.is-in > *:nth-child(5) { animation-delay: .24s; }
+  .wz-step.is-back > * { animation-name: wz-in-back; }
+  @keyframes wz-in { from { opacity: 0; transform: translateY(24px); } }
+  @keyframes wz-in-back { from { opacity: 0; transform: translateY(-24px); } }
+  .wz-count { display: flex; align-items: center; gap: 10px; color: var(--ink-mid); }
+  .wz-count b { color: var(--ink); font-weight: 500; }
+  .wz-q { margin-top: 16px; font-weight: 300; font-size: clamp(34px, 4.6vw, 68px); line-height: 1; letter-spacing: -.045em; text-wrap: balance; max-width: 16ch; }
+  .wz-q em { font-style: normal; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .wz-hint { margin-top: 14px; font-size: clamp(16px,1.3vw,18px); color: var(--ink-strong); max-width: 48ch; line-height: 1.5; }
+  .wz-opts { margin-top: clamp(24px, 4vh, 40px); display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; max-width: 760px; }
+  .wz-opt {
+    position: relative; text-align: left; display: grid; gap: 6px; padding: 18px 48px 18px 20px; border-radius: 16px;
+    background: var(--panel); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 0 1px var(--hairline); transition: transform .3s cubic-bezier(.16,1,.3,1), background .3s, color .3s, box-shadow .3s;
+  }
+  .wz-opt:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1px rgba(26,18,16,.28); }
+  .wz-opt .t { display: flex; align-items: center; gap: 10px; font-size: clamp(17px,1.5vw,20px); font-weight: 500; letter-spacing: -.01em; }
+  .wz-opt .t i { width: 9px; height: 9px; border-radius: 50%; background: var(--c, var(--coral)); flex: none; transition: box-shadow .3s, transform .3s; }
+  .wz-opt .d { font-size: 14.5px; line-height: 1.4; color: var(--ink-strong); transition: color .3s; }
+  .wz-opt .k { position: absolute; top: 16px; right: 16px; font-family: var(--mono); font-size: 11px; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--hairline); color: var(--ink-mid); transition: color .3s, box-shadow .3s; }
+  .wz-opt[aria-pressed="true"] { background: var(--ink); color: var(--cream); box-shadow: none; }
+  .wz-opt[aria-pressed="true"] .d { color: rgba(241,234,224,.75); }
+  .wz-opt[aria-pressed="true"] .k { color: var(--cream); box-shadow: inset 0 0 0 1px rgba(241,234,224,.3); }
+  .wz-opt[aria-pressed="true"] .t i { transform: scale(1.3); box-shadow: 0 0 14px var(--c, var(--coral)); }
+  .wz-text { margin-top: clamp(24px,4vh,40px); width: 100%; max-width: 760px; min-height: 140px; resize: vertical; font: inherit; font-size: clamp(19px,1.7vw,24px); line-height: 1.45; font-weight: 300; color: var(--ink); background: var(--panel); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 0; border-radius: 16px; box-shadow: inset 0 0 0 1px var(--hairline); padding: 18px 20px; }
+  .wz-text::placeholder { color: var(--ink-soft); }
+  .wz-text:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .wz-sub { margin-top: 28px; color: var(--ink-mid); }
+  .wz-chips { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .wz-chip { padding: 10px 16px; border-radius: 999px; font-size: 15px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--hairline); transition: background .3s, color .3s; }
+  .wz-chip:hover { box-shadow: inset 0 0 0 1px rgba(26,18,16,.28); }
+  .wz-chip[aria-pressed="true"] { background: var(--ink); color: var(--cream); box-shadow: none; }
+  .wz-fields { margin-top: clamp(24px,4vh,40px); display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px 16px; max-width: 760px; }
+  .wz-field { display: grid; gap: 8px; min-width: 0; }
+  .wz-field label { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mid); }
+  .wz-field input { font: inherit; font-size: 18px; color: var(--ink); padding: 14px 16px; border: 0; border-radius: 12px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--hairline); }
+  .wz-field input:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .wz-field.bad input { box-shadow: inset 0 0 0 1.5px var(--coral); }
+  .wz-check { grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 1.45; color: var(--ink-strong); cursor: none; }
+  .wz-check input { width: 20px; height: 20px; margin-top: 1px; accent-color: #1A1210; flex: none; }
+  .wz-err { margin-top: 14px; min-height: 22px; font-size: 15px; color: #C21A4E; }
+  .wz-nav { margin-top: 12px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .wz-back { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); height: 44px; }
+  .wz-back:hover { color: var(--ink); }
+  .wz-back[hidden] { display: none; }
+  .wz-keys { color: var(--ink-soft); }
+  .wz-brief {
+    position: sticky; top: 24px; padding: 24px; border-radius: 20px;
+    background: var(--panel); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px var(--hairline);
+  }
+  .wz-brief h2 { font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); display: flex; align-items: center; gap: 8px; }
+  .wz-brief dl { margin-top: 18px; display: grid; gap: 14px; }
+  .wz-brief dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
+  .wz-brief dd { margin-top: 4px; font-size: 16px; line-height: 1.4; color: var(--ink); overflow-wrap: anywhere; }
+  .wz-brief dd.empty { color: var(--ink-soft); }
+  .wz-brief dd.flash { animation: flash .9s ease; }
+  @keyframes flash { 0% { background: rgba(255,122,42,.22); } 100% { background: transparent; } }
+  .wz-brief .promise { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--hairline); font-size: 14px; line-height: 1.45; color: var(--ink-strong); }
+  .wz-done { max-width: 760px; }
+  .wz-done .wz-q { max-width: 14ch; }
+  .wz-promises { margin-top: clamp(24px,4vh,40px); display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+  .wz-promises div { padding: 20px; border-radius: 16px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--hairline); }
+  .wz-promises b { display: block; font-size: clamp(30px,3vw,44px); font-weight: 400; letter-spacing: -.03em; }
+  .wz-promises span { font-size: 15px; color: var(--ink-strong); }
+  body.in-wizard .mode, body.in-wizard .proto { opacity: 0; pointer-events: none; }
+  @media (max-width: 760px) {
+    .wz-body { grid-template-columns: 1fr; padding-block: 24px 96px; }
+    .wz-brief { display: none; }
+    .wz-opts, .wz-fields, .wz-promises { grid-template-columns: 1fr; }
+    .wz-opt { padding: 16px 44px 16px 16px; }
+    .wz-opt .d { font-size: 14px; }
+    .wz-keys { display: none; }
+  }
+
+  /* ---------- Privacy: tasto in basso a destra + modale ---------- */
+  /* stesso stile della firma MMXXVI della soglia: testo mono, niente fondo */
+  .privacy-btn {
+    position: fixed; z-index: 15; right: var(--gut); bottom: calc(var(--gut) + env(safe-area-inset-bottom,0px));
+    padding: 6px 0; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-soft); transition: color .2s ease;
+  }
+  .privacy-btn:hover, .privacy-btn:focus-visible { color: var(--ink); }
+  body.in-wizard .privacy-btn, body.menu-open .privacy-btn { opacity: 0; pointer-events: none; }
+  .wz-check a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .modal { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 16px; background: rgba(26,18,16,.28); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: fade-in .3s ease; }
+  @keyframes fade-in { from { opacity: 0; } }
+  .modal-card {
+    position: relative; width: min(100%, 720px); max-height: min(86vh, 860px); display: grid; grid-template-rows: auto 1fr;
+    background: var(--cream); border-radius: 24px; box-shadow: 0 30px 80px rgba(26,18,16,.35); overflow: hidden;
+    animation: card-in .5s cubic-bezier(.16,1,.3,1);
+  }
+  @keyframes card-in { from { opacity: 0; transform: translateY(24px) scale(.98); } }
+  .modal-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--grad); }
+  .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 28px 28px 16px; border-bottom: 1px solid var(--hairline); }
+  .modal-head h2 { font-weight: 300; font-size: clamp(28px, 3.4vw, 40px); letter-spacing: -.04em; line-height: 1; }
+  .modal-head p { margin-top: 10px; color: var(--ink-mid); }
+  .modal-close { flex: none; display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; margin: -6px -10px 0 0; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--hairline); font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); }
+  .modal-close:hover { color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .modal-body { overflow-y: auto; padding: 8px 28px 32px; overscroll-behavior: contain; }
+  .modal-body h3 { margin-top: 24px; font-size: 18px; font-weight: 500; letter-spacing: -.01em; }
+  .modal-body p, .modal-body li { margin-top: 8px; font-size: 15.5px; line-height: 1.55; color: var(--ink-strong); max-width: 62ch; }
+  .modal-body ul { padding-left: 20px; }
+  .modal-body .ph { background: rgba(255,122,42,.16); border-radius: 4px; padding: 0 4px; }
+  .modal-body .draft { margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: rgba(255,61,110,.08); font-size: 14px; color: var(--ink-strong); }
+  @media (max-width: 760px) {
+    .privacy-btn { bottom: calc(24px + env(safe-area-inset-bottom,0px)); }
+    .modal { padding: 0; place-items: end stretch; }
+    .modal-card { width: 100%; max-height: 92vh; border-radius: 24px 24px 0 0; }
+    .modal-head { padding: 24px 16px 14px; }
+    .modal-body { padding: 4px 16px calc(28px + env(safe-area-inset-bottom,0px)); }
+  }
+  /* ---------- Pagine servizio (una per area, stesso fondo della home) ---------- */
+  .page { display: grid; grid-template-rows: auto 1fr auto; overflow-y: auto; }
+  .page .site-head { z-index: 13; }
+  .site-head nav a.on { color: var(--ink); padding-bottom: 5px; background: var(--grad) left bottom / 100% 2px no-repeat; }
+  .svc-main { align-self: center; display: grid; grid-template-columns: minmax(0,2fr) minmax(280px,1fr); gap: clamp(32px,6vw,96px); align-items: end; padding-block: 16px 40px; }
+  .svc-kicker { display: flex; align-items: center; gap: 10px; color: var(--ink-strong); font-size: 13px; }
+  .svc-kicker i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 14px var(--c); }
+  .svc-kicker b { font-weight: 500; color: var(--ink); }
+  .claim.svc-title { margin-top: 18px; font-size: clamp(36px,5.2vw,84px); line-height: 1; max-width: 15ch; }
+  .svc-lead .sub { margin-top: clamp(18px,3vh,28px); }
+  .svc-lead .btn { margin-top: clamp(22px,3.5vh,34px); }
+  .svc-list { padding: 22px 24px 8px; border-radius: 20px; background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px var(--hairline); }
+  .svc-main[hidden] { display: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .svc-list h3 { font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); }
+  .svc-list ol { list-style: none; margin-top: 8px; }
+  .svc-list li { display: flex; align-items: baseline; gap: 14px; padding: 14px 0; border-top: 1px solid var(--hairline); font-size: clamp(16px,1.25vw,18px); line-height: 1.35; transition: transform .35s cubic-bezier(.16,1,.3,1); }
+  .svc-list li:first-child { border-top: 0; }
+  .svc-list li span { flex: none; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--ink-soft); transition: color .3s; }
+  .svc-list li:hover { transform: translateX(4px); }
+  .svc-list li:hover span { color: var(--ink); }
+  .page .areas { margin-bottom: 0; }
+  /* navigazione tra le aree: etichetta, frecce precedente/successiva, freccia su ogni blocco */
+  .svc-foot { display: grid; }
+  .svc-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 14px; }
+  .svc-nav .mono { color: var(--ink-strong); font-size: 12px; }
+  .svc-step { display: flex; align-items: center; gap: 12px; }
+  .svc-step .mono b { color: var(--ink); font-weight: 500; }
+  .svc-arrow { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; font-size: 17px; background: var(--panel); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: inset 0 0 0 1px rgba(26,18,16,.22); transition: background .25s, color .25s, transform .25s; }
+  .svc-arrow:hover { background: var(--ink); color: var(--cream); }
+  .svc-arrow:active { transform: scale(.94); }
+  .page .areas .go { margin-left: 2px; font-weight: 400; opacity: .55; transition: transform .35s cubic-bezier(.16,1,.3,1), opacity .3s; }
+  .page .areas a:hover .go { opacity: 1; transform: translateX(4px); }
+  .page .areas a[aria-current="page"] .go { display: none; }
+  .page .areas a:not([aria-current]) { cursor: none; }
+  .page .areas.in a:not([aria-current]) .go { animation: nudge 1.1s ease-in-out 1.3s 2; }
+  @keyframes nudge { 0%,100% { transform: none; opacity: .55; } 50% { transform: translateX(6px); opacity: 1; } }
+  .areas a[aria-current="page"]::after { content: ""; position: absolute; top: -1px; left: 0; right: 0; height: 2px; border-radius: 2px; background: var(--c); }
+  .areas a[aria-current="page"] .name i { transform: scale(1.4); box-shadow: 0 0 14px var(--c); }
+  .page .areas a.hit::before { opacity: 0; }
+  body.on-svc .proto { display: none; }
+  /* ---------- Chi siamo (13/10/2026) ---------- */
+  .about { display: block; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+  .about .site-head { position: relative; z-index: 3; }
+  /* stessi margini della testata, della home e dei servizi: il contenuto parte dal filo del logo */
+  .ab-sec { max-width: none; margin: 0; }
+  .ab-kick { display: flex; align-items: center; gap: 10px; color: var(--ink-strong); font-size: 12px; }
+  .ab-kick i { width: 8px; height: 8px; border-radius: 50%; background: var(--grad); box-shadow: 0 0 14px rgba(255,61,110,.7); }
+  .about .rv { opacity: 0; }
+  .about .rv.in { opacity: 1; animation: ab-rise 1s cubic-bezier(.16,1,.3,1) backwards; animation-delay: calc(var(--d, 0) * 110ms); }
+  @keyframes ab-rise { from { opacity: 0; transform: translateY(28px); filter: blur(6px); } }
+
+  /* 1 · apertura */
+  .ab-hero { min-height: calc(100svh - var(--logo-h) - 2 * var(--gut)); display: grid; align-content: center; gap: clamp(18px, 3vh, 28px); padding-block: 24px 64px; }
+  .ab-hero .claim { font-size: clamp(42px, 7.4vw, 118px); max-width: 13ch; }
+  .ab-hero .lede { max-width: 52ch; font-size: clamp(17px, 1.45vw, 21px); line-height: 1.5; color: var(--ink-strong); }
+  .ab-down { display: flex; align-items: center; gap: 12px; color: var(--ink-mid); margin-top: 12px; }
+  .ab-down i { position: relative; width: 1.5px; height: 28px; background: var(--hairline); overflow: hidden; border-radius: 2px; }
+  .ab-down i::after { content: ""; position: absolute; left: 0; right: 0; top: -60%; height: 60%; background: var(--grad); animation: hint-drop 1.8s cubic-bezier(.65,0,.35,1) infinite; }
+
+  /* 2 · il nome: palco fisso mentre scorri, tre definizioni che si accendono */
+  .ab-name { position: relative; height: 320vh; }
+  .ab-stage { position: sticky; top: 0; height: 100svh; display: grid; align-content: center; gap: clamp(14px, 2.4vh, 26px); }
+  .ab-word { font-weight: 300; font-size: clamp(54px, 15.5vw, 236px); line-height: .9; letter-spacing: -.06em; margin-left: -.04em; white-space: nowrap;
+    background: linear-gradient(90deg, #FF7A2A, #FF3D6E 30%, #E91FA8 60%, #FF1CD6) 0 0 / var(--fill, 0%) 100% no-repeat, linear-gradient(var(--ink), var(--ink));
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ab-pron { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--ink-mid); font-size: 13px; }
+  .ab-pron b { font-weight: 500; color: var(--ink); }
+  .ab-defs { list-style: none; display: grid; gap: 4px; margin-top: clamp(8px, 2vh, 20px); counter-reset: d; }
+  .ab-defs li { counter-increment: d; position: relative; padding-left: 1.6em; font-size: clamp(22px, 3.2vw, 46px); font-weight: 300; letter-spacing: -.03em; line-height: 1.15; color: var(--ink-soft); opacity: .45; transform: translateX(-10px); transition: color .6s, opacity .6s, transform .8s cubic-bezier(.16,1,.3,1); }
+  .ab-defs li::before { content: counter(d); position: absolute; left: 0; top: .55em; font-family: var(--mono); font-size: 13px; letter-spacing: .1em; }
+  .ab-defs em { font-style: normal; }
+  .ab-defs li.on { color: var(--ink); opacity: 1; transform: none; }
+  .ab-defs li.on::before { color: var(--c, var(--coral)); }
+  .ab-defs li.now em { font-style: normal; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ab-meter { display: flex; gap: 6px; margin-top: 6px; }
+  .ab-meter i { width: 28px; height: 3px; border-radius: 3px; background: var(--hairline); overflow: hidden; position: relative; }
+  .ab-meter i::after { content: ""; position: absolute; inset: 0; background: var(--grad); transform: scaleX(var(--m, 0)); transform-origin: left; }
+
+  /* origine del nome */
+  .ab-origin { padding-block: clamp(64px, 12vh, 140px); display: grid; gap: clamp(28px, 5vh, 48px); }
+  .ab-roots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; align-items: end; gap: clamp(16px, 3vw, 40px); }
+  .ab-root { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--hairline); min-width: 0; }
+  .ab-root b { font-weight: 300; font-size: clamp(32px, 4.4vw, 64px); letter-spacing: -.045em; line-height: 1; color: var(--ink-soft); }
+  .ab-root b u { text-decoration: none; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ab-root span { font-size: 15px; color: var(--ink-strong); }
+  .ab-root .mono { color: var(--ink-mid); }
+  /* il logo è il risultato delle tre parole, sulla stessa riga */
+  .ab-eq { align-self: end; display: flex; align-items: center; gap: clamp(12px, 1.6vw, 22px); color: var(--ink-mid); white-space: nowrap; }
+  .ab-eq .mono { font-size: clamp(22px, 2.4vw, 34px); letter-spacing: 0; color: var(--ink-soft); }
+  .ab-eq img { height: clamp(64px, 6.6vw, 100px); width: auto; filter: drop-shadow(0 12px 28px rgba(233,31,168,.18)); }
+  .ab-origin p { max-width: 60ch; font-size: clamp(17px, 1.4vw, 20px); line-height: 1.55; color: var(--ink-strong); }
+
+  /* 3 · in cosa crediamo */
+  .ab-belief { padding-block: clamp(40px, 8vh, 100px); }
+  .ab-belief ol { list-style: none; margin-top: 22px; }
+  .ab-belief li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; padding-block: clamp(22px, 4vh, 40px); border-top: 1px solid var(--hairline); }
+  .ab-belief li:last-child { border-bottom: 1px solid var(--hairline); }
+  .ab-belief li .mono { padding-top: .9em; color: var(--ink-mid); }
+  .ab-belief li p { font-weight: 300; font-size: clamp(26px, 3.6vw, 56px); line-height: 1.04; letter-spacing: -.04em; color: var(--ink-mid); text-wrap: balance; max-width: 22ch; }
+  .ab-belief li p b { font-weight: 400; color: var(--ink); }
+
+  /* 4 · come lavoriamo */
+  .ab-method { padding-block: clamp(56px, 10vh, 120px); }
+  .ab-steps { list-style: none; position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); margin-top: 34px; }
+  .ab-steps::before { content: ""; position: absolute; left: 7px; right: 0; top: 7px; height: 2px; background: var(--hairline); }
+  .ab-steps::after { content: ""; position: absolute; left: 7px; right: 0; top: 7px; height: 2px; background: var(--grad); transform: scaleX(var(--prog, 0)); transform-origin: left; transition: transform .2s linear; }
+  .ab-steps li { position: relative; display: grid; gap: 10px; padding-top: 38px; min-width: 0; }
+  .ab-steps li::before { content: ""; position: absolute; top: 0; left: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--cream); box-shadow: inset 0 0 0 2px var(--c); z-index: 1; transition: background .4s, box-shadow .4s; }
+  .ab-steps li.on::before { background: var(--c); box-shadow: 0 0 16px var(--c); }
+  .ab-steps .mono { color: var(--ink-mid); }
+  .ab-steps h3 { font-weight: 400; font-size: clamp(24px, 2.4vw, 34px); letter-spacing: -.03em; }
+  .ab-steps p { font-size: 15.5px; line-height: 1.45; color: var(--ink-strong); max-width: 26ch; }
+
+  /* 5 · chiusura */
+  .ab-close { padding-block: clamp(64px, 14vh, 160px) clamp(40px, 8vh, 80px); display: grid; justify-items: start; gap: 22px; }
+  .ab-close .claim { font-size: clamp(40px, 6.4vw, 100px); max-width: 14ch; }
+  .ab-close p { font-size: clamp(17px, 1.4vw, 20px); color: var(--ink-strong); }
+  .about .site-foot { padding-top: 20px; }
+
+  .site-head nav a.js-about.on { color: var(--ink); padding-bottom: 5px; background: var(--grad) left bottom / 100% 2px no-repeat; }
+  @media (max-width: 760px) {
+    .ab-hero { min-height: calc(100svh - var(--logo-h) - 2 * var(--gut) - 40px); padding-bottom: 40px; }
+    .ab-word { font-size: 17.2vw; }
+    .ab-name { height: 300vh; }
+    .ab-roots { grid-template-columns: 1fr; }
+    .ab-eq { padding-top: 16px; }
+    .ab-eq img { height: 76px; }
+    .ab-belief li { grid-template-columns: 40px minmax(0, 1fr); }
+    .ab-steps { grid-template-columns: 1fr; gap: 26px; padding-left: 34px; }
+    .ab-steps::before, .ab-steps::after { left: 7px; right: auto; top: 8px; bottom: 8px; width: 2px; height: auto; }
+    .ab-steps::after { transform: scaleY(var(--prog, 0)); transform-origin: top; }
+    .ab-steps li { padding-top: 0; }
+    .ab-steps li::before { left: -34px; top: 4px; }
+    .ab-steps p { max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) and (hover: hover) { .about .rv.in { animation: none; } }
+  /* ---------- Leggibilità (13/10/2026) ---------- */
+  /* velo crema morbido dietro le colonne di testo: il fumo resta pieno ai lati e negli spazi vuoti */
+  #hero, .svc-lead, .ab-hero, .ab-origin, .ab-belief, .ab-method, .ab-close, .wz-step { position: relative; isolation: isolate; }
+  #hero::after, .svc-lead::after, .ab-hero::after, .ab-origin::after, .ab-belief::after, .ab-method::after, .ab-close::after, .wz-step::after {
+    content: ""; position: absolute; z-index: -1; inset: -14% -10%; pointer-events: none;
+    background: radial-gradient(farthest-side, rgba(241,234,224,.66) 35%, rgba(241,234,224,.32) 70%, rgba(241,234,224,0));
+  }
+  .ab-hero::after, .ab-close::after { inset: 0 -6% 0 -10%; }
+  /* il velo sborda ai lati: le viste non devono scorrere in orizzontale */
+  .home, .page, .wizard, .about { overflow-x: hidden; }
+  @media (max-width: 760px) { #hero::after, .svc-lead::after, .ab-hero::after, .ab-origin::after, .ab-belief::after, .ab-method::after, .ab-close::after, .wz-step::after { left: 0; right: 0; } }
+  @media (max-width: 760px) {
+    .svc-main { grid-template-columns: 1fr; gap: 28px; align-self: start; padding-block: 8px 28px; }
+    .claim.svc-title { font-size: clamp(34px,9.6vw,54px); line-height: .98; letter-spacing: -.05em; }
+    .svc-lead .btn { padding: 17px 26px; font-size: 16px; }
+    .svc-list { padding: 18px 18px 4px; }
+    .svc-list li { font-size: 16px; padding: 12px 0; }
+    .areas a[aria-current="page"]::after { top: auto; bottom: -2px; right: 12px; }
+    .page .areas .go { display: none; }
+    .svc-nav { padding-bottom: 10px; }
+  }
+
+  /* 12/10/2026: in alto solo "Servizi", anche su mobile. Tasto "Raccontaci il progetto" in testata e menu mobile
+     restano nel file, nascosti: li recuperiamo quando il sito avrà più pagine. */
+  .site-head nav .btn.sm { display: none; }
+  @media (max-width: 760px) {
+    .menu-btn { display: none; }
+    .site-head nav { display: flex; }
+    .site-head nav a:not(.btn) { padding-block: 12px; }
+  }
+
+  /* ---------- Correzioni mobile (12/10/2026) ---------- */
+  /* niente vetro sfocato sopra lo shader sui touch: su iPhone blocca il ridisegno del fondo */
+  @media (hover: none) {
+    .mode, .svc-list, .svc-arrow, .wz-opt, .wz-text, .wz-brief, .enter, .menu { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    .mode, .svc-arrow { background: var(--panel); }
+    .svc-list { background: var(--panel); }
+    .wz-opt, .wz-text { background: var(--panel); }
+    .menu { background: rgba(241,234,224,.95); }
+    /* niente effetti hover "appiccicati" dopo il tocco: facevano saltare i testi delle aree */
+    .areas a:hover .name { transform: none; }
+    .areas a:not([aria-current]):hover .name i { transform: none; box-shadow: none; }
+    .svc-list li:hover { transform: none; }
+    .wz-opt:hover { transform: none; box-shadow: inset 0 0 0 1px var(--hairline); }
+    .wz-opt[aria-pressed="true"]:hover { box-shadow: none; }
+    .wz-chip:hover { box-shadow: inset 0 0 0 1px var(--hairline); }
+    .wz-chip[aria-pressed="true"]:hover { box-shadow: none; }
+  }
+  @media (max-width: 760px) {
+    /* pagine servizio: più aria sotto il logo, come lo switch in home */
+    .svc-main { padding-top: var(--home-gap, clamp(40px, 10vh, 120px)); }
+    /* cambiando area il contenuto sfuma senza scivolare */
+    .svc-main.reveal > * { transform: none !important; }
+  }
+  @media (max-width: 760px) {
+    /* pagine servizio: le 4 aree salgono sotto il logo come schede, alla stessa distanza dello switch in home */
+    .page { grid-template-rows: auto auto 1fr; }
+    .page .site-head { order: 0; }
+    .page .svc-foot { order: 1; margin-top: var(--home-gap, clamp(40px, 10vh, 120px)); }
+    /* 13/10/2026: blocco aree più vicino al logo; nell'etichetta niente pallino, numero nel colore dell'area */
+    .page .svc-foot { margin-top: clamp(24px, calc(var(--home-gap, 120px) * .45), 64px); }
+    .svc-kicker i { display: none; }
+    .svc-kicker b { color: var(--c); font-weight: 600; }
+    .page .svc-main { order: 2; padding-top: 56px; padding-bottom: 32px; }
+    .page .svc-nav { display: none; }
+    .page .areas { padding-bottom: 14px; border-bottom: 1px solid var(--hairline); }
+  }
+  @media (max-width: 760px) {
+    /* home: il blocco di testo sale e scende piano, e il gradiente scorre lento (anche con "Riduci movimento") */
+    .home .lead { animation: lead-float 7s ease-in-out infinite; }
+    .home .claim .hl { background-size: 180% 100%; animation: hl-flow 10s ease-in-out infinite alternate; }
+  }
+  /* home mobile: scroll che racconta. Primo schermo = titolo; scorrendo il titolo sale e sfuma, il fumo cambia, le aree salgono grandi */
+  .scroll-hint { display: none; }
+  @media (max-width: 760px) {
+    .home { grid-template-rows: auto minmax(calc(100svh - 72px - 64px), auto) auto auto; }
+    .scroll-hint { display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; color: var(--ink-mid); }
+    .scroll-hint i { position: relative; width: 1.5px; height: 22px; background: var(--hairline); overflow: hidden; border-radius: 2px; }
+    .scroll-hint i::after { content: ""; position: absolute; left: 0; right: 0; top: -60%; height: 60%; background: var(--grad); animation: hint-drop 1.8s cubic-bezier(.65,0,.35,1) infinite; }
+    .home.arriving .scroll-hint { visibility: hidden; }
+    .home .areas { grid-template-columns: 1fr; border-top: 0; column-gap: 0; padding-bottom: calc(40px + env(safe-area-inset-bottom,0px)); }
+    .home .areas a { padding: 24px 0 22px; border-top: 1px solid var(--hairline); gap: 8px; }
+    .home .areas .name { font-size: 27px; font-weight: 400; letter-spacing: -.025em; gap: 12px; }
+    .home .areas .name i { width: 10px; height: 10px; }
+    .home .areas .name::after { content: "→"; margin-left: auto; font-weight: 300; font-size: 22px; opacity: .55; }
+    .home .areas .desc { display: block; font-size: 16px; line-height: 1.45; max-width: 32ch; }
+    .home .areas a::before { inset: 0 -16px; }
+  }
+  @media (max-width: 760px) {
+    .home .areas { counter-reset: area; gap: 12px; padding-top: 4px; }
+    .home .areas::before { content: "Le nostre aree"; font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-strong); padding: 0 2px 6px; }
+    .home .areas a {
+      counter-increment: area; position: relative; isolation: isolate; overflow: hidden;
+      padding: 20px 20px 22px; gap: 10px; border: 0; border-radius: 22px;
+      background: var(--panel); box-shadow: 0 14px 34px rgba(26,18,16,.10), inset 0 0 0 1px var(--hairline);
+    }
+    /* alone del colore dell'area nell'angolo; più acceso per le aree legate a Online / Dal vivo */
+    .home .areas a::before { inset: 0; z-index: -1; border-radius: inherit; opacity: .55; background: radial-gradient(120% 95% at 100% 0%, color-mix(in srgb, var(--c) 32%, transparent), transparent 62%); transition: opacity .7s ease; }
+    .home .areas a.hit::before { opacity: 1; }
+    .home .areas .name { font-size: 22px; font-weight: 400; letter-spacing: -.025em; gap: 12px; padding-right: 36px; }
+    .home .areas .name i { width: 11px; height: 11px; box-shadow: 0 0 14px var(--c); }
+    .home .areas .name::after { content: "0" counter(area); position: absolute; top: 24px; right: 20px; margin: 0; font-family: var(--mono); font-size: 12px; font-weight: 400; letter-spacing: .1em; opacity: 1; color: var(--ink-mid); }
+    .home .areas .desc { padding-right: 32px; color: var(--ink-strong); }
+    .home .areas a::after { content: "→"; position: absolute; right: 18px; bottom: 20px; width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: var(--cream); font-size: 11px; line-height: 1; }
+  }
+  @keyframes hint-drop { 0% { top: -60%; } 100% { top: 100%; } }
+  @keyframes lead-float { 0%, 100% { transform: translateY(6px); } 50% { transform: translateY(-8px); } }
+  @keyframes hl-flow { from { background-position: 0% 0; } to { background-position: 100% 0; } }
+
+
+  /* ---------- 12/10/2026: transizioni tra pagine e ingressi su mobile ---------- */
+  /* sono animazioni, non transizioni: restano anche con "Riduci movimento" attivo sul telefono */
+  .view.v-out { animation: v-out .28s cubic-bezier(.4,0,1,1) both; pointer-events: none; }
+  .view.v-in { animation: v-in .6s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes v-out { to { opacity: 0; transform: translateY(-12px); } }
+  @keyframes v-in { from { opacity: 0; transform: translateY(16px); } }
+  @media (max-width: 760px) {
+    .mode { padding: 3px; }
+    .mode .knob { top: 3px; bottom: 3px; left: 3px; }
+    .mode button { padding: 6px 10px; font-size: 10px; letter-spacing: .1em; }
+    .reveal.in > *, .areas.reveal.in > * { transition: none !important; animation: m-rise .9s cubic-bezier(.16,1,.3,1) backwards; animation-delay: calc(var(--i, 0) * 110ms + 120ms); }
+    .svc-main.reveal.in > * { animation-name: m-fade; animation-duration: .7s; }
+    .fade.in { transition: none !important; animation: m-fade .8s ease .2s backwards; }
+  }
+  @keyframes m-rise { from { opacity: 0; transform: translateY(26px); } }
+  @keyframes m-fade { from { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) and (hover: hover) {
+    .view.v-out, .view.v-in { animation-name: fade-in; animation-duration: .01ms; }
+  }
+
+  /* ---------- Footer: stessa firma mono della soglia e del tasto privacy ---------- */
+  .site-foot { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 26px 0 calc(14px + env(safe-area-inset-bottom,0px)); color: var(--ink-soft); }
+  .site-foot i { font-style: normal; }
+  .home .areas, .page .areas { padding-bottom: 10px; }
+  @media (max-width: 760px) {
+    .page .site-foot { order: 3; padding-top: 48px; }
+    .home .areas { padding-bottom: 28px; }
+    .page .areas { padding-bottom: 14px; }
+    .site-foot { padding-top: 24px; padding-bottom: calc(28px + env(safe-area-inset-bottom,0px)); font-size: 9px; gap: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) and (hover: hover) {
+    .wz-step.is-in > * { animation: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gate .logo { animation: none; }
+    .cursor-blob { display: none; }
+    *, .reveal.in > * { transition-duration: .01ms !important; transition-delay: 0s !important; }
+  }
+  /* 13/10/2026: su mobile torna il menu, con tutte le voci */
+  .menu-sub { display: grid; gap: 2px; padding: 0 0 8px 4px; }
+  .menu nav .menu-sub a:not(.btn) { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 400; letter-spacing: -.01em; color: var(--ink-strong); padding-block: 7px; }
+  .menu-sub a i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+  /* il menu ha logo e "Chiudi" suoi, sempre sopra; fondo chiaro come il riquadro "Cosa facciamo", con il fumo sotto */
+  .menu { background: var(--panel) !important; }
+  .menu-head { position: absolute; top: calc(var(--gut) + env(safe-area-inset-top,0px)); left: var(--gut); right: var(--gut); display: flex; align-items: center; justify-content: space-between; }
+  .menu-head .mark { height: var(--logo-h); width: auto; display: block; }
+  body.menu-open .stage > .view { visibility: hidden; }
+  @media (max-width: 760px) {
+    .menu-btn { display: inline-flex; }
+    .site-head nav { display: none; }
+  }
+  /* 13/10/2026: menu desktop, "Chi siamo" e "Servizi" un filo più grandi */
+  @media (min-width: 761px) { .site-head nav a:not(.btn) { font-size: 13.5px; } }
+  /* menu mobile: le voci entrano a cascata, una dopo l'altra */
+  .menu nav > *, .menu-sub > a { animation: menu-item .6s cubic-bezier(.16,1,.3,1) backwards; }
+  .menu nav > :nth-child(1) { animation-delay: .06s; }
+  .menu nav > :nth-child(2) { animation-delay: .12s; }
+  .menu nav > :nth-child(3) { animation-delay: .18s; }
+  .menu nav > .menu-sub { animation: none; }
+  .menu-sub > a:nth-child(1) { animation-delay: .24s; }
+  .menu-sub > a:nth-child(2) { animation-delay: .29s; }
+  .menu-sub > a:nth-child(3) { animation-delay: .34s; }
+  .menu-sub > a:nth-child(4) { animation-delay: .39s; }
+  .menu nav > .btn { animation-delay: .48s; }
+  @keyframes menu-item { from { opacity: 0; transform: translateY(18px); } }
+  @media (prefers-reduced-motion: reduce) and (hover: hover) { .menu nav > *, .menu-sub > a { animation: none; } }
+  /* fine "Chi siamo": oltre al brief, una via d'uscita verso i servizi */
+  .ab-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 30px; }
+  .ab-more { text-decoration: none; font-size: 17px; color: var(--ink); padding-block: 6px; background: var(--grad) left bottom / 0% 2px no-repeat; transition: background-size .45s cubic-bezier(.16,1,.3,1); }
+  .ab-more span { display: inline-block; margin-left: 4px; transition: transform .3s; }
+  .ab-more:hover, .ab-more:focus-visible { background-size: 100% 2px; }
+  .ab-more:hover span { transform: translateX(4px); }
+  @media (max-width: 760px) { .ab-actions { flex-direction: column; align-items: flex-start; gap: 14px; } .ab-more { background-size: 100% 1px; } }
+  /* bloop di "dal vivo": copia sovrapposta alla parola, con il suo gradiente (regge anche su Safari) */
+  .bloop-ghost { position: absolute; z-index: 2; pointer-events: none; white-space: nowrap; font-weight: 500; line-height: inherit; display: inline-block;
+    background-image: var(--grad); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; transform-origin: 50% 70%; }
+  /* ---------- Home mobile: teaser "Il nome" (riscritto 14/10/2026) ----------
+     Il blocco è centrato sotto le card, il testo allineato a sinistra.
+     SPECTUALIZE è nero; entra lettera per lettera una volta, poi una lente di gradiente lo attraversa da sinistra a destra
+     (circa 4 s), resta nero 3 s e ripassa. Due strati sovrapposti con le stesse lettere:
+     .hn-base = le lettere nere che entrano (solo opacità e movimento, nessun ritaglio del testo);
+     .hn-lens = una copia ferma sopra, trasparente, con il gradiente ritagliato sul testo: fuori dalla fascia è trasparente,
+     quindi non copre mai il nero e non c'è nulla da accendere o spegnere. Si anima solo la posizione del suo sfondo, in CSS. */
+  .home-name { display: none; }
+  @media (max-width: 760px) {
+    .home-name { display: grid; grid-template-columns: fit-content(100%); justify-content: center; gap: 12px; text-decoration: none; color: var(--ink); padding: 34px 0 12px; border-top: 1px solid var(--hairline); }
+    .hn-kick { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-strong); }
+    .hn-word { position: relative; justify-self: start; white-space: nowrap; color: var(--ink); font-kerning: none; font-variant-ligatures: none; }
+    .hn-word b { display: inline-block; font-weight: inherit; }
+    .hn-base b { opacity: 0; }
+    .home-name.in .hn-base b { opacity: 1; animation: hn-in .8s cubic-bezier(.16,1,.3,1) backwards; animation-delay: calc(var(--k) * 55ms); }
+    .hn-lens { position: absolute; inset: 0; pointer-events: none; color: transparent;
+      background-image: linear-gradient(90deg, transparent 0 41%, #FF7A2A 44.5%, #FF3D6E 48%, #E91FA8 52%, #FF1CD6 55.5%, transparent 59% 100%);
+      background-repeat: no-repeat; background-size: 300% 100%; background-position: 95% 0;
+      -webkit-background-clip: text; background-clip: text; }
+    .hn-lens b { color: transparent; }
+    /* sfondo largo 3 volte la parola: 95% = fascia fuori a sinistra, 5% = fuori a destra. Passaggio nel 58% del ciclo (4,2 s), poi 3 s fermo */
+    .home-name.lens .hn-lens { animation: hn-sweep 7.2s linear infinite; }
+    .hn-line { font-size: 17px; line-height: 1.45; color: var(--ink-strong); max-width: 30ch; }
+    .hn-more { justify-self: start; font-size: 17px; padding-block: 6px; margin-top: 4px; background: var(--grad) left bottom / 100% 1px no-repeat; }
+    .hn-more span { display: inline-block; margin-left: 4px; }
+    .home .areas { padding-bottom: 36px; }
+    /* stesso teaser in fondo alla pagina servizi, dopo "Cosa facciamo" e prima del footer */
+    .page .home-name { order: 3; margin-top: 28px; }
+  }
+  @keyframes hn-in { from { opacity: 0; transform: translateX(-.18em) translateY(.12em); } }
+  @keyframes hn-sweep { 0% { background-position: 95% 0; } 58%, 100% { background-position: 5% 0; } }
+  /* 14/10/2026: il nome in Bungee come accento, solo nelle sezioni "Il nome" (regola in BRAND.md) */
+  .ab-word, .hn-word { font-family: 'Bungee', var(--sans); font-weight: 400; letter-spacing: 0; margin-left: 0; line-height: 1; text-transform: uppercase; }
+  .ab-word { font-size: clamp(44px, 11.2vw, 172px); }
+  @media (max-width: 760px) { .ab-word, .hn-word { font-size: 11.4vw; } }
+  /* 14/10/2026: "tocca in cima per tornare su" (iPhone). Il tocco sulla barra di stato fa scorrere solo il documento,
+     ma qui scorrono le viste. Sui touch il documento è alto 2px in più e resta fermo a 1px: quando il telefono lo riporta a 0,
+     la vista aperta torna in cima. Tutto il resto è fisso, quindi quel pixel non si vede. */
+  html.tt, html.tt body { height: auto; }
+  html.tt body { overflow: visible; min-height: calc(100vh + 2px); }
+  html.tt .view { overscroll-behavior-y: contain; }
+  /* ---------- Intro "Nasce il nome" (14/10/2026): alla prima visita, sulla soglia ----------
+     su crema passano spectacle, visualize, actualize; poi il logo nasce dal centro con un'esplosione di fumo.
+     Circa 3 s, una volta sola. Animazioni (non transizioni): girano anche con "Riduci movimento" sui telefoni */
+  .ix-words { position: fixed; inset: 0; z-index: 84; display: grid; place-items: center; pointer-events: none; }
+  .ix-words span { grid-area: 1 / 1; font-weight: 300; font-size: clamp(44px, 10vw, 128px); letter-spacing: -.05em; color: var(--ink-soft); opacity: 0; }
+  .ix-words span u { text-decoration: none; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+</style>
+
+<canvas id="shader" aria-hidden="true"></canvas>
+<div class="cursor-blob" aria-hidden="true"></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="grid" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="ripples" aria-hidden="true"></div>
+
+<div class="stage">
+  <section class="view home" id="home" hidden aria-label="Home">
+    <header class="site-head">
+      <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" id="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <button class="menu-btn fade" id="menuBtn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
+      <nav class="fade" id="nav"><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a><a class="btn sm js-brief" href="#progetto">Raccontaci il progetto</a></nav>
+    </header>
+    <div class="lead reveal" id="hero">
+      <div class="mode" id="mode" role="group" aria-label="Mostra">
+        <span class="knob" aria-hidden="true"></span>
+        <button id="mOn" aria-pressed="true">Online</button><button id="mLive" aria-pressed="false">Dal vivo</button>
+      </div>
+      <h1 class="claim" style="--i:0">Un unico partner per far crescere il tuo brand, <span class="hl"><span id="wOn" role="button" tabindex="0" aria-pressed="true">online</span> e <span class="nw"><span id="wLive" role="button" tabindex="0" aria-pressed="false">dal vivo</span>.</span></span><span class="bar" id="bar" aria-hidden="true"></span></h1>
+      <div class="row" style="--i:1">
+        <p class="sub" id="sub">Siti, esperienze digitali, advertising e marketing: un solo team, dall'idea ai risultati.</p>
+        <a class="btn btn-lg js-brief" href="#progetto"><span class="dot"></span>Raccontaci il progetto</a>
+      </div>
+    </div>
+    <div class="scroll-hint mono" id="scrollHint" aria-hidden="true"><span>Scorri</span><i></i></div>
+    <nav class="areas reveal" id="areas" aria-label="Aree">
+      <a href="/servizi/#web-software" data-svc="web-software" data-area="0" style="--i:2;--c:var(--orange)"><span class="name"><i></i>Web &amp; Software</span><span class="desc">Siti, e-commerce, piattaforme ed esperienze digitali immersive.</span></a>
+      <a href="/servizi/#advertising" data-svc="advertising" data-area="2" style="--i:2;--c:var(--coral)"><span class="name"><i></i>Advertising</span><span class="desc">Campagne Google, Meta e LinkedIn che portano contatti.</span></a>
+      <a href="/servizi/#marketing-brand" data-svc="marketing-brand" data-area="3" style="--i:3;--c:var(--magenta)"><span class="name"><i></i>Marketing &amp; Brand</span><span class="desc">Posizionamento, SEO, social e contenuti per far crescere il brand.</span></a>
+      <a href="/servizi/#eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi</span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
+    </nav>
+    <!-- 13/10/2026: solo mobile, dopo le aree un invito alla pagina Chi siamo partendo dal nome -->
+    <a class="home-name js-about" id="homeName" href="/chi-siamo/">
+      <span class="mono hn-kick">Il nome</span>
+      <span class="hn-word" role="img" aria-label="Spectualize"><span class="hn-base" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span><span class="hn-lens" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span></span>
+      <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
+      <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
+    </a>
+    <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+  </section>
+
+  <!-- Servizi (/servizi/): le 4 aree sono scritte qui da build.mjs, una visibile alla volta (/servizi/#eventi, ...) -->
+  <section class="view page" id="svc" hidden aria-label="Servizi">
+    <header class="site-head">
+      <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
+      <nav><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc on" href="/servizi/" aria-current="page">Servizi</a><a class="btn sm js-brief" href="#progetto">Raccontaci il progetto</a></nav>
+    </header>
+    <h1 class="sr-only">Servizi</h1>
+    <!--SVC-->
+    <div class="svc-foot">
+      <div class="svc-nav">
+        <span class="mono">Esplora le 4 aree</span>
+        <div class="svc-step"><button class="svc-arrow" id="svcPrev" aria-label="Area precedente">←</button><span class="mono" id="svcCount"><b>01</b> / 04</span><button class="svc-arrow" id="svcNext" aria-label="Area successiva">→</button></div>
+      </div>
+    <nav class="areas reveal" id="svcAreas" aria-label="Servizi">
+      <a href="/servizi/#web-software" data-svc="web-software" data-area="0" style="--i:2;--c:var(--orange)"><span class="name"><i></i>Web &amp; Software <b class="go" aria-hidden="true">→</b></span><span class="desc">Siti, e-commerce, piattaforme ed esperienze digitali immersive.</span></a>
+      <a href="/servizi/#advertising" data-svc="advertising" data-area="2" style="--i:2;--c:var(--coral)"><span class="name"><i></i>Advertising <b class="go" aria-hidden="true">→</b></span><span class="desc">Campagne Google, Meta e LinkedIn che portano contatti.</span></a>
+      <a href="/servizi/#marketing-brand" data-svc="marketing-brand" data-area="3" style="--i:3;--c:var(--magenta)"><span class="name"><i></i>Marketing &amp; Brand <b class="go" aria-hidden="true">→</b></span><span class="desc">Posizionamento, SEO, social e contenuti per far crescere il brand.</span></a>
+      <a href="/servizi/#eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi <b class="go" aria-hidden="true">→</b></span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
+    </nav>
+    </div>
+    <a class="home-name js-about" id="svcTeaser" href="/chi-siamo/">
+      <span class="mono hn-kick">Il nome</span>
+      <span class="hn-word" role="img" aria-label="Spectualize"><span class="hn-base" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span><span class="hn-lens" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span></span>
+      <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
+      <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
+    </a>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+  </section>
+
+  <!-- Chi siamo (13/10/2026). Testi: Portale/chi-siamo-testi-v1.md -->
+  <section class="view about" id="about" hidden aria-label="Chi siamo">
+    <header class="site-head">
+      <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
+      <nav><a class="js-about on" href="/chi-siamo/" aria-current="page">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a></nav>
+    </header>
+    <div class="ab-sec ab-hero">
+      <p class="ab-kick mono rv" style="--d:0"><i></i>Chi siamo</p>
+      <h1 class="claim rv" style="--d:1">Un solo team per il tuo brand, <span class="hl">online e dal vivo.</span></h1>
+      <p class="lede rv" style="--d:2">Siti ed esperienze digitali, advertising, marketing ed eventi: in Spectualize li progettiamo insieme, sotto un'unica regia. Lavoriamo su un'idea semplice: un brand cresce quando ogni punto di contatto racconta la stessa storia, sullo schermo come in sala.</p>
+      <p class="ab-down mono rv" style="--d:3"><i></i>Il nome</p>
+    </div>
+
+    <div class="ab-name" id="abName">
+      <div class="ab-sec ab-stage">
+        <p class="ab-kick mono"><i></i>Il nome</p>
+        <div class="ab-word" id="abWord" aria-label="spectualize">spectualize</div>
+        <p class="ab-pron mono"><span>/ˈspɛk.tʃu.ə.laɪz/</span><b>verbo</b></p>
+        <ol class="ab-defs" id="abDefs">
+          <li style="--c:var(--orange)">rendere <em>visibile</em> un'idea.</li>
+          <li style="--c:var(--magenta)">trasformarla in qualcosa di <em>reale</em>.</li>
+          <li style="--c:var(--pink)">metterla <em>in scena</em>.</li>
+        </ol>
+        <div class="ab-meter" id="abMeter" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+    </div>
+
+    <div class="ab-sec ab-origin">
+      <div class="ab-roots">
+        <div class="ab-root rv" style="--d:0"><b><u>spect</u>acle</b><span>lo spettacolo</span></div>
+        <div class="ab-root rv" style="--d:1"><b>vis<u>ualize</u></b><span>dare forma a ciò che si immagina</span></div>
+        <div class="ab-root rv" style="--d:2"><b>act<u>ualize</u></b><span>renderlo reale</span></div>
+        <div class="ab-eq rv" style="--d:3"><span class="mono">=</span><img src="/logo.png" alt="Spectualize" width="2000" height="1115"></div>
+      </div>
+      <p class="rv">Il nome nasce dall'incontro di tre parole inglesi: <i>spectacle</i>, lo spettacolo; <i>visualize</i>, dare forma a ciò che si immagina; <i>actualize</i>, renderlo reale. È anche il nostro metodo: partiamo da un'idea, le diamo una forma e la portiamo davanti al pubblico, online o dal vivo.</p>
+    </div>
+
+    <div class="ab-sec ab-belief">
+      <p class="ab-kick mono rv"><i></i>In cosa crediamo</p>
+      <ol>
+        <li class="rv"><span class="mono">01</span><p><b>Un brand si giudica da ciò che lascia vedere,</b> non da ciò che dichiara.</p></li>
+        <li class="rv"><span class="mono">02</span><p><b>Online e dal vivo sono la stessa scena:</b> un sito, una campagna e un evento devono parlare con la stessa voce.</p></li>
+        <li class="rv"><span class="mono">03</span><p><b>Lo spettacolo serve se porta risultati:</b> ogni progetto parte da obiettivi chiari e si misura.</p></li>
+      </ol>
+    </div>
+
+    <div class="ab-sec ab-method">
+      <p class="ab-kick mono rv"><i></i>Come lavoriamo</p>
+      <ol class="ab-steps" id="abSteps">
+        <li class="rv" style="--d:0;--c:var(--orange)"><span class="mono">01</span><h3>Ascolto</h3><p>Un brief chiaro e una prima proposta entro 24 ore.</p></li>
+        <li class="rv" style="--d:1;--c:var(--coral)"><span class="mono">02</span><h3>Strategia</h3><p>Un piano unico per tutte le aree coinvolte.</p></li>
+        <li class="rv" style="--d:2;--c:var(--magenta)"><span class="mono">03</span><h3>Realizzazione</h3><p>Un solo referente, dal sito all'evento.</p></li>
+        <li class="rv" style="--d:3;--c:var(--pink)"><span class="mono">04</span><h3>Misurazione</h3><p>Leggiamo i dati insieme e correggiamo la rotta.</p></li>
+      </ol>
+    </div>
+
+    <div class="ab-sec ab-close">
+      <h2 class="claim rv">Hai un'idea da mettere <span class="hl">in scena?</span></h2>
+      <p class="rv" style="--d:1">Raccontacela. Ti rispondiamo entro 12 ore.</p>
+      <div class="ab-actions">
+        <a class="btn btn-lg js-brief rv" style="--d:2" href="#progetto"><span class="dot"></span>Raccontaci il progetto</a>
+        <a class="ab-more js-svc rv" style="--d:3" href="/servizi/">Scopri i servizi <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+  </section>
+
+  <section class="view wizard" id="wizard" hidden aria-label="Raccontaci il progetto">
+    <header class="wz-head">
+      <button class="js-home" aria-label="Torna alla home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></button>
+      <button class="wz-close js-home"><span>Chiudi</span><span aria-hidden="true">✕</span></button>
+    </header>
+    <div class="wz-progress" aria-hidden="true"><i id="wzBar"></i></div>
+    <div class="wz-body">
+      <form id="wzForm" novalidate>
+        <input type="text" id="wzHp" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+        <!-- 1 · aree -->
+        <div class="wz-step" data-step="1">
+          <p class="wz-count mono"><b>01</b> / 05 · Aree</p>
+          <h2 class="wz-q">Di cosa ha bisogno il tuo <em>brand</em>?</h2>
+          <p class="wz-hint">Scegli una o più aree. Possiamo seguirle tutte con un solo team.</p>
+          <div class="wz-opts" data-name="aree" data-multi>
+            <button type="button" class="wz-opt" style="--c:var(--orange)" data-v="Web &amp; Software" data-shift="-.12"><span class="t"><i></i>Web &amp; Software</span><span class="d">Siti, e-commerce, piattaforme ed esperienze immersive.</span><span class="k">1</span></button>
+            <button type="button" class="wz-opt" style="--c:var(--coral)" data-v="Advertising" data-shift="-.04"><span class="t"><i></i>Advertising</span><span class="d">Campagne Google, Meta e LinkedIn che portano contatti.</span><span class="k">2</span></button>
+            <button type="button" class="wz-opt" style="--c:var(--magenta)" data-v="Marketing &amp; Brand" data-shift=".04"><span class="t"><i></i>Marketing &amp; Brand</span><span class="d">Posizionamento, SEO, social e contenuti.</span><span class="k">3</span></button>
+            <button type="button" class="wz-opt" style="--c:var(--pink)" data-v="Eventi" data-shift=".1" data-live="1"><span class="t"><i></i>Eventi</span><span class="d">Eventi aziendali, lanci, convegni e fiere.</span><span class="k">4</span></button>
+          </div>
+        </div>
+        <!-- 2 · fase -->
+        <div class="wz-step" data-step="2" hidden>
+          <p class="wz-count mono"><b>02</b> / 05 · Fase</p>
+          <h2 class="wz-q">Da dove <em>partiamo</em>?</h2>
+          <p class="wz-hint">Ci aiuta a capire che tipo di lavoro serve.</p>
+          <div class="wz-opts" data-name="fase">
+            <button type="button" class="wz-opt" data-v="Un brand nuovo"><span class="t"><i></i>Un brand nuovo</span><span class="d">Stai partendo da zero.</span><span class="k">1</span></button>
+            <button type="button" class="wz-opt" data-v="Un lancio"><span class="t"><i></i>Un lancio</span><span class="d">Un prodotto, un servizio o una sede nuova.</span><span class="k">2</span></button>
+            <button type="button" class="wz-opt" data-v="Un rinnovo"><span class="t"><i></i>Un rinnovo</span><span class="d">Il brand c'è, ma va rimesso in forma.</span><span class="k">3</span></button>
+            <button type="button" class="wz-opt" data-v="Un evento in arrivo" data-live="1"><span class="t"><i></i>Un evento in arrivo</span><span class="d">Hai una data e vuoi lasciare il segno.</span><span class="k">4</span></button>
+          </div>
+        </div>
+        <!-- 3 · obiettivo -->
+        <div class="wz-step" data-step="3" hidden>
+          <p class="wz-count mono"><b>03</b> / 05 · Obiettivo</p>
+          <h2 class="wz-q">Qual è il <em>risultato</em> che conta di più?</h2>
+          <p class="wz-hint">Lo usiamo per misurare il lavoro fin dall'inizio.</p>
+          <div class="wz-opts" data-name="obiettivo">
+            <button type="button" class="wz-opt" data-v="Farsi conoscere"><span class="t"><i></i>Farsi conoscere</span><span class="d">Più visibilità e riconoscibilità.</span><span class="k">1</span></button>
+            <button type="button" class="wz-opt" data-v="Trovare nuovi clienti"><span class="t"><i></i>Trovare nuovi clienti</span><span class="d">Più contatti e richieste.</span><span class="k">2</span></button>
+            <button type="button" class="wz-opt" data-v="Vendere di più online"><span class="t"><i></i>Vendere di più online</span><span class="d">Più ordini e conversioni.</span><span class="k">3</span></button>
+            <button type="button" class="wz-opt" data-v="Coinvolgere dal vivo" data-live="1"><span class="t"><i></i>Coinvolgere dal vivo</span><span class="d">Persone presenti, partecipazione, ricordo.</span><span class="k">4</span></button>
+          </div>
+        </div>
+        <!-- 4 · racconto -->
+        <div class="wz-step" data-step="4" hidden>
+          <p class="wz-count mono"><b>04</b> / 05 · Progetto</p>
+          <h2 class="wz-q">Raccontacelo in <em>poche righe</em>.</h2>
+          <p class="wz-hint">Cosa fate, cosa vorreste ottenere, cosa non ha funzionato finora. Bastano due frasi.</p>
+          <textarea class="wz-text" id="wzText" name="racconto" placeholder="Esempio: siamo un'azienda vinicola, a marzo lanciamo una nuova linea e vorremmo un evento di presentazione con sito e campagna."></textarea>
+          <p class="wz-sub mono">Quando vorresti partire?</p>
+          <div class="wz-chips" data-name="tempi">
+            <button type="button" class="wz-chip" data-v="Il prima possibile">Il prima possibile</button>
+            <button type="button" class="wz-chip" data-v="Entro 3 mesi">Entro 3 mesi</button>
+            <button type="button" class="wz-chip" data-v="Più avanti">Più avanti</button>
+            <button type="button" class="wz-chip" data-v="Sto valutando">Sto valutando</button>
+          </div>
+        </div>
+        <!-- 5 · contatti -->
+        <div class="wz-step" data-step="5" hidden>
+          <p class="wz-count mono"><b>05</b> / 05 · Contatti</p>
+          <h2 class="wz-q">Come ti <em>ricontattiamo</em>?</h2>
+          <p class="wz-hint">Ti rispondiamo entro 12 ore con le prime domande o una proposta.</p>
+          <div class="wz-fields">
+            <div class="wz-field" id="fNome"><label for="wzNome">Nome</label><input id="wzNome" name="nome" autocomplete="given-name"></div>
+            <div class="wz-field"><label for="wzAzienda">Azienda (facoltativo)</label><input id="wzAzienda" name="azienda" autocomplete="organization"></div>
+            <div class="wz-field" id="fEmail"><label for="wzEmail">Email</label><input id="wzEmail" name="email" type="email" autocomplete="email" inputmode="email"></div>
+            <div class="wz-field"><label for="wzTel">Telefono (facoltativo)</label><input id="wzTel" name="telefono" type="tel" autocomplete="tel" inputmode="tel"></div>
+            <label class="wz-check" id="fPriv"><input type="checkbox" id="wzPriv"> <span>Acconsento a essere ricontattato per questo progetto.</span><!-- da ripristinare con testo privacy definitivo: Ho letto l'<a href="#" class="js-privacy">informativa privacy</a> e acconsento... --></label>
+          </div>
+        </div>
+        <!-- fatto -->
+        <div class="wz-step wz-done" data-step="6" hidden>
+          <p class="wz-count mono"><span class="dot"></span>Brief inviato</p>
+          <h2 class="wz-q" id="wzThanks">Grazie, ci sentiamo <em>presto</em>.</h2>
+          <p class="wz-hint">Abbiamo ricevuto il tuo brief. Un solo referente lo segue dall'inizio alla fine.</p>
+          <div class="wz-promises">
+            <div><b>12 ore</b><span>per la prima risposta</span></div>
+            <div><b>24 ore</b><span>per una prima proposta dal brief</span></div>
+          </div>
+          <div class="wz-nav" style="margin-top:32px"><button type="button" class="btn js-home"><span class="dot"></span>Torna alla home</button></div>
+        </div>
+
+        <p class="wz-err" id="wzErr" role="alert"></p>
+        <div class="wz-nav" id="wzNav">
+          <button type="submit" class="btn" id="wzNext"><span class="dot"></span><span id="wzNextLabel">Continua</span><span aria-hidden="true">→</span></button>
+          <button type="button" class="wz-back" id="wzBack" hidden>← Indietro</button>
+          <span class="wz-keys mono">Invio per continuare</span>
+        </div>
+      </form>
+
+      <aside class="wz-brief" aria-label="Il tuo brief">
+        <h2><span class="dot"></span>Il tuo brief</h2>
+        <dl>
+          <div><dt>Aree</dt><dd class="empty" data-b="aree">Da scegliere</dd></div>
+          <div><dt>Fase</dt><dd class="empty" data-b="fase">Da scegliere</dd></div>
+          <div><dt>Obiettivo</dt><dd class="empty" data-b="obiettivo">Da scegliere</dd></div>
+          <div><dt>Tempi</dt><dd class="empty" data-b="tempi">Da definire</dd></div>
+          <div><dt>Progetto</dt><dd class="empty" data-b="racconto">Da raccontare</dd></div>
+        </dl>
+        <p class="promise">Prima risposta entro 12 ore, prima proposta entro 24 ore dal brief.</p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="menu" id="menu" hidden>
+    <div class="menu-head">
+      <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <button class="menu-btn" aria-expanded="true" aria-controls="menu"><span>Chiudi</span><i aria-hidden="true"></i></button>
+    </div>
+    <nav aria-label="Menu">
+      <a class="js-home-link" href="/">Home</a>
+      <a class="js-about" href="/chi-siamo/">Chi siamo</a>
+      <a class="js-svc" href="/servizi/">Servizi</a>
+      <div class="menu-sub">
+        <a href="/servizi/#web-software" data-svc="web-software" style="--c:var(--orange)"><i></i>Web &amp; Software</a>
+        <a href="/servizi/#advertising" data-svc="advertising" style="--c:var(--coral)"><i></i>Advertising</a>
+        <a href="/servizi/#marketing-brand" data-svc="marketing-brand" style="--c:var(--magenta)"><i></i>Marketing &amp; Brand</a>
+        <a href="/servizi/#eventi" data-svc="eventi" style="--c:var(--pink)"><i></i>Eventi</a>
+      </div>
+      <a class="btn js-brief" href="#progetto"><span class="dot"></span>Raccontaci il progetto</a>
+    </nav>
+  </div>
+
+  <section class="view gate" id="gate" hidden aria-label="Benvenuto">
+    <div class="top mono"><span class="status"><span class="dot"></span>Un solo team · Italia</span><span></span></div>
+    <div class="logo" id="gateLogo"><img src="/logo.png" alt="Spectualize" width="2000" height="1115"></div>
+    <p class="tagline">Esperienze online e dal vivo</p>
+    <button class="enter" id="enter"><span class="dot"></span><span>Entra</span><span class="arrow" aria-hidden="true">→</span></button>
+    <div class="bottom mono"><span>Web · Advertising · Marketing · Eventi</span><span>MMXXVI</span></div>
+  </section>
+</div>
+
+
+<button class="privacy-btn" id="privacyBtn" hidden>Privacy</button>
+
+<div class="modal" id="privacy" hidden role="dialog" aria-modal="true" aria-labelledby="privTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        
+        <h2 id="privTitle">Informativa privacy</h2>
+      </div>
+      <button class="modal-close" id="privClose"><span>Chiudi</span><span aria-hidden="true">✕</span></button>
+    </div>
+    <div class="modal-body">
+      <p>Informativa in preparazione.</p>
+    </div>
+  </div>
+</div>
+
+<div class="proto" id="proto" hidden>
+  <button id="pReplay">↺ Rivedi la soglia</button>
+</div>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const canvas = $('#shader'), blob = $('.cursor-blob'), ripples = $('.ripples');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const touch = matchMedia('(hover: none)').matches;
+  const t0 = performance.now();
+  const now = () => (performance.now() - t0) / 1000;
+  const KEY = 'spec-entered';
+
+  // amp: intensità; shift: tinta; live: 0 = fluido (online), 1 = luci di palco (dal vivo)
+  const U = { amp:{v:1,t:1}, shift:{v:0,t:0}, live:{v:0,t:0} };
+  const set = o => { for (const k in o) U[k].t = o[k]; };
+  let mT={x:.5,y:.5}, mC={x:.5,y:.5}, mP={x:.5,y:.5}, mvel=0;
+  // durante l'intro il fumo resta centrato sul logo, non segue dito o mouse
+  let introHold = null;
+  let click = {x:.5, y:.5, at:-100, big:0};
+
+  let bx=-1000,by=-1000,btx=-1000,bty=-1000,active=false;
+  const dot = $('.cursor-dot');
+  if (!touch) {
+    addEventListener('mousemove', e => { dot.style.transform = `translate3d(${e.clientX}px,${e.clientY}px,0)`; dot.classList.toggle('big', !!e.target.closest('a, button, [role=button]')); });
+    document.addEventListener('mouseleave', () => dot.style.opacity = 0);
+    document.addEventListener('mouseenter', () => dot.style.opacity = '');
+  }
+  if (!touch && !reduce) {
+    addEventListener('mousemove', e => { btx=e.clientX; bty=e.clientY; if(!active){bx=btx;by=bty;blob.classList.add('on');active=true;} });
+    document.addEventListener('mouseleave', () => { blob.classList.remove('on'); active=false; });
+    (function loop(){ bx+=(btx-bx)*.14; by+=(bty-by)*.14; blob.style.transform=`translate3d(${bx-210}px,${by-210}px,0)`; requestAnimationFrame(loop); })();
+  }
+  function ripple(x, y, big){
+    ['','b','c'].forEach(v => {
+      const r = document.createElement('div');
+      r.className = 'ripple' + (v?' '+v:'') + (big?' big':'');
+      r.style.left = x+'px'; r.style.top = y+'px';
+      ripples.appendChild(r); setTimeout(() => r.remove(), 2000);
+    });
+    click = { x:x/innerWidth, y:1-y/innerHeight, at:now(), big: big?1:0 };
+  }
+  addEventListener('pointerdown', e => { if (!e.target.closest('button, a')) ripple(e.clientX, e.clientY, false); });
+  addEventListener('mousemove', e => { mT.x=e.clientX/innerWidth; mT.y=1-e.clientY/innerHeight; });
+  let lastTouch = -10;
+  addEventListener('touchmove', e => { const t=e.touches[0]; if(t){ lastTouch = now(); mT.x=t.clientX/innerWidth; mT.y=1-t.clientY/innerHeight; } }, {passive:true});
+
+  let gl = null;
+  try { gl = canvas.getContext('webgl', {alpha:true, antialias:false, premultipliedAlpha:false, powerPreference:'low-power'}); } catch(e){}
+  if (gl) {
+    const vs = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+    const fs = `precision mediump float;
+      uniform vec2 R; uniform float T; uniform vec2 M; uniform float V; uniform vec4 C; uniform float AMP; uniform float SHIFT; uniform float LIVE;
+      float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float n2(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);
+        return mix(mix(h(i),h(i+vec2(1,0)),u.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x),u.y);}
+      float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n2(p);p=p*2.02+vec2(1.7,9.2);a*=.5;}return v;}
+      // fascio di luce da o verso la direzione d
+      float beam(vec2 p, vec2 o, vec2 d){
+        vec2 v=p-o; float al=dot(v,d); float pe=abs(v.x*d.y-v.y*d.x);
+        float w=.02+al*.2;
+        return smoothstep(w,w*.15,pe)*smoothstep(0.,.08,al)*smoothstep(2.1,.3,al);
+      }
+      void main(){
+        float asp=R.x/R.y;
+        vec2 p=(gl_FragCoord.xy-R*.5)/min(R.x,R.y);
+        float t=T*.05;
+        vec2 q=vec2(fbm(p*1.4+t),fbm(p*1.4-t+vec2(3.1,1.3)));
+        vec2 r=vec2(fbm(p*1.1+q*1.9+vec2(1.7,9.2)+t*.4),fbm(p*1.1+q*1.9+vec2(8.3,2.8)+t*.55));
+        float n=fbm(p+r*2.4);
+        vec2 mp=M-.5; mp.x*=asp; if(asp<1.){mp=(M-.5)*vec2(1.,1./asp);}
+        n+=smoothstep(.55,0.,distance(p,mp))*(.09+V*.07);
+        float ring=0.;
+        float e=C.z;
+        if(e>0.&&e<3.){
+          vec2 cp=C.xy-.5; cp.x*=asp; if(asp<1.){cp=(C.xy-.5)*vec2(1.,1./asp);}
+          float cd=distance(p,cp);
+          float rad=e*mix(1.05,1.6,C.w);
+          ring=smoothstep(.075+C.w*.08,0.,abs(cd-rad))*(1.-smoothstep(0.,2.4,e))*(.28+C.w*.2);
+          n+=ring+smoothstep(rad,rad-.25,cd)*(1.-smoothstep(0.,.9,e))*(.12+C.w*.2);
+        }
+        float nc=n+SHIFT;
+        vec3 c1=vec3(1.,.478,.165),c2=vec3(1.,.239,.431),c3=vec3(.914,.122,.659),c4=vec3(1.,.11,.839);
+        vec3 col=c1; col=mix(col,c2,smoothstep(.44,.64,nc)); col=mix(col,c3,smoothstep(.62,.8,nc)); col=mix(col,c4,smoothstep(.78,.92,nc));
+        float al=smoothstep(.2,.6,n)*.78;
+        al*=mix(.65,1.,smoothstep(1.45,.45,length(p)));
+
+        // Dal vivo: luci di palco che scendono dall'alto nella foschia
+        if(LIVE>.001){
+          vec2 ext=vec2(.5*max(asp,1.),.5*max(1./asp,1.));
+          float top=ext.y+.05; float tt=T*.32;
+          vec2 d1=normalize(vec2(sin(tt*.9)*.55-.25,-1.));
+          vec2 d2=normalize(vec2(mp.x*.9,mp.y-top));
+          vec2 d3=normalize(vec2(sin(tt*.7+2.)*.55+.25,-1.));
+          vec2 d4=normalize(vec2(sin(tt*.5+4.)*.8,-1.));
+          float b1=beam(p,vec2(-ext.x*.62,top),d1);
+          float b2=beam(p,vec2(0.,top),d2);
+          float b3=beam(p,vec2(ext.x*.62,top),d3);
+          float b4=beam(p,vec2(-ext.x*.15,top),d4)*.7;
+          float haze=.45+.9*fbm(p*2.2+vec2(t*3.,-t*2.));
+          vec3 lc=c1*b1+c2*b2+c3*b3+c4*b4;
+          float bs=b1+b2+b3+b4;
+          float floorGlow=smoothstep(-ext.y+.35,-ext.y-.1,p.y)*(.35+.4*fbm(p*3.+t*4.));
+          vec3 lcol=bs>.001?lc/bs:c2; lcol=mix(lcol,mix(c1,c3,.5+.5*sin(p.x*2.+tt)),floorGlow/(bs+floorGlow+.001));
+          float lal=clamp((bs*haze)*.62+floorGlow*.45+ring*1.2,0.,.85);
+          col=mix(col,lcol,LIVE); al=mix(al,lal,LIVE);
+        }
+        gl_FragColor=vec4(col,clamp(al*AMP,0.,.92));
+      }`;
+    const sh = (ty, src) => { const s = gl.createShader(ty); gl.shaderSource(s, src); gl.compileShader(s); if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; };
+    const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr); gl.useProgram(pr);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    const al = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(al); gl.vertexAttribPointer(al, 2, gl.FLOAT, false, 0, 0);
+    const L = n => gl.getUniformLocation(pr, n);
+    const u = { R:L('R'), T:L('T'), M:L('M'), V:L('V'), C:L('C'), AMP:L('AMP'), SHIFT:L('SHIFT'), LIVE:L('LIVE') };
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.clearColor(0,0,0,0);
+    function resize(){ const d=Math.min(devicePixelRatio||1, innerWidth < 760 ? 1 : 1.5); canvas.width=Math.round(innerWidth*d); canvas.height=Math.round(innerHeight*d); gl.viewport(0,0,canvas.width,canvas.height); }
+    resize(); addEventListener('resize', resize);
+    (function frame(){
+      const k = reduce ? 1 : .04;
+      U.amp.v += (U.amp.t-U.amp.v)*k; U.shift.v += (U.shift.t-U.shift.v)*k;
+      U.live.v += (U.live.t-U.live.v)*(reduce ? 1 : .025);
+      if (introHold) { mT.x = mC.x = introHold.x; mT.y = mC.y = introHold.y; }
+      else if (touch && now() - lastTouch > 1.5) { const w = now(); mT.x = .5 + .3*Math.sin(w*.21); mT.y = .5 + .24*Math.sin(w*.29 + 1.3); }
+      mC.x+=(mT.x-mC.x)*.055; mC.y+=(mT.y-mC.y)*.055;
+      const dx=mC.x-mP.x, dy=mC.y-mP.y; mvel+=(Math.min(Math.hypot(dx,dy)*60,1.2)-mvel)*.15; mP={...mC};
+      gl.uniform2f(u.R, canvas.width, canvas.height);
+      gl.uniform1f(u.T, reduce && !touch ? 4.2 : now() * (touch ? 1.7 : 1));
+      gl.uniform2f(u.M, mC.x, mC.y); gl.uniform1f(u.V, mvel);
+      gl.uniform4f(u.C, click.x, click.y, now()-click.at, click.big);
+      // su telefono il fumo è più leggero: lo schermo è stretto e il testo ci sta sopra
+      gl.uniform1f(u.AMP, U.amp.v * (innerWidth <= 760 ? .82 : 1)); gl.uniform1f(u.SHIFT, U.shift.v); gl.uniform1f(u.LIVE, U.live.v);
+      gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      requestAnimationFrame(frame);
+    })();
+  }
+
+  // ---------- Soglia e home ----------
+  const gate = $('#gate'), home = $('#home'), gateLogo = $('#gateLogo'), svcView = $('#svc');
+  const REVEAL = ['#hero','#areas','#nav','#menuBtn','#homeFoot'];
+  const aboutView = $('#about');
+  let entering = false, view = 'home', baseShift = 0;
+
+  // tre pagine vere (/, /servizi/, /chi-siamo/), ognuna col suo file generato da build.mjs.
+  // Nel file di una pagina le altre sezioni arrivano chiuse in un <template>: si aprono (ensure) solo quando servono
+  const SITE = 'https://spectualize.com';
+  const META = {
+    home: { t: 'Spectualize · Siti, advertising, marketing ed eventi', d: 'Un unico partner per far crescere il tuo brand, online e dal vivo: siti ed esperienze digitali, advertising, marketing ed eventi. Un solo team, in Italia.', u: '/' },
+    svc: { t: 'Servizi: siti, advertising, marketing, eventi · Spectualize', d: "Quattro aree, un solo team: siti ed e-commerce, campagne Google e Meta, marketing e SEO, eventi aziendali. Dall'idea ai risultati, in tutta Italia.", u: '/servizi/' },
+    about: { t: 'Chi siamo: un solo team, online e dal vivo · Spectualize', d: "Un solo team per siti, advertising, marketing ed eventi. Il nome unisce spectacle, visualize e actualize: rendere visibile un'idea e metterla in scena.", u: '/chi-siamo/' }
+  };
+  function setMeta(m){
+    document.title = m.t;
+    const d = $('meta[name="description"]'), c = $('link[rel="canonical"]'), o = $('meta[property="og:url"]');
+    if (d) d.content = m.d;
+    if (c) c.href = SITE + m.u;
+    if (o) o.content = SITE + m.u;
+  }
+  const INIT = {};
+  function ensure(sec){
+    const t = sec.querySelector(':scope > template.lazy');
+    if (!t) return;
+    t.replaceWith(t.content);
+    if (INIT[sec.id]) INIT[sec.id]();
+  }
+
+  function syncGap(){
+    if (home.hidden || innerWidth > 760) return;
+    const head = home.querySelector('.site-head'), lead = $('#hero');
+    if (!head || !lead) return;
+    const gap = lead.offsetTop + parseFloat(getComputedStyle(lead).paddingTop) - (head.offsetTop + head.offsetHeight);
+    if (gap > 0) document.documentElement.style.setProperty('--home-gap', gap + 'px');
+  }
+  addEventListener('resize', () => syncGap());
+  try { document.fonts.ready.then(syncGap); } catch(e){}
+  function resetHome(){ REVEAL.forEach(s => { const el = $(s); if (el) el.classList.remove('in'); }); }
+  function revealHome(){
+    resetHome(); REVEAL.forEach(s => void $(s).offsetWidth);
+    requestAnimationFrame(() => { REVEAL.forEach(s => $(s).classList.add('in')); placeKnob(); placeGlow(); syncGap(); setTimeout(syncGap, 1600); homeScroll(); });
+    hintLive();
+  }
+  function showGate(){
+    setMenu && setMenu(false);
+    entering = false; resetHome(); setLive(false);
+    gate.classList.remove('leaving'); gateLogo.style.transform = '';
+    ensure(home);
+    gate.hidden = false; home.hidden = true; svcView.hidden = true; aboutView.hidden = true; home.classList.remove('arriving');
+    view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); setMeta(META.home);
+    set({amp:1, shift:0});
+  }
+  function showHome(){
+    ensure(home);
+    gate.hidden = true; svcView.hidden = true; aboutView.hidden = true; home.hidden = false; home.classList.remove('arriving');
+    view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); setMeta(META.home);
+    home.scrollTop = 0; set({amp:1, shift:0}); revealHome(); homeScroll();
+  }
+  // mobile: lo scroll della home muove titolo, fumo e aree
+  const small = matchMedia('(max-width: 760px)');
+  let scrollQueued = false;
+  function homeScroll(){
+    const lead = $('#hero'), hint = $('#scrollHint'), items = [...home.querySelectorAll('#areas > a, #homeName')];
+    if (!lead) return;
+    if (!small.matches) { lead.style.translate = lead.style.opacity = hint.style.opacity = ''; items.forEach(a => a.style.translate = a.style.opacity = ''); return; }
+    const vh = home.clientHeight, p = Math.min(1, home.scrollTop / (vh * .6));
+    lead.style.translate = `0 ${(-p * 90).toFixed(1)}px`;
+    lead.style.opacity = (1 - p * .8).toFixed(3);
+    hint.style.opacity = Math.max(0, 1 - p * 3).toFixed(3);
+    items.forEach(a => {
+      const t = Math.max(0, Math.min(1, (vh - a.getBoundingClientRect().top + 40) / (vh * .2)));
+      a.style.translate = `0 ${((1 - t) * 36).toFixed(1)}px`;
+      a.style.opacity = (.15 + t * .85).toFixed(3);
+    });
+    if (view === 'home' && !entering) set({ amp: 1, shift: p * .1 });
+  }
+  home.addEventListener('scroll', () => { if (scrollQueued) return; scrollQueued = true; requestAnimationFrame(() => { scrollQueued = false; homeScroll(); }); }, { passive: true });
+  addEventListener('resize', () => homeScroll());
+  function enter(){
+    if (entering) return; entering = true;
+    try { localStorage.setItem(KEY, '1'); } catch(e){}
+    const b = $('#enter').getBoundingClientRect();
+    ripple(b.left + b.width/2, b.top + b.height/2, true);
+    set({amp:1.6, shift:.08});
+    ensure(home); resetHome(); home.classList.add('arriving'); home.hidden = false;
+    const from = gateLogo.getBoundingClientRect(), to = $('#mark').getBoundingClientRect();
+    gate.classList.add('leaving');
+    const flight = `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / from.width})`;
+    // sui telefoni il volo del logo è un'animazione: resta anche con "Riduci movimento", come sul desktop
+    const anim = touch && gateLogo.animate;
+    if (anim) {
+      gateLogo.animate([{ transform: 'none' }, { transform: flight }], { duration: 1150, easing: 'cubic-bezier(.7,0,.15,1)', fill: 'forwards' });
+      gate.querySelectorAll('.tagline, .enter, .top, .bottom').forEach(el => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, easing: 'ease', fill: 'forwards' }));
+    } else requestAnimationFrame(() => { gateLogo.style.transform = flight; });
+    setTimeout(() => set({amp:1, shift:0}), 700);
+    setTimeout(() => {
+      home.classList.remove('arriving'); gate.hidden = true;
+      gateLogo.style.transform = ''; gate.classList.remove('leaving');
+      if (anim) gate.querySelectorAll('*').forEach(el => el.getAnimations().forEach(a => { if (a.effect && a.effect.getComputedTiming().fill === 'forwards') a.cancel(); }));
+      revealHome(); entering = false; proto('back', false);
+    }, reduce && !anim ? 50 : 1200);
+  }
+  $('#enter').addEventListener('click', enter);
+  const menu = $('#menu');
+  function setMenu(open){
+    menu.hidden = !open; document.body.classList.toggle('menu-open', open);
+    document.querySelectorAll('.menu-btn').forEach(b => { b.setAttribute('aria-expanded', open); b.querySelector('span').textContent = open ? 'Chiudi' : 'Menu'; });
+  }
+  addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+  function proto(m, apply = true){
+    $('#proto').hidden = true;
+    $('#privacyBtn').hidden = true; // nascosto finché non arriva il testo privacy definitivo (era: m === 'first')
+    if (!apply) return;
+    if (m === 'first') { try { localStorage.removeItem(KEY); } catch(e){} showGate(); }
+    else { try { localStorage.setItem(KEY, '1'); } catch(e){} showHome(); }
+  }
+  $('#pReplay').addEventListener('click', () => proto('first'));
+
+  // ---------- Online / Dal vivo ----------
+  const SUB = {
+    on: "Siti, esperienze digitali, advertising e marketing: un solo team, dall'idea ai risultati.",
+    live: "Eventi aziendali, lanci e fiere, anche in streaming: un solo team, dall'idea ai risultati."
+  };
+  const AREAS = { on: [0,2,3], live: [1,3] };
+  let live = false;
+  let barAt = null;
+  function placeGlow(animate){
+    const g = $('#bar'), w = $(live ? '#wLive' : '#wOn');
+    if (!g || !w || !w.offsetWidth) return;
+    const c = g.parentElement;
+    const cr = c.getBoundingClientRect(), r = w.getBoundingClientRect();
+    const to = { x: r.left - cr.left, y: r.bottom - cr.top - r.height*0.04, w: r.width }, from = barAt;
+    barAt = to;
+    g.style.width = to.w + 'px';
+    g.style.transform = `translate(${to.x}px, ${to.y}px)`;
+    g.style.backgroundPosition = live ? '100% 0' : '0 0';
+    g.classList.add('on');
+    // mobile: la barra si allunga verso la nuova parola e poi ritira la coda, con un bagliore (animazione, resta anche con "Riduci movimento")
+    if (animate !== true || !small.matches || !from || !g.animate) return;
+    g.style.transition = 'opacity .5s ease';
+    const T = (x, y, w) => ({ transform: `translate(${x}px, ${y}px)`, width: w + 'px' });
+    const right = to.x > from.x, glow = '0 0 18px rgba(255,61,110,.75)';
+    const kf = Math.abs(to.y - from.y) < 4
+      ? [ { ...T(from.x, from.y, from.w), boxShadow: '0 0 0 rgba(255,61,110,0)', backgroundPosition: live ? '0 0' : '100% 0' },
+          { ...T(right ? from.x : to.x, to.y, right ? to.x + to.w - from.x : from.x + from.w - to.x), boxShadow: glow, offset: .48, easing: 'cubic-bezier(.3,0,.2,1)' },
+          { ...T(to.x, to.y, to.w), boxShadow: '0 0 0 rgba(255,61,110,0)', backgroundPosition: live ? '100% 0' : '0 0' } ]
+      : [ { ...T(from.x, from.y, from.w), opacity: 1 }, { ...T(from.x + from.w, from.y, 0), opacity: 0, offset: .45 },
+          { ...T(to.x, to.y, 0), opacity: 0, offset: .55 }, { ...T(to.x, to.y, to.w), opacity: 1 } ];
+    g.animate(kf, { duration: 950, easing: 'cubic-bezier(.65,0,.35,1)' });
+  }
+  addEventListener('resize', placeGlow);
+  // ricalcola la barra quando il font è caricato o il titolo cambia misura (sennò resta sulla riga sbagliata)
+  try { document.fonts.ready.then(placeGlow); } catch(e){}
+  function placeKnob(){
+    const btn = live ? $('#mLive') : $('#mOn'), knob = $('.knob');
+    if (!btn || !knob) return;
+    knob.style.width = btn.offsetWidth + 'px';
+    knob.style.transform = `translateX(${btn.offsetLeft - knob.offsetLeft}px)`;
+  }
+  let subToken = 0;
+  const words = (t, cls, step) => t.split(' ').map((w, i) => `<span class="w ${cls}" style="animation-delay:${i * step}ms">${w}</span>`).join(' ');
+  function swapSub(text){
+    const sub = $('#sub'), token = ++subToken;
+    const n = sub.textContent.trim().split(/\s+/).length;
+    sub.innerHTML = words(sub.textContent.trim(), 'w-out', 16);
+    setTimeout(() => { if (token === subToken) sub.innerHTML = words(text, 'w-in', 38); }, 420 + n * 16);
+  }
+  function setLive(v){
+    const changed = v !== live; live = v;
+    set({live: v ? 1 : 0});
+    const keep = AREAS[v ? 'live' : 'on'];
+    document.querySelectorAll('[data-area]').forEach(a => a.classList.toggle('hit', keep.includes(+a.dataset.area)));
+    if (!$('#mOn')) return;
+    $('#mOn').setAttribute('aria-pressed', !v); $('#mLive').setAttribute('aria-pressed', v);
+    $('#wOn').setAttribute('aria-pressed', !v); $('#wLive').setAttribute('aria-pressed', v);
+    placeGlow(changed);
+    placeKnob();
+    if (changed) swapSub(SUB[v ? 'live' : 'on']);
+  }
+  addEventListener('resize', placeKnob);
+
+  // 13/10/2026: lo switch non deve passare inosservato. Poco dopo l'arrivo in home "dal vivo" fa un piccolo bloop
+  // e la pillola accenna verso "Dal vivo". Una volta per visita, mai dopo che lo switch è stato toccato.
+  let hinted = false, hintTimer = 0;
+  function hintLive(){
+    clearTimeout(hintTimer);
+    if (hinted) return;
+    hintTimer = setTimeout(() => {
+      if (hinted || live || home.hidden || entering || document.body.classList.contains('menu-open') || document.body.classList.contains('in-wizard')) return;
+      hinted = true;
+      const w = $('#wLive'), k = $('.knob'), b = $('#mLive');
+      if (!w.animate) return;
+      // il titolo è "bilanciato": toccare la parola cambierebbe gli a capo. Si anima una copia sovrapposta, il testo vero non si muove
+      const h1 = w.closest('.claim'), r = w.getBoundingClientRect(), c = h1.getBoundingClientRect();
+      const g = document.createElement('span');
+      g.className = 'bloop-ghost'; g.textContent = w.textContent; g.setAttribute('aria-hidden', 'true');
+      g.style.left = (r.left - c.left) + 'px'; g.style.top = (r.top - c.top) + 'px'; g.style.lineHeight = r.height + 'px';
+      h1.appendChild(g);
+      // dissolvenza dentro e fuori: la parola vera sparisce solo mentre la copia è piena
+      const t1 = setTimeout(() => { w.style.visibility = 'hidden'; }, 110), t2 = setTimeout(() => { w.style.visibility = ''; }, 790);
+      const done = () => { clearTimeout(t1); clearTimeout(t2); g.remove(); w.style.visibility = ''; };
+      g.animate([{ opacity: 0 }, { opacity: 1, offset: .12 }, { opacity: 1, offset: .88 }, { opacity: 0 }], { duration: 900 });
+      g.animate([
+        { transform: 'scale(1)' }, { transform: 'scale(1.14) translateY(-3%)', offset: .32 },
+        { transform: 'scale(.97)', offset: .62 }, { transform: 'scale(1)' }
+      ], { duration: 900, easing: 'cubic-bezier(.3,0,.2,1)' }).finished.then(done, done);
+      g.animate([{ backgroundPosition: '0% 0' }, { backgroundPosition: '100% 0' }, { backgroundPosition: '0% 0' }], { duration: 900, easing: 'ease-in-out' });
+      k.animate([{ translate: '0 0' }, { translate: '10px 0', offset: .35 }, { translate: '-2px 0', offset: .7 }, { translate: '0 0' }], { duration: 900, easing: 'cubic-bezier(.3,0,.2,1)', delay: 120 });
+      const c0 = getComputedStyle(b).color;
+      b.animate([{ color: c0 }, { color: '#FF3D6E', offset: .4 }, { color: c0 }], { duration: 1000, delay: 120 });
+    }, 3200);
+  }
+
+  // home mobile, teaser "Il nome": quando è a metà schermo (e il font Bungee è pronto) le lettere entrano una volta;
+  // finita l'entrata parte la lente, che si ferma quando il blocco esce dallo schermo e riparte quando rientra
+  function nameTeaser(box, root){
+    if (!box) return;
+    let ready = false, entered = false, ratio = 0;
+    const fontOk = (document.fonts && document.fonts.load) ? document.fonts.load("400 1em 'Bungee'", 'SPECTUALIZE').catch(() => {}) : Promise.resolve();
+    Promise.race([fontOk, new Promise(r => setTimeout(r, 2500))]).then(() => { ready = true; update(); });
+    function update(){
+      if (!ready) return;
+      if (!box.classList.contains('in') && ratio >= .5) {
+        box.classList.add('in');
+        setTimeout(() => { entered = true; update(); }, 10 * 55 + 850);
+      }
+      box.classList.toggle('lens', entered && ratio > 0);
+    }
+    new IntersectionObserver(es => es.forEach(e => { ratio = e.isIntersecting ? e.intersectionRatio : 0; update(); }),
+      { root, threshold: [0, .25, .5, .75, 1] }).observe(box.querySelector('.hn-word'));
+  }
+
+  const shifts = [-.12, -.04, .04, .1];
+  function areaHovers(root){
+    root.querySelectorAll('[data-area]').forEach(a => {
+      a.addEventListener('mouseenter', () => { if (!entering) set({shift: shifts[+a.dataset.area]}); });
+      a.addEventListener('mouseleave', () => { if (!entering) set({shift: baseShift}); });
+    });
+  }
+  INIT.home = () => {
+    $('#mOn').addEventListener('click', () => setLive(false));
+    $('#mLive').addEventListener('click', () => { setLive(true); const b = $('#mLive').getBoundingClientRect(); click = { x:(b.left+b.width/2)/innerWidth, y:.98, at:now(), big:1 }; });
+    [['#wOn', false], ['#wLive', true]].forEach(([sel, v]) => {
+      const w = $(sel);
+      const act = () => { if (v === live) return; v ? $('#mLive').click() : setLive(false); };
+      w.addEventListener('click', act);
+      w.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(); } });
+    });
+    ['#mOn', '#mLive', '#wOn', '#wLive'].forEach(sel => $(sel).addEventListener('pointerdown', () => { hinted = true; }));
+    try { new ResizeObserver(() => placeGlow()).observe($('#hero .claim')); } catch(e){}
+    nameTeaser($('#homeName'), home);
+    areaHovers(home);
+  };
+
+  // ---------- Pagine servizio ----------
+  const SVC = [
+    { slug:'web-software', seoTitle:'Siti web, e-commerce e software su misura · Spectualize', seoDesc:'Siti su misura, e-commerce, piattaforme ed esperienze digitali immersive. Restyling, migrazioni e assistenza, con un solo team in Italia.', n:'01', name:'Web & Software', c:'var(--orange)', shift:-.12, live:0,
+      title:'Siti, piattaforme ed <span class="hl">esperienze digitali</span> su misura.',
+      sub:"Progettiamo e sviluppiamo la presenza online del tuo brand, dal sito aziendale all'esperienza immersiva.",
+      items:['Siti su misura ed esperienze immersive','E-commerce','Software e piattaforme','Restyling e migrazioni','Manutenzione e assistenza'],
+      cta:'Raccontaci il progetto' },
+    { slug:'advertising', seoTitle:'Campagne Google, Meta e LinkedIn Ads · Spectualize', seoDesc:'Campagne online che portano contatti: Google, Meta e LinkedIn Ads, media planning, remarketing, creatività e report chiari su costi e risultati.', n:'02', name:'Advertising', c:'var(--coral)', shift:-.04, live:0,
+      title:'Campagne che portano <span class="hl">contatti</span>, con risultati chiari.',
+      sub:'Pianifichiamo e gestiamo le campagne online, dalle creatività ai report.',
+      items:['Google, Meta e LinkedIn Ads','Media planning e budget','Remarketing e funnel di conversione','Creatività: banner, video, copy','Report su costi e risultati'],
+      cta:'Parliamo dei tuoi obiettivi' },
+    { slug:'marketing-brand', seoTitle:'Marketing e brand: strategia, SEO e social · Spectualize', seoDesc:'Progetti di marketing per far crescere il tuo brand: strategia e posizionamento, SEO e contenuti, social media, email marketing, CRM e analytics.', n:'03', name:'Marketing & Brand', c:'var(--magenta)', shift:.04, live:0,
+      title:'Progetti di marketing per far <span class="hl">crescere</span> il tuo brand.',
+      sub:'Dal posizionamento ai contenuti, per un lancio, un evento o un nuovo inizio.',
+      items:['Strategia e posizionamento','SEO e contenuti','Social media','Email marketing e CRM','Analytics'],
+      cta:'Raccontaci il tuo brand' },
+    { slug:'eventi', seoTitle:'Organizzazione eventi aziendali e lanci · Spectualize', seoDesc:"Eventi aziendali, lanci prodotto, convegni e fiere, in presenza, ibridi o in streaming. Dall'idea all'allestimento, con la promozione dell'evento.", n:'04', name:'Eventi', c:'var(--pink)', shift:.1, live:1,
+      title:'Eventi che fanno <span class="hl">parlare</span> del tuo brand.',
+      sub:"Dall'idea all'allestimento, in presenza, ibridi o in streaming.",
+      items:['Eventi aziendali','Lanci prodotto, convegni e fiere','Allestimenti e scenografie','Eventi ibridi e live streaming',"Promozione dell'evento"],
+      cta:"Raccontaci l'evento" }
+  ];
+  let cur = 0;
+  // le quattro aree sono già scritte nella pagina (una per area, data-slug): qui se ne mostra una
+  function showService(i, generic){
+    ensure(svcView);
+    const s = SVC[i], changed = view !== 'svc' || i !== cur;
+    setMenu(false); cur = i; view = 'svc';
+    gate.hidden = true; home.hidden = true; wiz.hidden = true; aboutView.hidden = true; svcView.hidden = false;
+    document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
+    if (changed) {
+      let main = null;
+      svcView.querySelectorAll('.svc-main').forEach(a => { a.classList.remove('in'); a.hidden = a.dataset.slug !== s.slug; if (!a.hidden) main = a; });
+      void main.offsetWidth;
+      svcView.style.setProperty('--c', s.c);
+      svcView.querySelectorAll('#svcAreas [data-svc]').forEach(a => { if (a.dataset.svc === s.slug) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+      if (svcView.scrollTop > 0) svcView.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      requestAnimationFrame(() => { main.classList.add('in'); $('#svcAreas').classList.add('in'); });
+    }
+    $('#svcCount').innerHTML = `<b>${s.n}</b> / 0${SVC.length}`;
+    baseShift = s.shift; set({ shift: s.shift, live: s.live, amp: s.live ? 1 : .72 });
+    setMeta(generic ? META.svc : { t: s.seoTitle, d: s.seoDesc, u: META.svc.u });
+  }
+  // indirizzi: /, /servizi/ (aree su #web-software, #eventi, ...), /chi-siamo/; #progetto apre il brief su qualsiasi pagina
+  function where(url){
+    const u = new URL(url || location.href, location.href);
+    let p = u.pathname.replace(/index\.html$/, '');
+    if (!p.endsWith('/')) p += '/';
+    return { p, h: u.hash };
+  }
+  const svcAt = h => SVC.findIndex(s => '#' + s.slug === h);
+  function route(url){
+    const { p, h } = where(url);
+    if (h === '#progetto') { openBrief(); return; }
+    if (!wiz.hidden) { wiz.hidden = true; document.body.classList.remove('in-wizard'); }
+    if (p === '/servizi/') { const k = svcAt(h); showService(Math.max(0, k), k < 0); return; }
+    if (p === '/chi-siamo/') { showAbout(); return; }
+    showHome(); setLive(live);
+  }
+  // passaggio tra pagine: la vista attuale sale e sfuma, il fumo pulsa, la nuova entra dal basso
+  const VIEWS = () => [gate, home, svcView, aboutView, wiz];
+  // tocco sulla barra di stato: riporta in cima la vista aperta (vedi html.tt nello stile)
+  if (touch) {
+    document.documentElement.classList.add('tt');
+    const park = () => { if (scrollY < 1) scrollTo(0, 1); };
+    let parkT = 0;
+    requestAnimationFrame(park); addEventListener('load', () => setTimeout(park, 50)); addEventListener('pageshow', () => setTimeout(park, 50));
+    addEventListener('scroll', () => {
+      if (scrollY > 0) return;
+      const v = VIEWS().find(x => x && !x.hidden && x !== gate);
+      if (v && v.scrollTop > 0 && !document.body.classList.contains('menu-open')) v.scrollTo({ top: 0, behavior: 'smooth' });
+      clearTimeout(parkT); parkT = setTimeout(park, 400);
+    }, { passive: true });
+  }
+  let swapT = 0;
+  function swap(target, fn){
+    const from = VIEWS().find(v => !v.hidden && !v.classList.contains('v-out'));
+    if (!from || from === target || entering) { fn(); return; }
+    clearTimeout(swapT);
+    VIEWS().forEach(v => v.classList.remove('v-in'));
+    from.classList.add('v-out'); set({ amp: 1.22 });
+    swapT = setTimeout(() => {
+      from.classList.remove('v-out');
+      fn();
+      const to = VIEWS().find(v => !v.hidden);
+      if (to) { to.classList.add('v-in'); to.addEventListener('animationend', function done(e){ if (e.target === to) { to.classList.remove('v-in'); to.removeEventListener('animationend', done); } }); }
+    }, 280);
+  }
+  const targetOf = url => { const { p, h } = where(url); return h === '#progetto' ? wiz : p === '/servizi/' ? svcView : p === '/chi-siamo/' ? aboutView : home; };
+  function go(url){
+    try { history.pushState(null, '', url); } catch(e){}
+    swap(targetOf(url), () => route(url));
+  }
+  // uso interno: spectualize.com/#soglia riporta alla soglia e rifà l'intro (non è una pagina, i motori non la vedono)
+  function replayGate(){ if (introOn) return history.replaceState(null, '', location.pathname + location.search); history.replaceState(null, '', location.pathname + location.search); proto('first'); introName(); }
+  addEventListener('popstate', () => { if (location.hash === '#soglia' && where().p === '/') return replayGate(); swap(targetOf(location.href), () => route(location.href)); });
+  function stepSvc(d, el){
+    const i = (cur + d + SVC.length) % SVC.length;
+    if (el) { const r = el.getBoundingClientRect(); ripple(r.left + r.width/2, r.top + r.height/2, false); }
+    go('/servizi/#' + SVC[i].slug);
+  }
+  INIT.svc = () => {
+    $('#svcPrev').addEventListener('click', e => stepSvc(-1, e.currentTarget));
+    $('#svcNext').addEventListener('click', e => stepSvc(1, e.currentTarget));
+    nameTeaser($('#svcTeaser'), svcView);
+    areaHovers(svcView);
+  };
+  addEventListener('keydown', e => {
+    if (view !== 'svc' || svcView.hidden || !menu.hidden || /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (e.key === 'ArrowRight') stepSvc(1); if (e.key === 'ArrowLeft') stepSvc(-1);
+  });
+  // ---------- Chi siamo ----------
+  // il nome resta fermo mentre scorri: le tre definizioni si accendono una alla volta e il fumo cambia con loro
+  let abDefs = [], abMeter = [];
+  INIT.about = () => { abDefs = [...document.querySelectorAll('#abDefs li')]; abMeter = [...document.querySelectorAll('#abMeter i')]; };
+  const AB_MOOD = [ { shift: 0, live: 0, amp: .9 }, { shift: .22, live: 0, amp: .94 }, { shift: .3, live: 1, amp: 1 } ];
+  let abStep = -2, abIO = null, abQueued = false;
+  function showAbout(){
+    ensure(aboutView);
+    setMenu(false); view = 'about';
+    gate.hidden = true; home.hidden = true; svcView.hidden = true; wiz.hidden = true; aboutView.hidden = false;
+    document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
+    setMeta(META.about);
+    aboutView.scrollTop = 0; abStep = -2;
+    aboutView.querySelectorAll('.rv').forEach(el => el.classList.remove('in'));
+    if (!abIO) abIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); abIO.unobserve(e.target); } }), { root: aboutView, rootMargin: '0px 0px -8% 0px' });
+    requestAnimationFrame(() => { aboutView.querySelectorAll('.rv').forEach(el => abIO.observe(el)); aboutScroll(); });
+  }
+  function aboutScroll(){
+    if (aboutView.hidden || !abDefs.length) return;
+    const vh = aboutView.clientHeight, name = $('#abName'), r = name.getBoundingClientRect(), top = aboutView.getBoundingClientRect().top;
+    const p = Math.max(0, Math.min(1, (top - r.top) / (name.offsetHeight - vh)));
+    $('#abWord').style.setProperty('--fill', (Math.min(1, p / .8) * 100).toFixed(1) + '%');
+    const n = p <= 0 ? -1 : Math.min(2, Math.floor(p * 3.2));
+    abDefs.forEach((li, i) => { li.classList.toggle('on', i <= n); li.classList.toggle('now', i === n); });
+    abMeter.forEach((m, i) => m.style.setProperty('--m', Math.max(0, Math.min(1, p * 3.2 - i)).toFixed(3)));
+    const after = r.bottom < top + vh * .5;
+    const step = after ? 3 : n;
+    if (step !== abStep && !entering) {
+      abStep = step;
+      if (step >= 0 && step < 3) set(AB_MOOD[step]);
+      else set({ shift: after ? .12 : 0, live: 0, amp: after ? .62 : .9 });
+    }
+    // come lavoriamo: la linea si riempie scorrendo
+    const steps = $('#abSteps'), sr = steps.getBoundingClientRect();
+    const sp = Math.max(0, Math.min(1, (top + vh * .75 - sr.top) / (sr.height + vh * .2)));
+    steps.style.setProperty('--prog', sp.toFixed(3));
+    [...steps.children].forEach((li, i) => li.classList.toggle('on', sp >= i / 3.4));
+  }
+  aboutView.addEventListener('scroll', () => { if (abQueued) return; abQueued = true; requestAnimationFrame(() => { abQueued = false; aboutScroll(); }); }, { passive: true });
+  addEventListener('resize', () => aboutScroll());
+
+
+
+  // ---------- Wizard ----------
+  const wiz = $('#wizard'), form = $('#wzForm');
+  const STEPS = 5;
+  const data = { aree: [], fase: '', obiettivo: '', tempi: '', racconto: '' };
+  let step = 1;
+  function briefSet(k, v){
+    const dd = wiz.querySelector(`[data-b="${k}"]`); if (!dd) return;
+    const empty = !v || (Array.isArray(v) && !v.length);
+    const txt = empty ? dd.dataset.ph : (Array.isArray(v) ? v.join(', ') : v);
+    if (dd.textContent !== txt) { dd.textContent = txt; dd.classList.toggle('empty', empty); dd.classList.remove('flash'); void dd.offsetWidth; if (!empty) dd.classList.add('flash'); }
+  }
+  wiz.querySelectorAll('[data-b]').forEach(dd => dd.dataset.ph = dd.textContent);
+  function mood(){
+    // lo sfondo segue le scelte: tinta media delle aree, luci di palco se c'entrano gli eventi
+    const sel = [...wiz.querySelectorAll('.wz-opt[aria-pressed="true"]')];
+    const sh = sel.filter(b => b.dataset.shift).map(b => +b.dataset.shift);
+    const lv = sel.some(b => b.dataset.live) ? 1 : 0;
+    set({ shift: sh.length ? sh.reduce((a,b)=>a+b,0)/sh.length : 0, live: lv, amp: lv ? 1 : .75 });
+  }
+  function showStep(n, dir = 1){
+    step = n;
+    wiz.querySelectorAll('.wz-step').forEach(el => {
+      const on = +el.dataset.step === n; el.hidden = !on;
+      el.classList.remove('is-in','is-back'); if (on) { void el.offsetWidth; el.classList.add('is-in'); if (dir < 0) el.classList.add('is-back'); }
+    });
+    $('#wzBar').style.width = Math.min(n, STEPS) / STEPS * 100 + '%';
+    $('#wzBack').hidden = n === 1 || n > STEPS;
+    $('#wzNav').hidden = n > STEPS;
+    $('#wzNextLabel').textContent = n === STEPS ? 'Invia il brief' : 'Continua';
+    $('#wzErr').textContent = '';
+    wiz.scrollTop = 0;
+    const first = wiz.querySelector(`.wz-step[data-step="${n}"] .wz-opt, .wz-step[data-step="${n}"] textarea, .wz-step[data-step="${n}"] input`);
+    if (first && !touch) setTimeout(() => first.focus({preventScroll:true}), 350);
+  }
+  function validate(){
+    if (step === 1 && !data.aree.length) return 'Scegli almeno un\'area.';
+    if (step === 2 && !data.fase) return 'Scegli la fase in cui sei.';
+    if (step === 3 && !data.obiettivo) return 'Scegli l\'obiettivo principale.';
+    if (step === 5) {
+      const nome = $('#wzNome').value.trim(), email = $('#wzEmail').value.trim();
+      $('#fNome').classList.toggle('bad', !nome);
+      $('#fEmail').classList.toggle('bad', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+      if (!nome) return 'Scrivi il tuo nome.';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Controlla l\'indirizzo email: sembra incompleto.';
+      if (!$('#wzPriv').checked) return 'Per inviare il brief serve il consenso privacy.';
+    }
+    return '';
+  }
+  function next(){
+    const err = validate();
+    if (err) { $('#wzErr').textContent = err; return; }
+    if (step < STEPS) { showStep(step + 1); return; }
+    send();
+  }
+  // invio del brief a Formspree; i messaggi arrivano all'email collegata al modulo
+  const ENDPOINT = 'https://formspree.io/f/mrpeaypk';
+  let sending = false;
+  async function send(){
+    if (sending) return; sending = true;
+    const btn = $('#wzNext'), label = $('#wzNextLabel');
+    btn.disabled = true; label.textContent = 'Invio in corso…';
+    const nome = $('#wzNome').value.trim();
+    const payload = {
+      _subject: 'Nuovo brief dal sito: ' + nome + ($('#wzAzienda').value.trim() ? ' · ' + $('#wzAzienda').value.trim() : ''),
+      nome, azienda: $('#wzAzienda').value.trim(), email: $('#wzEmail').value.trim(), _replyto: $('#wzEmail').value.trim(),
+      telefono: $('#wzTel').value.trim(), aree: data.aree.join(', '), fase: data.fase, obiettivo: data.obiettivo,
+      tempi: data.tempi, progetto: data.racconto, consenso: 'sì', _gotcha: $('#wzHp').value
+    };
+    try {
+      const r = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      $('#wzThanks').innerHTML = `Grazie, ${nome.replace(/[<>&]/g,'')}. Ci sentiamo <em>presto</em>.`;
+      showStep(STEPS + 1);
+      ripple(innerWidth/2, innerHeight/2, true);
+      set({ amp: 1.6 }); setTimeout(() => set({ amp: 1 }), 900);
+    } catch(e) {
+      $('#wzErr').textContent = 'Non siamo riusciti a inviare il brief. Controlla la connessione e riprova.';
+    } finally {
+      sending = false; btn.disabled = false; label.textContent = 'Invia il brief';
+    }
+  }
+  form.addEventListener('submit', e => { e.preventDefault(); next(); });
+  $('#wzBack').addEventListener('click', () => showStep(step - 1, -1));
+
+  wiz.querySelectorAll('.wz-opts').forEach(group => {
+    const name = group.dataset.name, multi = group.hasAttribute('data-multi');
+    group.querySelectorAll('.wz-opt').forEach(b => b.addEventListener('click', e => {
+      if (multi) {
+        b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true');
+        data[name] = [...group.querySelectorAll('[aria-pressed="true"]')].map(x => x.dataset.v);
+      } else {
+        group.querySelectorAll('.wz-opt').forEach(x => x.setAttribute('aria-pressed', x === b));
+        data[name] = b.dataset.v;
+      }
+      briefSet(name, data[name]); mood(); $('#wzErr').textContent = '';
+      const r = b.getBoundingClientRect(); ripple(e.clientX || r.left + r.width/2, e.clientY || r.top + r.height/2, false);
+      if (!multi) setTimeout(() => { if (step < STEPS) showStep(step + 1); }, 420);
+    }));
+  });
+  wiz.querySelectorAll('.wz-chips').forEach(group => {
+    group.querySelectorAll('.wz-chip').forEach(b => b.addEventListener('click', () => {
+      const on = b.getAttribute('aria-pressed') !== 'true';
+      group.querySelectorAll('.wz-chip').forEach(x => x.setAttribute('aria-pressed', on && x === b));
+      data.tempi = on ? b.dataset.v : ''; briefSet('tempi', data.tempi);
+    }));
+  });
+  $('#wzText').addEventListener('input', e => { data.racconto = e.target.value.trim(); const v = data.racconto; briefSet('racconto', v.length > 90 ? v.slice(0, 90) + '…' : v); });
+  // tasti 1-4 per scegliere, Invio per continuare (Shift+Invio va a capo nel testo)
+  wiz.addEventListener('keydown', e => {
+    if (wiz.hidden) return;
+    if (e.key === 'Enter' && e.target.tagName === 'TEXTAREA' && !e.shiftKey) { e.preventDefault(); next(); return; }
+    if (/^[1-4]$/.test(e.key) && !/INPUT|TEXTAREA/.test(e.target.tagName)) {
+      const b = wiz.querySelectorAll(`.wz-step[data-step="${step}"] .wz-opt`)[+e.key - 1]; if (b) b.click();
+    }
+  });
+
+  // dalla pagina di un'area il wizard parte con quell'area già scelta
+  function preselect(area){
+    const opts = [...wiz.querySelectorAll('.wz-step[data-step="1"] .wz-opt')];
+    const b = opts.find(x => x.dataset.v === area);
+    if (!b || b.getAttribute('aria-pressed') === 'true') return;
+    b.setAttribute('aria-pressed', 'true');
+    data.aree = opts.filter(x => x.getAttribute('aria-pressed') === 'true').map(x => x.dataset.v);
+    briefSet('aree', data.aree);
+  }
+  function openBrief(area){
+    setMenu(false);
+    home.hidden = true; gate.hidden = true; svcView.hidden = true; aboutView.hidden = true; wiz.hidden = false;
+    document.body.classList.add('in-wizard');
+    if (step > STEPS) step = 1;
+    if (area) preselect(area);
+    showStep(step); mood();
+  }
+  function closeBrief(){
+    wiz.hidden = true; document.body.classList.remove('in-wizard');
+    if (view === 'svc') { view = ''; showService(cur, svcAt(location.hash) < 0); } else if (view === 'about') showAbout(); else { showHome(); setLive(live); }
+  }
+  // il tasto di un'area apre un brief nuovo con solo quell'area; "Raccontaci il progetto" riprende quello lasciato a metà
+  function resetWizard(){
+    data.aree = []; data.fase = data.obiettivo = data.tempi = data.racconto = ''; step = 1;
+    wiz.querySelectorAll('.wz-opt, .wz-chip').forEach(b => b.setAttribute('aria-pressed', 'false'));
+    wiz.querySelectorAll('input:not([type=checkbox]), textarea').forEach(i => i.value = '');
+    $('#wzPriv').checked = false;
+    wiz.querySelectorAll('.wz-field.bad').forEach(f => f.classList.remove('bad'));
+    wiz.querySelectorAll('[data-b]').forEach(dd => { dd.textContent = dd.dataset.ph; dd.classList.add('empty'); dd.classList.remove('flash'); });
+  }
+  wiz.querySelectorAll('.js-home').forEach(b => b.addEventListener('click', () => swap(view === 'svc' ? svcView : view === 'about' ? aboutView : home, closeBrief)));
+
+
+  // ---------- Privacy ----------
+  const priv = $('#privacy'); let privFrom = null;
+  function openPrivacy(e){ if (e) { e.preventDefault(); e.stopPropagation(); } privFrom = document.activeElement; priv.hidden = false; $('#privClose').focus({preventScroll:true}); }
+  function closePrivacy(){ priv.hidden = true; if (privFrom) privFrom.focus({preventScroll:true}); }
+  $('#privacyBtn').addEventListener('click', openPrivacy);
+
+  // ---------- Link ----------
+  // i link hanno indirizzi veri (si aprono anche in una nuova scheda); il clic normale cambia pagina senza ricaricare
+  document.addEventListener('click', e => {
+    if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (e.target.closest('.menu-btn')) { setMenu(menu.hidden); return; }
+    const a = e.target.closest('a'); if (!a) return;
+    if (a.closest('#menu')) setMenu(false);
+    if (a.matches('.js-privacy')) return openPrivacy(e);
+    if (a.matches('.js-brief')) { e.preventDefault(); swap(wiz, () => openBrief()); return; }
+    if (a.matches('.js-brief-area')) { e.preventDefault(); swap(wiz, () => { resetWizard(); openBrief(SVC[cur].name); }); return; }
+    if (a.matches('[data-svc]')) {
+      e.preventDefault();
+      if (view === 'svc' && a.dataset.svc === SVC[cur].slug) return;
+      const r = a.getBoundingClientRect(); ripple(r.left + 24, r.top + 24, false);
+      go('/servizi/#' + a.dataset.svc); return;
+    }
+    if (a.matches('.js-svc')) { e.preventDefault(); if (view !== 'svc') go('/servizi/'); else setMenu(false); return; }
+    if (a.matches('.js-about')) { e.preventDefault(); if (view !== 'about') go('/chi-siamo/'); return; }
+    if (a.matches('.js-home-link')) {
+      e.preventDefault();
+      if (view === 'home' && !home.hidden) { setMenu(false); if (home.scrollTop > 0) home.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); return; }
+      go('/'); return;
+    }
+    if (a.getAttribute('href') === '#') e.preventDefault();
+  });
+  $('#privClose').addEventListener('click', closePrivacy);
+  priv.addEventListener('click', e => { if (e.target === priv) closePrivacy(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !priv.hidden) closePrivacy(); });
+
+  // ---------- Intro "Nasce il nome" (solo alla prima visita, sulla soglia) ----------
+  // passano spectacle, visualize, actualize; poi il logo nasce dal centro con un'esplosione di fumo e arriva il resto della soglia.
+  // Circa 3 s, una volta sola. Durante l'intro la soglia non risponde ai tocchi, così "Entra" non si preme prima di vederlo
+  let introOn = false;
+  function introName(){
+    if (introOn || !gateLogo.animate || (reduce && !touch)) return;
+    introOn = true;
+    const anims = [];
+    const an = (el, kf, o) => anims.push(el.animate(kf, Object.assign({ fill: 'both' }, o)));
+    const bits = [gate.querySelector('.top'), gate.querySelector('.tagline'), $('#enter'), gate.querySelector('.bottom')];
+    // il logo cresce dal suo centro (di norma l'origine è in alto a sinistra, per il volo verso la testata) e il fumo resta lì
+    gateLogo.style.transformOrigin = '50% 50%';
+    const lr = gateLogo.getBoundingClientRect(), cx = lr.left + lr.width / 2, cy = lr.top + lr.height / 2;
+    introHold = { x: cx / innerWidth, y: 1 - cy / innerHeight };
+    gate.style.pointerEvents = 'none';
+    U.amp.v = U.amp.t = 0;
+    const words = document.createElement('div');
+    words.className = 'ix-words'; words.setAttribute('aria-hidden', 'true');
+    words.innerHTML = '<span><u>spect</u>acle</span><span>vis<u>ualize</u></span><span>act<u>ualize</u></span>';
+    document.body.appendChild(words);
+    [gateLogo, ...bits].forEach(el => an(el, [{ opacity: 0 }, { opacity: 0 }], { duration: 1 }));
+    [...words.children].forEach((el, i) => an(el, [
+      { opacity: 0, filter: 'blur(10px)', transform: 'translateY(16px)' },
+      { opacity: 1, filter: 'none', transform: 'none', offset: .3 },
+      { opacity: 1, filter: 'none', transform: 'none', offset: .7 },
+      { opacity: 0, filter: 'blur(8px)', transform: i < 2 ? 'translateY(-14px)' : 'scale(.7)' }], { duration: 620, delay: 150 + i * 520, easing: 'ease-in-out' }));
+    an(gateLogo, [{ opacity: 0, transform: 'scale(.6)', filter: 'blur(12px)' }, { opacity: 1, transform: 'scale(1.04)', filter: 'none', offset: .6 }, { opacity: 1, transform: 'none', filter: 'none' }], { duration: 900, delay: 1600, easing: 'cubic-bezier(.16,1,.3,1)' });
+    setTimeout(() => { set({ amp: 1.7 }); ripple(cx, cy, true); }, 1650);
+    setTimeout(() => set({ amp: 1 }), 2300);
+    bits.forEach((el, i) => an(el, [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 2200 + i * 110, easing: 'cubic-bezier(.16,1,.3,1)' }));
+    setTimeout(() => {
+      anims.forEach(a => a.cancel()); words.remove();
+      gateLogo.style.transformOrigin = ''; gate.style.pointerEvents = ''; introHold = null; introOn = false;
+    }, 3100);
+  }
+
+
+  [home, svcView, aboutView].forEach(sec => { if (!sec.querySelector(':scope > template.lazy')) INIT[sec.id](); });
+  setLive(false);
+  let seen = false;
+  try { seen = localStorage.getItem(KEY) === '1'; } catch(e){}
+  // chi arriva direttamente su una pagina interna (o sul brief) non passa dalla soglia, che esiste solo su /
+  const { p: p0, h: h0 } = where();
+  if (p0 !== '/' || h0 === '#progetto') { try { localStorage.setItem(KEY, '1'); } catch(e){} proto('back', false); route(); }
+  else if (h0 === '#soglia') replayGate();
+  else { proto(seen ? 'back' : 'first'); if (!seen) introName(); }
+})();
+</script>

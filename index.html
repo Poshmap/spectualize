@@ -1,9 +1,11 @@
 <!doctype html>
+<!-- Generato da build.mjs a partire da src/site.html: modificare il sorgente, non questo file -->
 <html lang="it">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(h){var m=h.match(/^#servizi(?:\/([\w-]+))?$/);if(m)location.replace('/servizi/'+(m[1]?'#'+m[1]:''));else if(h==='#chi-siamo')location.replace('/chi-siamo/');})(location.hash)</script>
 <title>Spectualize · Siti, advertising, marketing ed eventi</title>
-<meta name="description" id="metaDesc" content="Un unico partner per far crescere il tuo brand, online e dal vivo: siti ed esperienze digitali, advertising, marketing ed eventi. Un solo team, in Italia.">
+<meta name="description" content="Un unico partner per far crescere il tuo brand, online e dal vivo: siti ed esperienze digitali, advertising, marketing ed eventi. Un solo team, in Italia.">
 <meta name="theme-color" content="#F1EAE0">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Spectualize">
@@ -29,14 +31,29 @@
 {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": "https://spectualize.com/#org",
   "name": "Spectualize",
   "url": "https://spectualize.com",
   "logo": "https://spectualize.com/logo.png",
   "slogan": "Esperienze online e dal vivo",
   "description": "Un unico partner per far crescere il tuo brand, online e dal vivo: siti ed esperienze digitali, advertising, marketing ed eventi. Un solo team, in Italia.",
-  "areaServed": { "@type": "Country", "name": "Italia" },
-  "address": { "@type": "PostalAddress", "addressCountry": "IT" },
-  "knowsAbout": ["Siti web", "E-commerce", "Software", "Advertising", "Marketing", "Brand", "Eventi aziendali"]
+  "areaServed": {
+    "@type": "Country",
+    "name": "Italia"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "IT"
+  },
+  "knowsAbout": [
+    "Siti web",
+    "E-commerce",
+    "Software",
+    "Advertising",
+    "Marketing",
+    "Brand",
+    "Eventi aziendali"
+  ]
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -407,7 +424,9 @@
   .svc-lead .sub { margin-top: clamp(18px,3vh,28px); }
   .svc-lead .btn { margin-top: clamp(22px,3.5vh,34px); }
   .svc-list { padding: 22px 24px 8px; border-radius: 20px; background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px var(--hairline); }
-  .svc-list h2 { font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); }
+  .svc-main[hidden] { display: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .svc-list h3 { font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); }
   .svc-list ol { list-style: none; margin-top: 8px; }
   .svc-list li { display: flex; align-items: baseline; gap: 14px; padding: 14px 0; border-top: 1px solid var(--hairline); font-size: clamp(16px,1.25vw,18px); line-height: 1.35; transition: transform .35s cubic-bezier(.16,1,.3,1); }
   .svc-list li:first-child { border-top: 0; }
@@ -775,9 +794,9 @@
 <div class="stage">
   <section class="view home" id="home" hidden aria-label="Home">
     <header class="site-head">
-      <a href="#" aria-label="Spectualize, home"><img class="mark" id="mark" src="logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" id="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <button class="menu-btn fade" id="menuBtn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
-      <nav class="fade" id="nav"><a class="js-about" href="#chi-siamo">Chi siamo</a><a class="js-svc" href="#servizi">Servizi</a><a class="btn sm js-brief" href="#">Raccontaci il progetto</a></nav>
+      <nav class="fade" id="nav"><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a><a class="btn sm js-brief" href="#progetto">Raccontaci il progetto</a></nav>
     </header>
     <div class="lead reveal" id="hero">
       <div class="mode" id="mode" role="group" aria-label="Mostra">
@@ -787,18 +806,18 @@
       <h1 class="claim" style="--i:0">Un unico partner per far crescere il tuo brand, <span class="hl"><span id="wOn" role="button" tabindex="0" aria-pressed="true">online</span> e <span class="nw"><span id="wLive" role="button" tabindex="0" aria-pressed="false">dal vivo</span>.</span></span><span class="bar" id="bar" aria-hidden="true"></span></h1>
       <div class="row" style="--i:1">
         <p class="sub" id="sub">Siti, esperienze digitali, advertising e marketing: un solo team, dall'idea ai risultati.</p>
-        <a class="btn btn-lg js-brief" href="#"><span class="dot"></span>Raccontaci il progetto</a>
+        <a class="btn btn-lg js-brief" href="#progetto"><span class="dot"></span>Raccontaci il progetto</a>
       </div>
     </div>
     <div class="scroll-hint mono" id="scrollHint" aria-hidden="true"><span>Scorri</span><i></i></div>
     <nav class="areas reveal" id="areas" aria-label="Aree">
-      <a href="#servizi/web-software" data-svc="web-software" data-area="0" style="--i:2;--c:var(--orange)"><span class="name"><i></i>Web &amp; Software</span><span class="desc">Siti, e-commerce, piattaforme ed esperienze digitali immersive.</span></a>
-      <a href="#servizi/advertising" data-svc="advertising" data-area="2" style="--i:2;--c:var(--coral)"><span class="name"><i></i>Advertising</span><span class="desc">Campagne Google, Meta e LinkedIn che portano contatti.</span></a>
-      <a href="#servizi/marketing-brand" data-svc="marketing-brand" data-area="3" style="--i:3;--c:var(--magenta)"><span class="name"><i></i>Marketing &amp; Brand</span><span class="desc">Posizionamento, SEO, social e contenuti per far crescere il brand.</span></a>
-      <a href="#servizi/eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi</span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
+      <a href="/servizi/#web-software" data-svc="web-software" data-area="0" style="--i:2;--c:var(--orange)"><span class="name"><i></i>Web &amp; Software</span><span class="desc">Siti, e-commerce, piattaforme ed esperienze digitali immersive.</span></a>
+      <a href="/servizi/#advertising" data-svc="advertising" data-area="2" style="--i:2;--c:var(--coral)"><span class="name"><i></i>Advertising</span><span class="desc">Campagne Google, Meta e LinkedIn che portano contatti.</span></a>
+      <a href="/servizi/#marketing-brand" data-svc="marketing-brand" data-area="3" style="--i:3;--c:var(--magenta)"><span class="name"><i></i>Marketing &amp; Brand</span><span class="desc">Posizionamento, SEO, social e contenuti per far crescere il brand.</span></a>
+      <a href="/servizi/#eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi</span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
     </nav>
     <!-- 13/10/2026: solo mobile, dopo le aree un invito alla pagina Chi siamo partendo dal nome -->
-    <a class="home-name js-about" id="homeName" href="#chi-siamo">
+    <a class="home-name js-about" id="homeName" href="/chi-siamo/">
       <span class="mono hn-kick">Il nome</span>
       <span class="hn-word" role="img" aria-label="Spectualize"><span class="hn-base" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span><span class="hn-lens" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span></span>
       <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
@@ -807,52 +826,89 @@
     <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
 
-  <!-- Pagina servizio: un solo modello, riempito con l'area scelta (#servizi/web-software, ...) -->
-  <section class="view page" id="svc" hidden aria-label="Servizi">
+  <!-- Servizi (/servizi/): le 4 aree sono scritte qui da build.mjs, una visibile alla volta (/servizi/#eventi, ...) -->
+  <section class="view page" id="svc" hidden aria-label="Servizi"><template class="lazy">
     <header class="site-head">
-      <a href="#" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
-      <nav><a class="js-about" href="#chi-siamo">Chi siamo</a><a class="js-svc on" href="#servizi" aria-current="page">Servizi</a><a class="btn sm js-brief" href="#">Raccontaci il progetto</a></nav>
+      <nav><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc on" href="/servizi/" aria-current="page">Servizi</a><a class="btn sm js-brief" href="#progetto">Raccontaci il progetto</a></nav>
     </header>
-    <div class="svc-main reveal" id="svcMain">
+    <h1 class="sr-only">Servizi</h1>
+    <article class="svc-main reveal" data-slug="web-software">
       <div class="svc-lead" style="--i:0">
-        <p class="svc-kicker mono"><i></i><b id="svcNum">01</b><span id="svcName">Web &amp; Software</span></p>
-        <h1 class="claim svc-title" id="svcTitle"></h1>
-        <p class="sub" id="svcSub"></p>
-        <a class="btn js-brief-area" href="#"><span class="dot"></span><span id="svcCta"></span></a>
+        <p class="svc-kicker mono"><i></i><b>01</b><span>Web &amp; Software</span></p>
+        <h2 class="claim svc-title">Siti, piattaforme ed <span class="hl">esperienze digitali</span> su misura.</h2>
+        <p class="sub">Progettiamo e sviluppiamo la presenza online del tuo brand, dal sito aziendale all'esperienza immersiva.</p>
+        <a class="btn js-brief-area" href="#progetto"><span class="dot"></span><span>Raccontaci il progetto</span></a>
       </div>
       <div class="svc-list" style="--i:1">
-        <h2>Cosa facciamo</h2>
-        <ol id="svcItems"></ol>
+        <h3>Cosa facciamo</h3>
+        <ol><li><span>01</span>Siti su misura ed esperienze immersive</li><li><span>02</span>E-commerce</li><li><span>03</span>Software e piattaforme</li><li><span>04</span>Restyling e migrazioni</li><li><span>05</span>Manutenzione e assistenza</li></ol>
       </div>
-    </div>
+    </article>
+    <article class="svc-main reveal" data-slug="advertising" hidden>
+      <div class="svc-lead" style="--i:0">
+        <p class="svc-kicker mono"><i></i><b>02</b><span>Advertising</span></p>
+        <h2 class="claim svc-title">Campagne che portano <span class="hl">contatti</span>, con risultati chiari.</h2>
+        <p class="sub">Pianifichiamo e gestiamo le campagne online, dalle creatività ai report.</p>
+        <a class="btn js-brief-area" href="#progetto"><span class="dot"></span><span>Parliamo dei tuoi obiettivi</span></a>
+      </div>
+      <div class="svc-list" style="--i:1">
+        <h3>Cosa facciamo</h3>
+        <ol><li><span>01</span>Google, Meta e LinkedIn Ads</li><li><span>02</span>Media planning e budget</li><li><span>03</span>Remarketing e funnel di conversione</li><li><span>04</span>Creatività: banner, video, copy</li><li><span>05</span>Report su costi e risultati</li></ol>
+      </div>
+    </article>
+    <article class="svc-main reveal" data-slug="marketing-brand" hidden>
+      <div class="svc-lead" style="--i:0">
+        <p class="svc-kicker mono"><i></i><b>03</b><span>Marketing &amp; Brand</span></p>
+        <h2 class="claim svc-title">Progetti di marketing per far <span class="hl">crescere</span> il tuo brand.</h2>
+        <p class="sub">Dal posizionamento ai contenuti, per un lancio, un evento o un nuovo inizio.</p>
+        <a class="btn js-brief-area" href="#progetto"><span class="dot"></span><span>Raccontaci il tuo brand</span></a>
+      </div>
+      <div class="svc-list" style="--i:1">
+        <h3>Cosa facciamo</h3>
+        <ol><li><span>01</span>Strategia e posizionamento</li><li><span>02</span>SEO e contenuti</li><li><span>03</span>Social media</li><li><span>04</span>Email marketing e CRM</li><li><span>05</span>Analytics</li></ol>
+      </div>
+    </article>
+    <article class="svc-main reveal" data-slug="eventi" hidden>
+      <div class="svc-lead" style="--i:0">
+        <p class="svc-kicker mono"><i></i><b>04</b><span>Eventi</span></p>
+        <h2 class="claim svc-title">Eventi che fanno <span class="hl">parlare</span> del tuo brand.</h2>
+        <p class="sub">Dall'idea all'allestimento, in presenza, ibridi o in streaming.</p>
+        <a class="btn js-brief-area" href="#progetto"><span class="dot"></span><span>Raccontaci l'evento</span></a>
+      </div>
+      <div class="svc-list" style="--i:1">
+        <h3>Cosa facciamo</h3>
+        <ol><li><span>01</span>Eventi aziendali</li><li><span>02</span>Lanci prodotto, convegni e fiere</li><li><span>03</span>Allestimenti e scenografie</li><li><span>04</span>Eventi ibridi e live streaming</li><li><span>05</span>Promozione dell'evento</li></ol>
+      </div>
+    </article>
     <div class="svc-foot">
       <div class="svc-nav">
         <span class="mono">Esplora le 4 aree</span>
         <div class="svc-step"><button class="svc-arrow" id="svcPrev" aria-label="Area precedente">←</button><span class="mono" id="svcCount"><b>01</b> / 04</span><button class="svc-arrow" id="svcNext" aria-label="Area successiva">→</button></div>
       </div>
     <nav class="areas reveal" id="svcAreas" aria-label="Servizi">
-      <a href="#servizi/web-software" data-svc="web-software" data-area="0" style="--i:2;--c:var(--orange)"><span class="name"><i></i>Web &amp; Software <b class="go" aria-hidden="true">→</b></span><span class="desc">Siti, e-commerce, piattaforme ed esperienze digitali immersive.</span></a>
-      <a href="#servizi/advertising" data-svc="advertising" data-area="2" style="--i:2;--c:var(--coral)"><span class="name"><i></i>Advertising <b class="go" aria-hidden="true">→</b></span><span class="desc">Campagne Google, Meta e LinkedIn che portano contatti.</span></a>
-      <a href="#servizi/marketing-brand" data-svc="marketing-brand" data-area="3" style="--i:3;--c:var(--magenta)"><span class="name"><i></i>Marketing &amp; Brand <b class="go" aria-hidden="true">→</b></span><span class="desc">Posizionamento, SEO, social e contenuti per far crescere il brand.</span></a>
-      <a href="#servizi/eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi <b class="go" aria-hidden="true">→</b></span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
+      <a href="/servizi/#web-software" data-svc="web-software" data-area="0" style="--i:2;--c:var(--orange)"><span class="name"><i></i>Web &amp; Software <b class="go" aria-hidden="true">→</b></span><span class="desc">Siti, e-commerce, piattaforme ed esperienze digitali immersive.</span></a>
+      <a href="/servizi/#advertising" data-svc="advertising" data-area="2" style="--i:2;--c:var(--coral)"><span class="name"><i></i>Advertising <b class="go" aria-hidden="true">→</b></span><span class="desc">Campagne Google, Meta e LinkedIn che portano contatti.</span></a>
+      <a href="/servizi/#marketing-brand" data-svc="marketing-brand" data-area="3" style="--i:3;--c:var(--magenta)"><span class="name"><i></i>Marketing &amp; Brand <b class="go" aria-hidden="true">→</b></span><span class="desc">Posizionamento, SEO, social e contenuti per far crescere il brand.</span></a>
+      <a href="/servizi/#eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi <b class="go" aria-hidden="true">→</b></span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
     </nav>
     </div>
-    <a class="home-name js-about" id="svcTeaser" href="#chi-siamo">
+    <a class="home-name js-about" id="svcTeaser" href="/chi-siamo/">
       <span class="mono hn-kick">Il nome</span>
       <span class="hn-word" role="img" aria-label="Spectualize"><span class="hn-base" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span><span class="hn-lens" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span></span>
       <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
-    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer></template>
   </section>
 
   <!-- Chi siamo (13/10/2026). Testi: Portale/chi-siamo-testi-v1.md -->
-  <section class="view about" id="about" hidden aria-label="Chi siamo">
+  <section class="view about" id="about" hidden aria-label="Chi siamo"><template class="lazy">
     <header class="site-head">
-      <a href="#" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
-      <nav><a class="js-about on" href="#chi-siamo" aria-current="page">Chi siamo</a><a class="js-svc" href="#servizi">Servizi</a></nav>
+      <nav><a class="js-about on" href="/chi-siamo/" aria-current="page">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a></nav>
     </header>
     <div class="ab-sec ab-hero">
       <p class="ab-kick mono rv" style="--d:0"><i></i>Chi siamo</p>
@@ -880,7 +936,7 @@
         <div class="ab-root rv" style="--d:0"><b><u>spect</u>acle</b><span>lo spettacolo</span></div>
         <div class="ab-root rv" style="--d:1"><b>vis<u>ualize</u></b><span>dare forma a ciò che si immagina</span></div>
         <div class="ab-root rv" style="--d:2"><b>act<u>ualize</u></b><span>renderlo reale</span></div>
-        <div class="ab-eq rv" style="--d:3"><span class="mono">=</span><img src="logo.png" alt="Spectualize" width="2000" height="1115"></div>
+        <div class="ab-eq rv" style="--d:3"><span class="mono">=</span><img src="/logo.png" alt="Spectualize" width="2000" height="1115"></div>
       </div>
       <p class="rv">Il nome nasce dall'incontro di tre parole inglesi: <i>spectacle</i>, lo spettacolo; <i>visualize</i>, dare forma a ciò che si immagina; <i>actualize</i>, renderlo reale. È anche il nostro metodo: partiamo da un'idea, le diamo una forma e la portiamo davanti al pubblico, online o dal vivo.</p>
     </div>
@@ -908,16 +964,16 @@
       <h2 class="claim rv">Hai un'idea da mettere <span class="hl">in scena?</span></h2>
       <p class="rv" style="--d:1">Raccontacela. Ti rispondiamo entro 12 ore.</p>
       <div class="ab-actions">
-        <a class="btn btn-lg js-brief rv" style="--d:2" href="#"><span class="dot"></span>Raccontaci il progetto</a>
-        <a class="ab-more js-svc rv" style="--d:3" href="#servizi">Scopri i servizi <span aria-hidden="true">→</span></a>
+        <a class="btn btn-lg js-brief rv" style="--d:2" href="#progetto"><span class="dot"></span>Raccontaci il progetto</a>
+        <a class="ab-more js-svc rv" style="--d:3" href="/servizi/">Scopri i servizi <span aria-hidden="true">→</span></a>
       </div>
     </div>
-    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer></template>
   </section>
 
   <section class="view wizard" id="wizard" hidden aria-label="Raccontaci il progetto">
     <header class="wz-head">
-      <button class="js-home" aria-label="Torna alla home"><img class="mark" src="logo.png" alt="Spectualize" width="2000" height="1115"></button>
+      <button class="js-home" aria-label="Torna alla home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></button>
       <button class="wz-close js-home"><span>Chiudi</span><span aria-hidden="true">✕</span></button>
     </header>
     <div class="wz-progress" aria-hidden="true"><i id="wzBar"></i></div>
@@ -1023,26 +1079,26 @@
 
   <div class="menu" id="menu" hidden>
     <div class="menu-head">
-      <a href="#" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <button class="menu-btn" aria-expanded="true" aria-controls="menu"><span>Chiudi</span><i aria-hidden="true"></i></button>
     </div>
     <nav aria-label="Menu">
-      <a class="js-home-link" href="#">Home</a>
-      <a class="js-about" href="#chi-siamo">Chi siamo</a>
-      <a class="js-svc" href="#servizi">Servizi</a>
+      <a class="js-home-link" href="/">Home</a>
+      <a class="js-about" href="/chi-siamo/">Chi siamo</a>
+      <a class="js-svc" href="/servizi/">Servizi</a>
       <div class="menu-sub">
-        <a href="#servizi/web-software" data-svc="web-software" style="--c:var(--orange)"><i></i>Web &amp; Software</a>
-        <a href="#servizi/advertising" data-svc="advertising" style="--c:var(--coral)"><i></i>Advertising</a>
-        <a href="#servizi/marketing-brand" data-svc="marketing-brand" style="--c:var(--magenta)"><i></i>Marketing &amp; Brand</a>
-        <a href="#servizi/eventi" data-svc="eventi" style="--c:var(--pink)"><i></i>Eventi</a>
+        <a href="/servizi/#web-software" data-svc="web-software" style="--c:var(--orange)"><i></i>Web &amp; Software</a>
+        <a href="/servizi/#advertising" data-svc="advertising" style="--c:var(--coral)"><i></i>Advertising</a>
+        <a href="/servizi/#marketing-brand" data-svc="marketing-brand" style="--c:var(--magenta)"><i></i>Marketing &amp; Brand</a>
+        <a href="/servizi/#eventi" data-svc="eventi" style="--c:var(--pink)"><i></i>Eventi</a>
       </div>
-      <a class="btn js-brief" href="#"><span class="dot"></span>Raccontaci il progetto</a>
+      <a class="btn js-brief" href="#progetto"><span class="dot"></span>Raccontaci il progetto</a>
     </nav>
   </div>
 
   <section class="view gate" id="gate" hidden aria-label="Benvenuto">
     <div class="top mono"><span class="status"><span class="dot"></span>Un solo team · Italia</span><span></span></div>
-    <div class="logo" id="gateLogo"><img src="logo.png" alt="Spectualize" width="2000" height="1115"></div>
+    <div class="logo" id="gateLogo"><img src="/logo.png" alt="Spectualize" width="2000" height="1115"></div>
     <p class="tagline">Esperienze online e dal vivo</p>
     <button class="enter" id="enter"><span class="dot"></span><span>Entra</span><span class="arrow" aria-hidden="true">→</span></button>
     <div class="bottom mono"><span>Web · Advertising · Marketing · Eventi</span><span>MMXXVI</span></div>
@@ -1114,7 +1170,6 @@
   addEventListener('mousemove', e => { mT.x=e.clientX/innerWidth; mT.y=1-e.clientY/innerHeight; });
   let lastTouch = -10;
   addEventListener('touchmove', e => { const t=e.touches[0]; if(t){ lastTouch = now(); mT.x=t.clientX/innerWidth; mT.y=1-t.clientY/innerHeight; } }, {passive:true});
-  document.querySelectorAll('a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 
   let gl = null;
   try { gl = canvas.getContext('webgl', {alpha:true, antialias:false, premultipliedAlpha:false, powerPreference:'low-power'}); } catch(e){}
@@ -1208,21 +1263,44 @@
   }
 
   // ---------- Soglia e home ----------
-  const gate = $('#gate'), home = $('#home'), gateLogo = $('#gateLogo'), mark = $('#mark'), svcView = $('#svc');
+  const gate = $('#gate'), home = $('#home'), gateLogo = $('#gateLogo'), svcView = $('#svc');
   const REVEAL = ['#hero','#areas','#nav','#menuBtn','#homeFoot'];
-  const TITLE = document.title, DESC = $('#metaDesc').content;
   const aboutView = $('#about');
   let entering = false, view = 'home', baseShift = 0;
+
+  // tre pagine vere (/, /servizi/, /chi-siamo/), ognuna col suo file generato da build.mjs.
+  // Nel file di una pagina le altre sezioni arrivano chiuse in un <template>: si aprono (ensure) solo quando servono
+  const SITE = 'https://spectualize.com';
+  const META = {
+    home: { t: 'Spectualize · Siti, advertising, marketing ed eventi', d: 'Un unico partner per far crescere il tuo brand, online e dal vivo: siti ed esperienze digitali, advertising, marketing ed eventi. Un solo team, in Italia.', u: '/' },
+    svc: { t: 'Servizi: siti, advertising, marketing, eventi · Spectualize', d: "Quattro aree, un solo team: siti ed e-commerce, campagne Google e Meta, marketing e SEO, eventi aziendali. Dall'idea ai risultati, in tutta Italia.", u: '/servizi/' },
+    about: { t: 'Chi siamo: un solo team, online e dal vivo · Spectualize', d: "Un solo team per siti, advertising, marketing ed eventi. Il nome unisce spectacle, visualize e actualize: rendere visibile un'idea e metterla in scena.", u: '/chi-siamo/' }
+  };
+  function setMeta(m){
+    document.title = m.t;
+    const d = $('meta[name="description"]'), c = $('link[rel="canonical"]'), o = $('meta[property="og:url"]');
+    if (d) d.content = m.d;
+    if (c) c.href = SITE + m.u;
+    if (o) o.content = SITE + m.u;
+  }
+  const INIT = {};
+  function ensure(sec){
+    const t = sec.querySelector(':scope > template.lazy');
+    if (!t) return;
+    t.replaceWith(t.content);
+    if (INIT[sec.id]) INIT[sec.id]();
+  }
 
   function syncGap(){
     if (home.hidden || innerWidth > 760) return;
     const head = home.querySelector('.site-head'), lead = $('#hero');
+    if (!head || !lead) return;
     const gap = lead.offsetTop + parseFloat(getComputedStyle(lead).paddingTop) - (head.offsetTop + head.offsetHeight);
     if (gap > 0) document.documentElement.style.setProperty('--home-gap', gap + 'px');
   }
   addEventListener('resize', () => syncGap());
   try { document.fonts.ready.then(syncGap); } catch(e){}
-  function resetHome(){ REVEAL.forEach(s => $(s).classList.remove('in')); }
+  function resetHome(){ REVEAL.forEach(s => { const el = $(s); if (el) el.classList.remove('in'); }); }
   function revealHome(){
     resetHome(); REVEAL.forEach(s => void $(s).offsetWidth);
     requestAnimationFrame(() => { REVEAL.forEach(s => $(s).classList.add('in')); placeKnob(); placeGlow(); syncGap(); setTimeout(syncGap, 1600); homeScroll(); });
@@ -1232,13 +1310,15 @@
     setMenu && setMenu(false);
     entering = false; resetHome(); setLive(false);
     gate.classList.remove('leaving'); gateLogo.style.transform = '';
+    ensure(home);
     gate.hidden = false; home.hidden = true; svcView.hidden = true; aboutView.hidden = true; home.classList.remove('arriving');
-    view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); document.title = TITLE; $('#metaDesc').content = DESC;
+    view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); setMeta(META.home);
     set({amp:1, shift:0});
   }
   function showHome(){
+    ensure(home);
     gate.hidden = true; svcView.hidden = true; aboutView.hidden = true; home.hidden = false; home.classList.remove('arriving');
-    view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); document.title = TITLE; $('#metaDesc').content = DESC;
+    view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); setMeta(META.home);
     home.scrollTop = 0; set({amp:1, shift:0}); revealHome(); homeScroll();
   }
   // mobile: lo scroll della home muove titolo, fumo e aree
@@ -1246,6 +1326,7 @@
   let scrollQueued = false;
   function homeScroll(){
     const lead = $('#hero'), hint = $('#scrollHint'), items = [...home.querySelectorAll('#areas > a, #homeName')];
+    if (!lead) return;
     if (!small.matches) { lead.style.translate = lead.style.opacity = hint.style.opacity = ''; items.forEach(a => a.style.translate = a.style.opacity = ''); return; }
     const vh = home.clientHeight, p = Math.min(1, home.scrollTop / (vh * .6));
     lead.style.translate = `0 ${(-p * 90).toFixed(1)}px`;
@@ -1266,8 +1347,8 @@
     const b = $('#enter').getBoundingClientRect();
     ripple(b.left + b.width/2, b.top + b.height/2, true);
     set({amp:1.6, shift:.08});
-    resetHome(); home.classList.add('arriving'); home.hidden = false;
-    const from = gateLogo.getBoundingClientRect(), to = mark.getBoundingClientRect();
+    ensure(home); resetHome(); home.classList.add('arriving'); home.hidden = false;
+    const from = gateLogo.getBoundingClientRect(), to = $('#mark').getBoundingClientRect();
     gate.classList.add('leaving');
     const flight = `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / from.width})`;
     // sui telefoni il volo del logo è un'animazione: resta anche con "Riduci movimento", come sul desktop
@@ -1285,13 +1366,11 @@
     }, reduce && !anim ? 50 : 1200);
   }
   $('#enter').addEventListener('click', enter);
-  const menu = $('#menu'), menuBtns = document.querySelectorAll('.menu-btn');
+  const menu = $('#menu');
   function setMenu(open){
     menu.hidden = !open; document.body.classList.toggle('menu-open', open);
-    menuBtns.forEach(b => { b.setAttribute('aria-expanded', open); b.querySelector('span').textContent = open ? 'Chiudi' : 'Menu'; });
+    document.querySelectorAll('.menu-btn').forEach(b => { b.setAttribute('aria-expanded', open); b.querySelector('span').textContent = open ? 'Chiudi' : 'Menu'; });
   }
-  menuBtns.forEach(b => b.addEventListener('click', () => setMenu(menu.hidden)));
-  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
   addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
 
   function proto(m, apply = true){
@@ -1312,8 +1391,9 @@
   let live = false;
   let barAt = null;
   function placeGlow(animate){
-    const g = $('#bar'), w = $(live ? '#wLive' : '#wOn'), c = g.parentElement;
-    if (!w.offsetWidth) return;
+    const g = $('#bar'), w = $(live ? '#wLive' : '#wOn');
+    if (!g || !w || !w.offsetWidth) return;
+    const c = g.parentElement;
     const cr = c.getBoundingClientRect(), r = w.getBoundingClientRect();
     const to = { x: r.left - cr.left, y: r.bottom - cr.top - r.height*0.04, w: r.width }, from = barAt;
     barAt = to;
@@ -1336,9 +1416,10 @@
   }
   addEventListener('resize', placeGlow);
   // ricalcola la barra quando il font è caricato o il titolo cambia misura (sennò resta sulla riga sbagliata)
-  try { document.fonts.ready.then(placeGlow); new ResizeObserver(() => placeGlow()).observe($('#hero .claim')); } catch(e){}
+  try { document.fonts.ready.then(placeGlow); } catch(e){}
   function placeKnob(){
     const btn = live ? $('#mLive') : $('#mOn'), knob = $('.knob');
+    if (!btn || !knob) return;
     knob.style.width = btn.offsetWidth + 'px';
     knob.style.transform = `translateX(${btn.offsetLeft - knob.offsetLeft}px)`;
   }
@@ -1352,24 +1433,17 @@
   }
   function setLive(v){
     const changed = v !== live; live = v;
+    set({live: v ? 1 : 0});
+    const keep = AREAS[v ? 'live' : 'on'];
+    document.querySelectorAll('[data-area]').forEach(a => a.classList.toggle('hit', keep.includes(+a.dataset.area)));
+    if (!$('#mOn')) return;
     $('#mOn').setAttribute('aria-pressed', !v); $('#mLive').setAttribute('aria-pressed', v);
     $('#wOn').setAttribute('aria-pressed', !v); $('#wLive').setAttribute('aria-pressed', v);
     placeGlow(changed);
-    const keep = AREAS[v ? 'live' : 'on'];
-    document.querySelectorAll('[data-area]').forEach(a => a.classList.toggle('hit', keep.includes(+a.dataset.area)));
-    set({live: v ? 1 : 0});
     placeKnob();
     if (changed) swapSub(SUB[v ? 'live' : 'on']);
   }
-  $('#mOn').addEventListener('click', () => setLive(false));
-  $('#mLive').addEventListener('click', () => { setLive(true); const b = $('#mLive').getBoundingClientRect(); click = { x:(b.left+b.width/2)/innerWidth, y:.98, at:now(), big:1 }; });
   addEventListener('resize', placeKnob);
-  [['#wOn', false], ['#wLive', true]].forEach(([sel, v]) => {
-    const w = $(sel);
-    const act = () => { if (v === live) return; v ? $('#mLive').click() : setLive(false); };
-    w.addEventListener('click', act);
-    w.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(); } });
-  });
 
   // 13/10/2026: lo switch non deve passare inosservato. Poco dopo l'arrivo in home "dal vivo" fa un piccolo bloop
   // e la pillola accenna verso "Dal vivo". Una volta per visita, mai dopo che lo switch è stato toccato.
@@ -1402,7 +1476,6 @@
       b.animate([{ color: c0 }, { color: '#FF3D6E', offset: .4 }, { color: c0 }], { duration: 1000, delay: 120 });
     }, 3200);
   }
-  ['#mOn', '#mLive', '#wOn', '#wLive'].forEach(sel => $(sel).addEventListener('pointerdown', () => { hinted = true; }));
 
   // home mobile, teaser "Il nome": quando è a metà schermo (e il font Bungee è pronto) le lettere entrano una volta;
   // finita l'entrata parte la lente, che si ferma quando il blocco esce dallo schermo e riparte quando rientra
@@ -1422,14 +1495,28 @@
     new IntersectionObserver(es => es.forEach(e => { ratio = e.isIntersecting ? e.intersectionRatio : 0; update(); }),
       { root, threshold: [0, .25, .5, .75, 1] }).observe(box.querySelector('.hn-word'));
   }
-  nameTeaser($('#homeName'), home);
-  nameTeaser($('#svcTeaser'), svcView);
 
   const shifts = [-.12, -.04, .04, .1];
-  document.querySelectorAll('[data-area]').forEach(a => {
-    a.addEventListener('mouseenter', () => { if (!entering) set({shift: shifts[+a.dataset.area]}); });
-    a.addEventListener('mouseleave', () => { if (!entering) set({shift: baseShift}); });
-  });
+  function areaHovers(root){
+    root.querySelectorAll('[data-area]').forEach(a => {
+      a.addEventListener('mouseenter', () => { if (!entering) set({shift: shifts[+a.dataset.area]}); });
+      a.addEventListener('mouseleave', () => { if (!entering) set({shift: baseShift}); });
+    });
+  }
+  INIT.home = () => {
+    $('#mOn').addEventListener('click', () => setLive(false));
+    $('#mLive').addEventListener('click', () => { setLive(true); const b = $('#mLive').getBoundingClientRect(); click = { x:(b.left+b.width/2)/innerWidth, y:.98, at:now(), big:1 }; });
+    [['#wOn', false], ['#wLive', true]].forEach(([sel, v]) => {
+      const w = $(sel);
+      const act = () => { if (v === live) return; v ? $('#mLive').click() : setLive(false); };
+      w.addEventListener('click', act);
+      w.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(); } });
+    });
+    ['#mOn', '#mLive', '#wOn', '#wLive'].forEach(sel => $(sel).addEventListener('pointerdown', () => { hinted = true; }));
+    try { new ResizeObserver(() => placeGlow()).observe($('#hero .claim')); } catch(e){}
+    nameTeaser($('#homeName'), home);
+    areaHovers(home);
+  };
 
   // ---------- Pagine servizio ----------
   const SVC = [
@@ -1455,32 +1542,40 @@
       cta:"Raccontaci l'evento" }
   ];
   let cur = 0;
-  function showService(i){
+  // le quattro aree sono già scritte nella pagina (una per area, data-slug): qui se ne mostra una
+  function showService(i, generic){
+    ensure(svcView);
     const s = SVC[i], changed = view !== 'svc' || i !== cur;
     setMenu(false); cur = i; view = 'svc';
     gate.hidden = true; home.hidden = true; wiz.hidden = true; aboutView.hidden = true; svcView.hidden = false;
     document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
     if (changed) {
-      const main = $('#svcMain'); main.classList.remove('in'); void main.offsetWidth;
+      let main = null;
+      svcView.querySelectorAll('.svc-main').forEach(a => { a.classList.remove('in'); a.hidden = a.dataset.slug !== s.slug; if (!a.hidden) main = a; });
+      void main.offsetWidth;
       svcView.style.setProperty('--c', s.c);
-      $('#svcNum').textContent = s.n; $('#svcName').textContent = s.name;
-      $('#svcTitle').innerHTML = s.title; $('#svcSub').textContent = s.sub; $('#svcCta').textContent = s.cta;
-      $('#svcItems').innerHTML = s.items.map((t, k) => `<li><span>0${k+1}</span>${t}</li>`).join('');
       svcView.querySelectorAll('#svcAreas [data-svc]').forEach(a => { if (a.dataset.svc === s.slug) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
       if (svcView.scrollTop > 0) svcView.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
       requestAnimationFrame(() => { main.classList.add('in'); $('#svcAreas').classList.add('in'); });
     }
     $('#svcCount').innerHTML = `<b>${s.n}</b> / 0${SVC.length}`;
     baseShift = s.shift; set({ shift: s.shift, live: s.live, amp: s.live ? 1 : .72 });
-    document.title = s.seoTitle; $('#metaDesc').content = s.seoDesc;
+    setMeta(generic ? META.svc : { t: s.seoTitle, d: s.seoDesc, u: META.svc.u });
   }
-  // indirizzi: #servizi/<area>, #progetto; niente hash = home
-  function route(h){
-    const m = (h || '').match(/^#servizi(?:\/([\w-]+))?/);
-    if (m) { showService(Math.max(0, SVC.findIndex(s => s.slug === m[1]))); return; }
+  // indirizzi: /, /servizi/ (aree su #web-software, #eventi, ...), /chi-siamo/; #progetto apre il brief su qualsiasi pagina
+  function where(url){
+    const u = new URL(url || location.href, location.href);
+    let p = u.pathname.replace(/index\.html$/, '');
+    if (!p.endsWith('/')) p += '/';
+    return { p, h: u.hash };
+  }
+  const svcAt = h => SVC.findIndex(s => '#' + s.slug === h);
+  function route(url){
+    const { p, h } = where(url);
     if (h === '#progetto') { openBrief(); return; }
-    if (h === '#chi-siamo') { if (!wiz.hidden) { wiz.hidden = true; document.body.classList.remove('in-wizard'); } showAbout(); return; }
     if (!wiz.hidden) { wiz.hidden = true; document.body.classList.remove('in-wizard'); }
+    if (p === '/servizi/') { const k = svcAt(h); showService(Math.max(0, k), k < 0); return; }
+    if (p === '/chi-siamo/') { showAbout(); return; }
     showHome(); setLive(live);
   }
   // passaggio tra pagine: la vista attuale sale e sfuma, il fumo pulsa, la nuova entra dal basso
@@ -1512,51 +1607,48 @@
       if (to) { to.classList.add('v-in'); to.addEventListener('animationend', function done(e){ if (e.target === to) { to.classList.remove('v-in'); to.removeEventListener('animationend', done); } }); }
     }, 280);
   }
-  const targetOf = h => /^#servizi/.test(h || '') ? svcView : h === '#progetto' ? wiz : h === '#chi-siamo' ? aboutView : home;
-  function go(h){
-    try { history.pushState(null, '', h || location.pathname + location.search); } catch(e){}
-    swap(targetOf(h), () => route(h));
+  const targetOf = url => { const { p, h } = where(url); return h === '#progetto' ? wiz : p === '/servizi/' ? svcView : p === '/chi-siamo/' ? aboutView : home; };
+  function go(url){
+    try { history.pushState(null, '', url); } catch(e){}
+    swap(targetOf(url), () => route(url));
   }
   // uso interno: spectualize.com/#soglia riporta alla soglia e rifà l'intro (non è una pagina, i motori non la vedono)
   function replayGate(){ if (introOn) return history.replaceState(null, '', location.pathname + location.search); history.replaceState(null, '', location.pathname + location.search); proto('first'); introName(); }
-  addEventListener('popstate', () => { if (location.hash === '#soglia') return replayGate(); swap(targetOf(location.hash), () => route(location.hash)); });
+  addEventListener('popstate', () => { if (location.hash === '#soglia' && where().p === '/') return replayGate(); swap(targetOf(location.href), () => route(location.href)); });
   function stepSvc(d, el){
     const i = (cur + d + SVC.length) % SVC.length;
     if (el) { const r = el.getBoundingClientRect(); ripple(r.left + r.width/2, r.top + r.height/2, false); }
-    go('#servizi/' + SVC[i].slug);
+    go('/servizi/#' + SVC[i].slug);
   }
-  $('#svcPrev').addEventListener('click', e => stepSvc(-1, e.currentTarget));
-  $('#svcNext').addEventListener('click', e => stepSvc(1, e.currentTarget));
+  INIT.svc = () => {
+    $('#svcPrev').addEventListener('click', e => stepSvc(-1, e.currentTarget));
+    $('#svcNext').addEventListener('click', e => stepSvc(1, e.currentTarget));
+    nameTeaser($('#svcTeaser'), svcView);
+    areaHovers(svcView);
+  };
   addEventListener('keydown', e => {
     if (view !== 'svc' || svcView.hidden || !menu.hidden || /INPUT|TEXTAREA/.test(e.target.tagName)) return;
     if (e.key === 'ArrowRight') stepSvc(1); if (e.key === 'ArrowLeft') stepSvc(-1);
   });
-  document.querySelectorAll('[data-svc]').forEach(a => a.addEventListener('click', e => {
-    e.preventDefault();
-    if (view === 'svc' && a.dataset.svc === SVC[cur].slug) return;
-    const r = a.getBoundingClientRect(); ripple(r.left + 24, r.top + 24, false);
-    go('#servizi/' + a.dataset.svc);
-  }));
-  document.querySelectorAll('.js-svc').forEach(a => a.addEventListener('click', e => { e.preventDefault(); if (view !== 'svc') go('#servizi/' + SVC[0].slug); else setMenu(false); }));
-  document.querySelectorAll('.js-home-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(''); }));
   // ---------- Chi siamo ----------
   // il nome resta fermo mentre scorri: le tre definizioni si accendono una alla volta e il fumo cambia con loro
-  const abDefs = [...document.querySelectorAll('#abDefs li')], abMeter = [...document.querySelectorAll('#abMeter i')];
+  let abDefs = [], abMeter = [];
+  INIT.about = () => { abDefs = [...document.querySelectorAll('#abDefs li')]; abMeter = [...document.querySelectorAll('#abMeter i')]; };
   const AB_MOOD = [ { shift: 0, live: 0, amp: .9 }, { shift: .22, live: 0, amp: .94 }, { shift: .3, live: 1, amp: 1 } ];
   let abStep = -2, abIO = null, abQueued = false;
   function showAbout(){
+    ensure(aboutView);
     setMenu(false); view = 'about';
     gate.hidden = true; home.hidden = true; svcView.hidden = true; wiz.hidden = true; aboutView.hidden = false;
     document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
-    document.title = 'Chi siamo: un solo team, online e dal vivo · Spectualize';
-    $('#metaDesc').content = "Un solo team per siti, advertising, marketing ed eventi. Il nome unisce spectacle, visualize e actualize: rendere visibile un'idea e metterla in scena.";
+    setMeta(META.about);
     aboutView.scrollTop = 0; abStep = -2;
     aboutView.querySelectorAll('.rv').forEach(el => el.classList.remove('in'));
     if (!abIO) abIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); abIO.unobserve(e.target); } }), { root: aboutView, rootMargin: '0px 0px -8% 0px' });
     requestAnimationFrame(() => { aboutView.querySelectorAll('.rv').forEach(el => abIO.observe(el)); aboutScroll(); });
   }
   function aboutScroll(){
-    if (aboutView.hidden) return;
+    if (aboutView.hidden || !abDefs.length) return;
     const vh = aboutView.clientHeight, name = $('#abName'), r = name.getBoundingClientRect(), top = aboutView.getBoundingClientRect().top;
     const p = Math.max(0, Math.min(1, (top - r.top) / (name.offsetHeight - vh)));
     $('#abWord').style.setProperty('--fill', (Math.min(1, p / .8) * 100).toFixed(1) + '%');
@@ -1578,7 +1670,6 @@
   }
   aboutView.addEventListener('scroll', () => { if (abQueued) return; abQueued = true; requestAnimationFrame(() => { abQueued = false; aboutScroll(); }); }, { passive: true });
   addEventListener('resize', () => aboutScroll());
-  document.querySelectorAll('.js-about').forEach(a => a.addEventListener('click', e => { e.preventDefault(); if (view !== 'about') go('#chi-siamo'); }));
 
 
 
@@ -1717,7 +1808,7 @@
   }
   function closeBrief(){
     wiz.hidden = true; document.body.classList.remove('in-wizard');
-    if (view === 'svc') { view = ''; showService(cur); } else if (view === 'about') showAbout(); else { showHome(); setLive(live); }
+    if (view === 'svc') { view = ''; showService(cur, svcAt(location.hash) < 0); } else if (view === 'about') showAbout(); else { showHome(); setLive(live); }
   }
   // il tasto di un'area apre un brief nuovo con solo quell'area; "Raccontaci il progetto" riprende quello lasciato a metà
   function resetWizard(){
@@ -1728,8 +1819,6 @@
     wiz.querySelectorAll('.wz-field.bad').forEach(f => f.classList.remove('bad'));
     wiz.querySelectorAll('[data-b]').forEach(dd => { dd.textContent = dd.dataset.ph; dd.classList.add('empty'); dd.classList.remove('flash'); });
   }
-  document.querySelectorAll('.js-brief').forEach(a => a.addEventListener('click', e => { e.preventDefault(); swap(wiz, () => openBrief()); }));
-  document.querySelectorAll('.js-brief-area').forEach(a => a.addEventListener('click', e => { e.preventDefault(); swap(wiz, () => { resetWizard(); openBrief(SVC[cur].name); }); }));
   wiz.querySelectorAll('.js-home').forEach(b => b.addEventListener('click', () => swap(view === 'svc' ? svcView : view === 'about' ? aboutView : home, closeBrief)));
 
 
@@ -1738,7 +1827,32 @@
   function openPrivacy(e){ if (e) { e.preventDefault(); e.stopPropagation(); } privFrom = document.activeElement; priv.hidden = false; $('#privClose').focus({preventScroll:true}); }
   function closePrivacy(){ priv.hidden = true; if (privFrom) privFrom.focus({preventScroll:true}); }
   $('#privacyBtn').addEventListener('click', openPrivacy);
-  document.querySelectorAll('.js-privacy').forEach(a => a.addEventListener('click', openPrivacy));
+
+  // ---------- Link ----------
+  // i link hanno indirizzi veri (si aprono anche in una nuova scheda); il clic normale cambia pagina senza ricaricare
+  document.addEventListener('click', e => {
+    if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (e.target.closest('.menu-btn')) { setMenu(menu.hidden); return; }
+    const a = e.target.closest('a'); if (!a) return;
+    if (a.closest('#menu')) setMenu(false);
+    if (a.matches('.js-privacy')) return openPrivacy(e);
+    if (a.matches('.js-brief')) { e.preventDefault(); swap(wiz, () => openBrief()); return; }
+    if (a.matches('.js-brief-area')) { e.preventDefault(); swap(wiz, () => { resetWizard(); openBrief(SVC[cur].name); }); return; }
+    if (a.matches('[data-svc]')) {
+      e.preventDefault();
+      if (view === 'svc' && a.dataset.svc === SVC[cur].slug) return;
+      const r = a.getBoundingClientRect(); ripple(r.left + 24, r.top + 24, false);
+      go('/servizi/#' + a.dataset.svc); return;
+    }
+    if (a.matches('.js-svc')) { e.preventDefault(); if (view !== 'svc') go('/servizi/'); else setMenu(false); return; }
+    if (a.matches('.js-about')) { e.preventDefault(); if (view !== 'about') go('/chi-siamo/'); return; }
+    if (a.matches('.js-home-link')) {
+      e.preventDefault();
+      if (view === 'home' && !home.hidden) { setMenu(false); if (home.scrollTop > 0) home.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); return; }
+      go('/'); return;
+    }
+    if (a.getAttribute('href') === '#') e.preventDefault();
+  });
   $('#privClose').addEventListener('click', closePrivacy);
   priv.addEventListener('click', e => { if (e.target === priv) closePrivacy(); });
   addEventListener('keydown', e => { if (e.key === 'Escape' && !priv.hidden) closePrivacy(); });
@@ -1780,12 +1894,13 @@
   }
 
 
+  [home, svcView, aboutView].forEach(sec => { if (!sec.querySelector(':scope > template.lazy')) INIT[sec.id](); });
   setLive(false);
   let seen = false;
   try { seen = localStorage.getItem(KEY) === '1'; } catch(e){}
-  // chi arriva direttamente su una pagina interna non passa dalla soglia
-  const h0 = location.hash;
-  if (/^#(servizi|progetto|chi-siamo)/.test(h0)) { try { localStorage.setItem(KEY, '1'); } catch(e){} proto('back', false); route(h0); }
+  // chi arriva direttamente su una pagina interna (o sul brief) non passa dalla soglia, che esiste solo su /
+  const { p: p0, h: h0 } = where();
+  if (p0 !== '/' || h0 === '#progetto') { try { localStorage.setItem(KEY, '1'); } catch(e){} proto('back', false); route(); }
   else if (h0 === '#soglia') replayGate();
   else { proto(seen ? 'back' : 'first'); if (!seen) introName(); }
 })();
