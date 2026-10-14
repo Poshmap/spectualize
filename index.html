@@ -732,7 +732,7 @@
      Ogni lettera porta il suo pezzo di gradiente (così regge anche su Safari mentre si anima) */
   @media (max-width: 760px) {
     .hn-word.split { background: none; color: var(--ink); }
-    .hn-word.split b { display: inline-block; font-weight: inherit; color: transparent; -webkit-background-clip: text; background-clip: text; background-image: var(--grad); background-repeat: no-repeat; opacity: 0; }
+    .hn-word.split b { display: inline-block; font-weight: inherit; color: transparent; -webkit-background-clip: text; background-clip: text; background-image: linear-gradient(90deg, var(--ink) 0 41%, #FF7A2A 44.5%, #FF3D6E 48%, #E91FA8 52%, #FF1CD6 55.5%, var(--ink) 59% 100%); background-repeat: no-repeat; opacity: 0; }
     .hn-word.split.go b { opacity: 1; animation: hn-in .8s cubic-bezier(.16,1,.3,1) backwards; animation-delay: calc(var(--k) * 55ms); }
   }
   @keyframes hn-in { from { opacity: 0; transform: translateX(-.18em) translateY(.12em); filter: blur(8px); } }
@@ -1372,7 +1372,8 @@
   }
   ['#mOn', '#mLive', '#wOn', '#wLive'].forEach(sel => $(sel).addEventListener('pointerdown', () => { hinted = true; }));
 
-  // home mobile: il nome entra lettera per lettera quando arriva nello schermo, poi il gradiente scorre lento
+  // home mobile: il nome entra lettera per lettera ed è nero; ogni tanto una "lente a raggi X" di gradiente lo attraversa da sinistra a destra.
+  // Ogni lettera porta il suo pezzo dello stesso sfondo (fascia colorata dentro un fondo nero), così regge anche su Safari
   (() => {
     const word = $('#homeName .hn-word');
     if (!word || !word.animate) return;
@@ -1381,26 +1382,24 @@
     word.classList.add('split');
     const letters = [...word.children];
     let flows = [];
-    const paint = () => {
-      const W = word.scrollWidth, G = W * 1.8;
-      letters.forEach(l => { l.style.backgroundSize = G + 'px 100%'; l.style.backgroundPosition = -l.offsetLeft + 'px 0'; });
-      return { W, G };
-    };
-    const flow = () => {
+    // lo sfondo è largo 3 volte la parola con la fascia al centro: spostandolo, la fascia passa da fuori a sinistra a fuori a destra
+    const at = (l, W, x) => (x - 1.5 * W - l.offsetLeft) + 'px 0';
+    const sweep = () => {
       flows.forEach(f => f.cancel());
-      const { W, G } = paint();
+      const W = word.scrollWidth;
+      letters.forEach(l => { l.style.backgroundSize = 3 * W + 'px 100%'; l.style.backgroundPosition = at(l, W, -W); });
       flows = letters.map(l => l.animate(
-        [{ backgroundPosition: -l.offsetLeft + 'px 0' }, { backgroundPosition: -(l.offsetLeft + G - W) + 'px 0' }],
-        { duration: 7000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }));
+        [{ backgroundPosition: at(l, W, -.4 * W) }, { backgroundPosition: at(l, W, 1.4 * W), offset: .4 }, { backgroundPosition: at(l, W, 1.4 * W) }],
+        { duration: 5200, delay: 900, iterations: Infinity, easing: 'cubic-bezier(.45,0,.25,1)' }));
     };
     const play = () => {
       word.classList.remove('go'); void word.offsetWidth; word.classList.add('go');
-      flow();
+      sweep();
     };
     new IntersectionObserver(es => es.forEach(e => {
       if (e.isIntersecting) play(); else { word.classList.remove('go'); flows.forEach(f => f.cancel()); flows = []; }
     }), { root: home, threshold: .6 }).observe(word);
-    addEventListener('resize', () => { if (flows.length) flow(); });
+    addEventListener('resize', () => { if (flows.length) sweep(); });
   })();
 
   const shifts = [-.12, -.04, .04, .1];
