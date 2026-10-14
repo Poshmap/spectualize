@@ -777,8 +777,8 @@
     <!-- 13/10/2026: solo mobile, dopo le aree un invito alla pagina Chi siamo partendo dal nome -->
     <a class="home-name js-about" id="homeName" href="#chi-siamo">
       <span class="mono hn-kick">Il nome</span>
-      <span class="hn-word" aria-label="spectualize">spect·ualize</span>
-      <span class="hn-line">Spectacle, visualize, actualize: rendere visibile un'idea e metterla in scena.</span>
+      <span class="hn-word" aria-label="spectualize">spectualize</span>
+      <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
     <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
@@ -1394,16 +1394,21 @@
         { duration: 7200, delay: 600, iterations: Infinity, easing: 'linear' }));
     };
     // l'entrata lettera per lettera parte una sola volta; uscendo dallo schermo la lente si ferma e rientrando riparte
-    let shown = false;
+    let shown = false, ready = false, seen = 0;
+    // il nome aspetta il suo font: niente cambio di carattere a metà entrata, niente lente che riparte
+    const fontOk = (document.fonts && document.fonts.load) ? document.fonts.load("400 1em 'Bungee'", 'SPECTUALIZE').catch(() => {}) : Promise.resolve();
+    Promise.race([fontOk, new Promise(r => setTimeout(r, 2500))]).then(() => { ready = true; if (seen) start(seen); });
+    function start(ratio){
+      if (!ready) return;
+      if (!shown && ratio >= .5) { shown = true; word.classList.add('go'); }
+      if (!flows.length) sweep();
+    }
     new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting) {
-        if (!shown && e.intersectionRatio >= .5) { shown = true; word.classList.add('go'); }
-        if (!flows.length) sweep();
-      } else if (!e.isIntersecting && e.intersectionRatio === 0) { flows.forEach(f => f.cancel()); flows = []; }
-    }), { root: home, threshold: [0, .5] }).observe(word);
+      seen = e.isIntersecting ? e.intersectionRatio : 0;
+      if (e.isIntersecting) { start(e.intersectionRatio); return; }
+      flows.forEach(f => f.cancel()); flows = [];
+    }), { root: home, threshold: [0, .25, .5, .75, 1] }).observe(word);
     addEventListener('resize', () => { if (flows.length) sweep(); });
-    // il font del nome può arrivare dopo: ricalcolo le posizioni quando è pronto
-    try { document.fonts.ready.then(() => { if (flows.length) sweep(); }); } catch(e){}
   })();
 
   const shifts = [-.12, -.04, .04, .1];
