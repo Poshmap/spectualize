@@ -751,6 +751,12 @@
   .ab-word, .hn-word { font-family: 'Bungee', var(--sans); font-weight: 400; letter-spacing: 0; margin-left: 0; line-height: 1; text-transform: uppercase; }
   .ab-word { font-size: clamp(44px, 11.2vw, 172px); }
   @media (max-width: 760px) { .ab-word, .hn-word { font-size: 11.4vw; } }
+  /* 14/10/2026: "tocca in cima per tornare su" (iPhone). Il tocco sulla barra di stato fa scorrere solo il documento,
+     ma qui scorrono le viste. Sui touch il documento è alto 2px in più e resta fermo a 1px: quando il telefono lo riporta a 0,
+     la vista aperta torna in cima. Tutto il resto è fisso, quindi quel pixel non si vede. */
+  html.tt, html.tt body { height: auto; }
+  html.tt body { overflow: visible; min-height: calc(100vh + 2px); }
+  html.tt .view { overscroll-behavior-y: contain; }
 </style>
 
 <canvas id="shader" aria-hidden="true"></canvas>
@@ -1470,6 +1476,19 @@
   }
   // passaggio tra pagine: la vista attuale sale e sfuma, il fumo pulsa, la nuova entra dal basso
   const VIEWS = () => [gate, home, svcView, aboutView, wiz];
+  // tocco sulla barra di stato: riporta in cima la vista aperta (vedi html.tt nello stile)
+  if (touch) {
+    document.documentElement.classList.add('tt');
+    const park = () => { if (scrollY < 1) scrollTo(0, 1); };
+    let parkT = 0;
+    requestAnimationFrame(park); addEventListener('load', () => setTimeout(park, 50)); addEventListener('pageshow', () => setTimeout(park, 50));
+    addEventListener('scroll', () => {
+      if (scrollY > 0) return;
+      const v = VIEWS().find(x => x && !x.hidden && x !== gate);
+      if (v && v.scrollTop > 0 && !document.body.classList.contains('menu-open')) v.scrollTo({ top: 0, behavior: 'smooth' });
+      clearTimeout(parkT); parkT = setTimeout(park, 400);
+    }, { passive: true });
+  }
   let swapT = 0;
   function swap(target, fn){
     const from = VIEWS().find(v => !v.hidden && !v.classList.contains('v-out'));
