@@ -735,7 +735,7 @@
     .hn-word.split b { display: inline-block; font-weight: inherit; color: transparent; -webkit-background-clip: text; background-clip: text; background-image: linear-gradient(90deg, var(--ink) 0 41%, #FF7A2A 44.5%, #FF3D6E 48%, #E91FA8 52%, #FF1CD6 55.5%, var(--ink) 59% 100%); background-repeat: no-repeat; opacity: 0; }
     .hn-word.split.go b { opacity: 1; animation: hn-in .8s cubic-bezier(.16,1,.3,1) backwards; animation-delay: calc(var(--k) * 55ms); }
   }
-  @keyframes hn-in { from { opacity: 0; transform: translateX(-.18em) translateY(.12em); filter: blur(8px); } }
+  @keyframes hn-in { from { opacity: 0; transform: translateX(-.18em) translateY(.12em); } }
   /* 14/10/2026: il nome in Bungee come accento, solo nelle sezioni "Il nome" (regola in BRAND.md) */
   .ab-word, .hn-word { font-family: 'Bungee', var(--sans); font-weight: 400; letter-spacing: 0; margin-left: 0; line-height: 1; text-transform: uppercase; }
   .ab-word { font-size: clamp(44px, 11.2vw, 172px); }
@@ -1388,18 +1388,22 @@
       flows.forEach(f => f.cancel());
       const W = word.scrollWidth;
       letters.forEach(l => { l.style.backgroundSize = 3 * W + 'px 100%'; l.style.backgroundPosition = at(l, W, -W); });
+      // passaggio lento (4,2 s), poi 3 s di nero, e si riparte
       flows = letters.map(l => l.animate(
-        [{ backgroundPosition: at(l, W, -.4 * W) }, { backgroundPosition: at(l, W, 1.4 * W), offset: .4 }, { backgroundPosition: at(l, W, 1.4 * W) }],
-        { duration: 5200, delay: 900, iterations: Infinity, easing: 'cubic-bezier(.45,0,.25,1)' }));
+        [{ backgroundPosition: at(l, W, -.4 * W) }, { backgroundPosition: at(l, W, 1.4 * W), offset: .58 }, { backgroundPosition: at(l, W, 1.4 * W) }],
+        { duration: 7200, delay: 600, iterations: Infinity, easing: 'linear' }));
     };
-    const play = () => {
-      word.classList.remove('go'); void word.offsetWidth; word.classList.add('go');
-      sweep();
-    };
+    // l'entrata lettera per lettera parte una sola volta; uscendo dallo schermo la lente si ferma e rientrando riparte
+    let shown = false;
     new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting) play(); else { word.classList.remove('go'); flows.forEach(f => f.cancel()); flows = []; }
-    }), { root: home, threshold: .6 }).observe(word);
+      if (e.isIntersecting) {
+        if (!shown && e.intersectionRatio >= .5) { shown = true; word.classList.add('go'); }
+        if (!flows.length) sweep();
+      } else if (!e.isIntersecting && e.intersectionRatio === 0) { flows.forEach(f => f.cancel()); flows = []; }
+    }), { root: home, threshold: [0, .5] }).observe(word);
     addEventListener('resize', () => { if (flows.length) sweep(); });
+    // il font del nome può arrivare dopo: ricalcolo le posizioni quando è pronto
+    try { document.fonts.ready.then(() => { if (flows.length) sweep(); }); } catch(e){}
   })();
 
   const shifts = [-.12, -.04, .04, .1];
