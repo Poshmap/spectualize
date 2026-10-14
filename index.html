@@ -759,11 +759,10 @@
   html.tt .view { overscroll-behavior-y: contain; }
   /* ---------- Intro "Nasce il nome" (14/10/2026): alla prima visita, sulla soglia ----------
      su crema passano spectacle, visualize, actualize; poi il logo nasce dal centro con un'esplosione di fumo.
-     Circa 3 s, si salta con un tocco. Animazioni (non transizioni): girano anche con "Riduci movimento" sui telefoni */
+     Circa 3 s, una volta sola. Animazioni (non transizioni): girano anche con "Riduci movimento" sui telefoni */
   .ix-words { position: fixed; inset: 0; z-index: 84; display: grid; place-items: center; pointer-events: none; }
   .ix-words span { grid-area: 1 / 1; font-weight: 300; font-size: clamp(44px, 10vw, 128px); letter-spacing: -.05em; color: var(--ink-soft); opacity: 0; }
   .ix-words span u { text-decoration: none; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .ix-skip { position: fixed; z-index: 86; right: var(--gut); top: calc(var(--gut) + env(safe-area-inset-top,0px)); font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); pointer-events: none; }
 </style>
 
 <canvas id="shader" aria-hidden="true"></canvas>
@@ -1743,45 +1742,39 @@
   addEventListener('keydown', e => { if (e.key === 'Escape' && !priv.hidden) closePrivacy(); });
 
   // ---------- Intro "Nasce il nome" (solo alla prima visita, sulla soglia) ----------
+  // passano spectacle, visualize, actualize; poi il logo nasce dal centro con un'esplosione di fumo e arriva il resto della soglia.
+  // Circa 3 s, una volta sola. Durante l'intro la soglia non risponde ai tocchi, così "Entra" non si preme prima di vederlo
   function introName(){
     if (!gateLogo.animate || (reduce && !touch)) return;
-    const anims = [], timers = [], nodes = [];
-    const an = (el, kf, o) => { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); anims.push(a); return a; };
-    const at = (ms, fn) => timers.push(setTimeout(fn, ms));
-    const add = html => { const d = document.createElement('div'); d.innerHTML = html.trim(); const n = d.firstChild; document.body.appendChild(n); nodes.push(n); return n; };
+    const anims = [];
+    const an = (el, kf, o) => anims.push(el.animate(kf, Object.assign({ fill: 'both' }, o)));
     const bits = [gate.querySelector('.top'), gate.querySelector('.tagline'), $('#enter'), gate.querySelector('.bottom')];
-    // il logo si ingrandisce dal suo centro (di norma l'origine è in alto a sinistra, per il volo verso la testata)
+    // il logo cresce dal suo centro (di norma l'origine è in alto a sinistra, per il volo verso la testata) e il fumo resta lì
     gateLogo.style.transformOrigin = '50% 50%';
     const lr = gateLogo.getBoundingClientRect(), cx = lr.left + lr.width / 2, cy = lr.top + lr.height / 2;
     introHold = { x: cx / innerWidth, y: 1 - cy / innerHeight };
-    const end = () => {
-      anims.forEach(a => a.cancel()); timers.forEach(clearTimeout); nodes.forEach(n => n.remove());
-      gateLogo.style.transformOrigin = ''; gateLogo.style.transform = ''; introHold = null;
-      removeEventListener('pointerdown', skip, true);
-    };
-    // un tocco salta l'intro; il clic che segue non deve premere "Entra" per sbaglio
-    const skip = e => {
-      e.preventDefault(); end(); set({ amp: 1, shift: 0 });
-      const eat = ev => { ev.stopPropagation(); ev.preventDefault(); };
-      addEventListener('click', eat, { capture: true, once: true });
-      setTimeout(() => removeEventListener('click', eat, true), 500);
-    };
+    gate.style.pointerEvents = 'none';
+    U.amp.v = U.amp.t = 0;
+    const words = document.createElement('div');
+    words.className = 'ix-words'; words.setAttribute('aria-hidden', 'true');
+    words.innerHTML = '<span><u>spect</u>acle</span><span>vis<u>ualize</u></span><span>act<u>ualize</u></span>';
+    document.body.appendChild(words);
     [gateLogo, ...bits].forEach(el => an(el, [{ opacity: 0 }, { opacity: 0 }], { duration: 1 }));
-    U.amp.v = 0; U.amp.t = 0;
-    const w = add('<div class="ix-words" aria-hidden="true"><span><u>spect</u>acle</span><span>vis<u>ualize</u></span><span>act<u>ualize</u></span></div>');
-    add('<span class="ix-skip" aria-hidden="true">Tocca per saltare</span>');
-    [...w.children].forEach((el, i) => an(el, [
+    [...words.children].forEach((el, i) => an(el, [
       { opacity: 0, filter: 'blur(10px)', transform: 'translateY(16px)' },
       { opacity: 1, filter: 'none', transform: 'none', offset: .3 },
       { opacity: 1, filter: 'none', transform: 'none', offset: .7 },
       { opacity: 0, filter: 'blur(8px)', transform: i < 2 ? 'translateY(-14px)' : 'scale(.7)' }], { duration: 620, delay: 150 + i * 520, easing: 'ease-in-out' }));
     an(gateLogo, [{ opacity: 0, transform: 'scale(.6)', filter: 'blur(12px)' }, { opacity: 1, transform: 'scale(1.04)', filter: 'none', offset: .6 }, { opacity: 1, transform: 'none', filter: 'none' }], { duration: 900, delay: 1600, easing: 'cubic-bezier(.16,1,.3,1)' });
-    at(1650, () => { set({ amp: 1.7 }); ripple(cx, cy, true); });
-    at(2300, () => set({ amp: 1 }));
+    setTimeout(() => { set({ amp: 1.7 }); ripple(cx, cy, true); }, 1650);
+    setTimeout(() => set({ amp: 1 }), 2300);
     bits.forEach((el, i) => an(el, [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 2200 + i * 110, easing: 'cubic-bezier(.16,1,.3,1)' }));
-    at(3100, end);
-    setTimeout(() => addEventListener('pointerdown', skip, true), 30);
+    setTimeout(() => {
+      anims.forEach(a => a.cancel()); words.remove();
+      gateLogo.style.transformOrigin = ''; gate.style.pointerEvents = ''; introHold = null;
+    }, 3100);
   }
+
 
   setLive(false);
   let seen = false;
