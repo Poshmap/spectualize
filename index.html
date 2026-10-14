@@ -742,6 +742,8 @@
     .hn-more { justify-self: start; font-size: 17px; padding-block: 6px; margin-top: 4px; background: var(--grad) left bottom / 100% 1px no-repeat; }
     .hn-more span { display: inline-block; margin-left: 4px; }
     .home .areas { padding-bottom: 36px; }
+    /* stesso teaser in fondo alla pagina servizi, dopo "Cosa facciamo" e prima del footer */
+    .page .home-name { order: 3; margin-top: 28px; }
   }
   @keyframes hn-in { from { opacity: 0; transform: translateX(-.18em) translateY(.12em); } }
   @keyframes hn-sweep { 0% { background-position: 95% 0; } 58%, 100% { background-position: 5% 0; } }
@@ -824,6 +826,12 @@
       <a href="#servizi/eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi <b class="go" aria-hidden="true">→</b></span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
     </nav>
     </div>
+    <a class="home-name js-about" id="svcTeaser" href="#chi-siamo">
+      <span class="mono hn-kick">Il nome</span>
+      <span class="hn-word" role="img" aria-label="Spectualize"><span class="hn-base" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span><span class="hn-lens" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span></span>
+      <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
+      <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
+    </a>
     <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
 
@@ -1383,8 +1391,7 @@
 
   // home mobile, teaser "Il nome": quando è a metà schermo (e il font Bungee è pronto) le lettere entrano una volta;
   // finita l'entrata parte la lente, che si ferma quando il blocco esce dallo schermo e riparte quando rientra
-  (() => {
-    const box = $('#homeName');
+  function nameTeaser(box, root){
     if (!box) return;
     let ready = false, entered = false, ratio = 0;
     const fontOk = (document.fonts && document.fonts.load) ? document.fonts.load("400 1em 'Bungee'", 'SPECTUALIZE').catch(() => {}) : Promise.resolve();
@@ -1398,8 +1405,10 @@
       box.classList.toggle('lens', entered && ratio > 0);
     }
     new IntersectionObserver(es => es.forEach(e => { ratio = e.isIntersecting ? e.intersectionRatio : 0; update(); }),
-      { root: home, threshold: [0, .25, .5, .75, 1] }).observe(box.querySelector('.hn-word'));
-  })();
+      { root, threshold: [0, .25, .5, .75, 1] }).observe(box.querySelector('.hn-word'));
+  }
+  nameTeaser($('#homeName'), home);
+  nameTeaser($('#svcTeaser'), svcView);
 
   const shifts = [-.12, -.04, .04, .1];
   document.querySelectorAll('[data-area]').forEach(a => {
