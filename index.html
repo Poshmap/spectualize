@@ -496,6 +496,8 @@
   .ab-origin { padding-block: clamp(64px, 12vh, 140px); display: grid; gap: clamp(28px, 5vh, 48px); }
   .ab-roots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; align-items: end; gap: clamp(16px, 3vw, 40px); }
   .ab-root { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--hairline); min-width: 0; }
+  /* 14/10/2026: sui tablet "dare forma a ciò che si immagina" va su due righe e alzava "visualize": le tre parole partono tutte dalla linea in alto */
+  .ab-roots > .ab-root { align-self: stretch; align-content: start; }
   .ab-root b { font-weight: 300; font-size: clamp(32px, 4.4vw, 64px); letter-spacing: -.045em; line-height: 1; color: var(--ink-soft); }
   .ab-root b u { text-decoration: none; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .ab-root span { font-size: 15px; color: var(--ink-strong); }
@@ -777,6 +779,9 @@
   html.tt, html.tt body { height: auto; }
   html.tt body { overflow: visible; min-height: calc(100vh + 2px); }
   html.tt .view { overscroll-behavior-y: contain; }
+  /* 14/10/2026: sui tablet una vista può stare tutta nello schermo e allora non scorre: il trascinamento passava al documento
+     e compariva la rotellina "aggiorna". Un pixel invisibile in fondo la rende sempre scorrevole: rimbalzo sì, rotellina no. */
+  html.tt .view::after { content: ""; position: absolute; left: 0; top: 100%; width: 1px; height: 1px; pointer-events: none; }
   /* ---------- Intro "Nasce il nome" (14/10/2026): alla prima visita, sulla soglia ----------
      su crema passano spectacle, visualize, actualize; poi il logo nasce dal centro con un'esplosione di fumo.
      Circa 3 s, una volta sola. Animazioni (non transizioni): girano anche con "Riduci movimento" sui telefoni */
