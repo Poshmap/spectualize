@@ -124,7 +124,7 @@ const LAB_TEASER = {
 const labTeaser = (k, rv) => {
   const t = LAB_TEASER[k];
   const card = (href, c, n, area, name, pv, dark) => `<a class="lt-card" href="/lab/#/${href}" style="--c:var(${c})"><span class="lt-pv${dark ? ' dark' : ''}" aria-hidden="true">${pv}</span><span class="lt-meta"><span class="mono"><i></i>${n} · ${area}</span><b>${name}<span aria-hidden="true">→</span></b></span></a>`;
-  const spk = `<svg class="lt-spk" viewBox="0 0 200 250"><defs><linearGradient id="ltGl${k}" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect class="body" x="40" y="14" width="120" height="206" rx="28"/><rect x="40" y="14" width="120" height="206" rx="28" fill="url(#ltGl${k})"/><circle class="ring" cx="100" cy="66" r="21" fill="#1A1210" stroke-width="4"/><circle cx="100" cy="66" r="8" fill="#5B4F49"/><circle class="ring" cx="100" cy="148" r="47" fill="#1A1210" stroke-width="5"/><circle cx="100" cy="148" r="17" fill="#6B5F58"/><circle cx="100" cy="207" r="3" fill="#FF3D6E"/><ellipse cx="100" cy="240" rx="60" ry="7" fill="#1A1210" opacity=".12"/></svg>`;
+  const btl = `<svg class="lt-btl" viewBox="0 0 200 250"><defs><clipPath id="ltB${k}"><path d="M84 52h32v22c0 6 26 14 26 34v104c0 10-8 18-18 18H76c-10 0-18-8-18-18V108c0-20 26-28 26-34z"/></clipPath><linearGradient id="ltL${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A2A"/><stop offset=".5" stop-color="#FF3D6E"/><stop offset="1" stop-color="#E91FA8"/></linearGradient><linearGradient id="ltG${k}" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".3" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><ellipse cx="100" cy="236" rx="52" ry="6" fill="#1A1210" opacity=".12"/><g class="tilt"><g clip-path="url(#ltB${k})"><rect x="50" y="40" width="100" height="200" fill="#E9E1D6"/><rect class="liq" x="50" y="80" width="100" height="160" fill="url(#ltL${k})"/><rect x="50" y="40" width="100" height="200" fill="url(#ltG${k})"/></g><rect x="82" y="22" width="36" height="32" rx="6" fill="#2A2120"/><rect x="78" y="126" width="44" height="44" rx="3" fill="#1A1210"/><text x="100" y="153" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="300" fill="#F1EAE0">N°03</text></g></svg>`;
   const bn = `<span class="lt-bn"><small>Nuova collezione</small><strong>Scoprila con <em>un gesto.</em></strong></span>`;
   const pass = `<span class="lt-pass"><small>Invito di esempio</small><strong><span>OSPITE</span>Il tuo nome</strong><footer><span>PASS N° 1883</span><i></i></footer></span>`;
   return `    <section class="lab-teaser" aria-label="Dal Lab">
@@ -133,7 +133,7 @@ const labTeaser = (k, rv) => {
         <a class="ab-more lt-more" href="/lab/">Entra nel Lab <span aria-hidden="true">→</span></a>
       </div>
       <div class="lt-cards${rv ? ' rv' : ''}" style="--d:3">
-        ${card('configuratore', '--orange', '01', 'Web &amp; Software', 'Configuratore di prodotto', spk)}
+        ${card('scroll-di-prodotto', '--orange', '02', 'Web &amp; Software', 'Scroll di prodotto', btl)}
         ${card('banner-interattivo', '--coral', '03', 'Advertising', 'Banner interattivo', bn)}
         ${card('invito-su-misura', '--pink', '06', 'Eventi', 'Invito su misura', pass, true)}
       </div>
