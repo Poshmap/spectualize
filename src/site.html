@@ -789,9 +789,10 @@
   .lt-pass footer i { width: 22%; aspect-ratio: 1; background: #FFF8EE; border-radius: 2px;
     -webkit-mask: conic-gradient(#000 25%, transparent 0 50%, #000 0 75%, transparent 0) 0 0 / 25% 25%; mask: conic-gradient(#000 25%, transparent 0 50%, #000 0 75%, transparent 0) 0 0 / 25% 25%; }
   @media (prefers-reduced-motion: reduce) { .lt-btl .tilt, .lt-btl .liq, .lt-bn::after, .lt-pass::after { animation: none; } }
-  /* in Home, su desktop, il teaser sta sotto la prima schermata: la prima schermata resta identica */
+  /* in Home, su desktop, teaser e footer stanno sotto la prima schermata; su mobile seguono il flusso della pagina */
+  .home-after { display: contents; }
   @media (min-width: 761px) {
-    .home .lab-teaser { position: absolute; top: 100%; left: 0; right: 0; padding-inline: var(--gut); }
+    .home .home-after { display: block; position: absolute; top: 100%; left: 0; right: 0; padding-inline: var(--gut); }
   }
   @media (max-width: 760px) {
     .lt-cards { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 78%; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(-1 * var(--gut)); padding-inline: var(--gut); scroll-padding-inline: var(--gut); scrollbar-width: none; }
@@ -849,8 +850,11 @@
       <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
+    <!-- 15/10/2026: teaser del Lab e footer stanno insieme, così il footer chiude sempre la pagina -->
+    <div class="home-after">
     <!--LABTEASER:home-->
     <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+    </div>
   </section>
 
   <!-- Servizi (/servizi/): le 4 aree sono scritte qui da build.mjs, una visibile alla volta (/servizi/#eventi, ...) -->
