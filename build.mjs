@@ -115,6 +115,31 @@ const svcHtml = SVC.map((s, i) => `    <article class="svc-main reveal" data-slu
       </div>
     </article>`).join('\n');
 
+
+// teaser del Lab, uguale in Home e in Chi siamo (cambiano solo titolo e frase)
+const LAB_TEASER = {
+  home: { kick: 'Dal Lab', title: 'Idee da provare prima di metterle <span class="hl">in scena</span>.', sub: 'Esperimenti dal vivo: provali e immagina cosa potrebbero fare per il tuo brand.' },
+  about: { kick: 'Lab', title: 'Il nostro metodo comincia <span class="hl">nel Lab</span>.', sub: 'Prima di proporre un\'idea la proviamo. Ecco tre esperimenti da toccare con mano.' }
+};
+const labTeaser = (k, rv) => {
+  const t = LAB_TEASER[k];
+  const card = (href, c, n, area, name, pv, dark) => `<a class="lt-card" href="/lab/#/${href}" style="--c:var(${c})"><span class="lt-pv${dark ? ' dark' : ''}" aria-hidden="true">${pv}</span><span class="lt-meta"><span class="mono"><i></i>${n} · ${area}</span><b>${name}<span aria-hidden="true">→</span></b></span></a>`;
+  const spk = `<svg class="lt-spk" viewBox="0 0 200 250"><defs><linearGradient id="ltGl${k}" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect class="body" x="40" y="14" width="120" height="206" rx="28"/><rect x="40" y="14" width="120" height="206" rx="28" fill="url(#ltGl${k})"/><circle class="ring" cx="100" cy="66" r="21" fill="#1A1210" stroke-width="4"/><circle cx="100" cy="66" r="8" fill="#5B4F49"/><circle class="ring" cx="100" cy="148" r="47" fill="#1A1210" stroke-width="5"/><circle cx="100" cy="148" r="17" fill="#6B5F58"/><circle cx="100" cy="207" r="3" fill="#FF3D6E"/><ellipse cx="100" cy="240" rx="60" ry="7" fill="#1A1210" opacity=".12"/></svg>`;
+  const bn = `<span class="lt-bn"><small>Nuova collezione</small><strong>Scoprila con <em>un gesto.</em></strong></span>`;
+  const pass = `<span class="lt-pass"><small>Invito di esempio</small><strong><span>OSPITE</span>Il tuo nome</strong><footer><span>PASS N° 1883</span><i></i></footer></span>`;
+  return `    <section class="lab-teaser" aria-label="Dal Lab">
+      <div class="lt-head">
+        <div><p class="lt-kick mono${rv ? ' rv' : ''}"><i></i>${t.kick}</p><h2 class="lt-title${rv ? ' rv' : ''}" style="--d:1">${t.title}</h2><p class="lt-sub${rv ? ' rv' : ''}" style="--d:2">${t.sub}</p></div>
+        <a class="ab-more lt-more" href="/lab/">Entra nel Lab <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="lt-cards${rv ? ' rv' : ''}" style="--d:3">
+        ${card('configuratore', '--orange', '01', 'Web &amp; Software', 'Configuratore di prodotto', spk)}
+        ${card('banner-interattivo', '--coral', '03', 'Advertising', 'Banner interattivo', bn)}
+        ${card('invito-su-misura', '--pink', '06', 'Eventi', 'Invito su misura', pass, true)}
+      </div>
+    </section>`;
+};
+
 const VIEW_ID = { home: 'home', svc: 'svc', about: 'about' };
 
 for (const p of PAGES) {
@@ -122,6 +147,8 @@ for (const p of PAGES) {
     .replace('<!--HEAD-->', head(p))
     .replace('<!--LD-->', ld(p))
     .replace('    <!--SVC-->', svcHtml)
+    .replace('    <!--LABTEASER:home-->', labTeaser('home', false))
+    .replace('    <!--LABTEASER:about-->', labTeaser('about', true))
     .replace('<!doctype html>', '<!doctype html>\n<!-- Generato da build.mjs a partire da src/site.html: modificare il sorgente, non questo file -->');
   for (const [name, id] of Object.entries(VIEW_ID)) {
     if (name === p.own) continue;
@@ -129,7 +156,7 @@ for (const p of PAGES) {
     if (!re.test(html)) throw new Error('sezione non trovata: ' + id);
     html = html.replace(re, (m, open, body, close) => `${open}<template class="lazy">${body}</template>${close}`);
   }
-  if (/<!--(HEAD|LD|SVC)-->/.test(html)) throw new Error('segnaposto rimasto in ' + p.out);
+  if (/<!--(HEAD|LD|SVC|LABTEASER:\w+)-->/.test(html)) throw new Error('segnaposto rimasto in ' + p.out);
   const h1 = (html.replace(/<template[\s\S]*?<\/template>/g, '').match(/<h1[\s>]/g) || []).length;
   if (h1 !== 1) throw new Error(`${p.out}: ${h1} h1 fuori dai template`);
   if (p.out.includes('/')) mkdirSync(new URL('./' + p.out.split('/')[0], import.meta.url), { recursive: true });

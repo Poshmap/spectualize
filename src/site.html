@@ -740,6 +740,65 @@
   .ix-words { position: fixed; inset: 0; z-index: 84; display: grid; place-items: center; pointer-events: none; }
   .ix-words span { grid-area: 1 / 1; font-weight: 300; font-size: clamp(44px, 10vw, 128px); letter-spacing: -.05em; color: var(--ink-soft); opacity: 0; }
   .ix-words span u { text-decoration: none; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* ---------- Teaser del Lab (prototipo 15/10/2026): in fondo a Home e Chi siamo, tre anteprime leggere (solo CSS/SVG) ---------- */
+  .lab-teaser { position: relative; isolation: isolate; display: grid; gap: clamp(22px, 3.4vh, 36px); padding-block: clamp(56px, 10vh, 120px) clamp(40px, 7vh, 80px); }
+  .lt-head { display: flex; align-items: end; justify-content: space-between; gap: 18px 40px; flex-wrap: wrap; }
+  .lt-head > div { display: grid; gap: 14px; }
+  .lt-kick { display: flex; align-items: center; gap: 10px; color: var(--ink-strong); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  .lt-kick i { width: 8px; height: 8px; border-radius: 50%; background: var(--grad); box-shadow: 0 0 14px rgba(255,61,110,.7); }
+  .lt-title { font-weight: 300; font-size: clamp(30px, 3.8vw, 58px); line-height: 1.02; letter-spacing: -.04em; max-width: 18ch; text-wrap: balance; }
+  .lt-title .hl { font-weight: 500; background-image: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lt-sub { font-size: clamp(16px, 1.3vw, 19px); line-height: 1.5; color: var(--ink-strong); max-width: 46ch; }
+  .lt-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
+  .lt-card { position: relative; display: grid; grid-template-rows: auto auto; text-decoration: none; color: var(--ink); border-radius: 22px; overflow: hidden; background: var(--panel); box-shadow: inset 0 0 0 1px var(--hairline); transition: transform .45s cubic-bezier(.16,1,.3,1), box-shadow .45s; }
+  .lt-card:hover { transform: translateY(-4px); box-shadow: inset 0 0 0 1px var(--hairline), 0 24px 50px rgba(26,18,16,.12); }
+  .lt-pv { position: relative; aspect-ratio: 4 / 3; overflow: hidden; display: grid; place-items: center; background: #EDE4D8; }
+  .lt-meta { display: grid; gap: 6px; padding: 16px 18px 18px; }
+  .lt-meta .mono { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mid); display: flex; align-items: center; gap: 8px; }
+  .lt-meta .mono i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+  .lt-meta b { font-weight: 400; font-size: clamp(19px, 1.6vw, 24px); letter-spacing: -.025em; display: flex; justify-content: space-between; gap: 10px; }
+  .lt-meta b span { transition: transform .35s cubic-bezier(.16,1,.3,1); }
+  .lt-card:hover .lt-meta b span { transform: translateX(5px); }
+  .lt-more { align-self: end; }
+  /* 1 · cassa che cambia colore */
+  .lt-spk { position: absolute; inset: 9% 0 7%; width: 100%; height: 84%; overflow: visible; filter: drop-shadow(0 16px 24px rgba(26,18,16,.18)); }
+  .lt-spk .body { animation: lt-color 10s steps(1) infinite; }
+  .lt-spk .ring { animation: lt-ring 10s steps(1) infinite; }
+  @keyframes lt-color { 0% { fill: #9AAE98; } 20% { fill: #E91FA8; } 40% { fill: #2A2120; } 60% { fill: #FF7A2A; } 80% { fill: #E9DFD2; } }
+  @keyframes lt-ring { 0% { stroke: #C9A15A; } 20% { stroke: #FF7A2A; } 40% { stroke: #C9CDD2; } 60% { stroke: #1A1210; } 80% { stroke: #C9A15A; } }
+  /* 2 · banner con il velo che si apre */
+  .lt-bn { width: 66%; aspect-ratio: 6 / 5; border-radius: 10px; background: #F6F0E7; box-shadow: 0 16px 30px rgba(26,18,16,.16); position: relative; overflow: hidden; display: grid; place-content: center; text-align: center; gap: 6px; }
+  .lt-bn small { font-family: var(--mono); font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); }
+  .lt-bn strong { font-weight: 400; font-size: clamp(14px, 1.3vw, 19px); letter-spacing: -.03em; line-height: 1.1; }
+  .lt-bn strong em { font-style: normal; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lt-bn::after { content: ""; position: absolute; inset: 0; background: var(--grad);
+    -webkit-mask: radial-gradient(circle, transparent 30%, #000 31%) 0 0 / 240% 240% no-repeat; mask: radial-gradient(circle, transparent 30%, #000 31%) 0 0 / 240% 240% no-repeat;
+    animation: lt-veil 6s ease-in-out infinite alternate; }
+  @keyframes lt-veil { 0% { -webkit-mask-position: 10% 20%; mask-position: 10% 20%; } 50% { -webkit-mask-position: 70% 40%; mask-position: 70% 40%; } 100% { -webkit-mask-position: 40% 80%; mask-position: 40% 80%; } }
+  /* 3 · pass dell'evento */
+  .lt-pv.dark { background: #140D0B; }
+  .lt-pass { width: 52%; aspect-ratio: 4 / 5; border-radius: 10px; position: relative; overflow: hidden; transform: rotate(-5deg); padding: 9% 9%; display: grid; grid-template-rows: auto 1fr auto; color: #FFF8EE; box-shadow: 0 18px 36px rgba(0,0,0,.5);
+    background: linear-gradient(140deg, #FF7A2A, #FF3D6E 40%, #E91FA8 75%, #FF1CD6); }
+  .lt-pass::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.28) 50%, transparent 70%) -200% 0 / 200% 100% no-repeat; animation: lt-sweep 4.5s ease-in-out infinite; }
+  @keyframes lt-sweep { 0%, 40% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+  .lt-pass small { font-family: var(--mono); font-size: 7px; letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
+  .lt-pass strong { align-self: center; font-weight: 400; font-size: clamp(15px, 1.4vw, 20px); letter-spacing: -.03em; line-height: 1.05; }
+  .lt-pass strong span { display: block; font-family: var(--mono); font-size: 7px; letter-spacing: .12em; opacity: .8; margin-bottom: 4px; }
+  .lt-pass footer { display: flex; justify-content: space-between; align-items: end; border-top: 1px solid rgba(255,248,238,.6); padding-top: 6px; font-family: var(--mono); font-size: 7px; letter-spacing: .1em; }
+  .lt-pass footer i { width: 22%; aspect-ratio: 1; background: #FFF8EE; border-radius: 2px;
+    -webkit-mask: conic-gradient(#000 25%, transparent 0 50%, #000 0 75%, transparent 0) 0 0 / 25% 25%; mask: conic-gradient(#000 25%, transparent 0 50%, #000 0 75%, transparent 0) 0 0 / 25% 25%; }
+  @media (prefers-reduced-motion: reduce) { .lt-spk .body, .lt-spk .ring, .lt-bn::after, .lt-pass::after { animation: none; } }
+  /* in Home, su desktop, il teaser sta sotto la prima schermata: la prima schermata resta identica */
+  @media (min-width: 761px) {
+    .home .lab-teaser { position: absolute; top: 100%; left: 0; right: 0; padding-inline: var(--gut); }
+  }
+  @media (max-width: 760px) {
+    .lt-cards { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 78%; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(-1 * var(--gut)); padding-inline: var(--gut); scroll-padding-inline: var(--gut); scrollbar-width: none; }
+    .lt-cards::-webkit-scrollbar { display: none; }
+    .lt-card { scroll-snap-align: start; }
+    .home .lab-teaser { border-top: 1px solid var(--hairline); padding-top: 40px; }
+  }
 </style>
 
 <canvas id="shader" aria-hidden="true"></canvas>
@@ -781,6 +840,7 @@
       <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
+    <!--LABTEASER:home-->
     <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
 
@@ -870,6 +930,8 @@
         <li class="rv" style="--d:3;--c:var(--pink)"><span class="mono">04</span><h3>Misurazione</h3><p>Leggiamo i dati insieme e correggiamo la rotta.</p></li>
       </ol>
     </div>
+
+    <!--LABTEASER:about-->
 
     <div class="ab-sec ab-close">
       <h2 class="claim rv">Hai un'idea da mettere <span class="hl">in scena?</span></h2>
