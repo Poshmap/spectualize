@@ -840,8 +840,19 @@
      .hn-lens = una copia ferma sopra, trasparente, con il gradiente ritagliato sul testo: fuori dalla fascia è trasparente,
      quindi non copre mai il nero e non c'è nulla da accendere o spegnere. Si anima solo la posizione del suo sfondo, in CSS. */
   .home-name { display: none; }
+  @media (min-width: 761px) {
+    .home .home-name { display: grid; justify-items: start; gap: 18px; text-decoration: none; color: var(--ink); padding: clamp(64px, 11vh, 130px) 0 clamp(48px, 8vh, 96px); border-top: 1px solid var(--hairline); }
+    .home .hn-word { font-size: clamp(56px, 8.4vw, 136px); }
+    .home .hn-line { font-size: clamp(17px, 1.4vw, 20px); max-width: 46ch; }
+    .home .lab-teaser { border-top: 1px solid var(--hairline); }
+  }
   @media (max-width: 760px) {
     .home-name { display: grid; grid-template-columns: fit-content(100%); justify-content: center; gap: 12px; text-decoration: none; color: var(--ink); padding: 34px 0 12px; border-top: 1px solid var(--hairline); }
+    .home .areas { padding-bottom: 36px; }
+    /* stesso teaser in fondo alla pagina servizi, dopo "Cosa facciamo" e prima del footer */
+    .page .home-name { order: 3; margin-top: 28px; }
+  }
+  /* le parti del blocco "Il nome", su ogni schermo */
     .hn-kick { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-strong); }
     .hn-word { position: relative; justify-self: start; white-space: nowrap; color: var(--ink); font-kerning: none; font-variant-ligatures: none; }
     .hn-word b { display: inline-block; font-weight: inherit; }
@@ -857,10 +868,6 @@
     .hn-line { font-size: 17px; line-height: 1.45; color: var(--ink-strong); max-width: 30ch; }
     .hn-more { justify-self: start; font-size: 17px; padding-block: 6px; margin-top: 4px; background: var(--grad) left bottom / 100% 1px no-repeat; }
     .hn-more span { display: inline-block; margin-left: 4px; }
-    .home .areas { padding-bottom: 36px; }
-    /* stesso teaser in fondo alla pagina servizi, dopo "Cosa facciamo" e prima del footer */
-    .page .home-name { order: 3; margin-top: 28px; }
-  }
   @keyframes hn-in { from { opacity: 0; transform: translateX(-.18em) translateY(.12em); } }
   @keyframes hn-sweep { 0% { background-position: 95% 0; } 58%, 100% { background-position: 5% 0; } }
   /* 14/10/2026: il nome in Bungee come accento, solo nelle sezioni "Il nome" (regola in BRAND.md) */
@@ -985,15 +992,15 @@
       <a href="/servizi/#marketing-brand" data-svc="marketing-brand" data-area="3" style="--i:3;--c:var(--magenta)"><span class="name"><i></i>Marketing &amp; Brand</span><span class="desc">Posizionamento, SEO, social e contenuti per far crescere il brand.</span></a>
       <a href="/servizi/#eventi" data-svc="eventi" data-area="1" style="--i:3;--c:var(--pink)"><span class="name"><i></i>Eventi</span><span class="desc">Eventi aziendali, lanci, convegni e fiere, in presenza o in streaming.</span></a>
     </nav>
-    <!-- 13/10/2026: solo mobile, dopo le aree un invito alla pagina Chi siamo partendo dal nome -->
+    <!-- 15/10/2026: teaser del Lab e footer stanno insieme, così il footer chiude sempre la pagina -->
+    <div class="home-after">
+    <!-- 13/10/2026: dopo le aree un invito alla pagina Chi siamo partendo dal nome (dal 15/10 anche su desktop) -->
     <a class="home-name js-about" id="homeName" href="/chi-siamo/">
       <span class="mono hn-kick">Il nome</span>
       <span class="hn-word" role="img" aria-label="Spectualize"><span class="hn-base" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span><span class="hn-lens" aria-hidden="true"><b style="--k:0">s</b><b style="--k:1">p</b><b style="--k:2">e</b><b style="--k:3">c</b><b style="--k:4">t</b><b style="--k:5">u</b><b style="--k:6">a</b><b style="--k:7">l</b><b style="--k:8">i</b><b style="--k:9">z</b><b style="--k:10">e</b></span></span>
       <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
-    <!-- 15/10/2026: teaser del Lab e footer stanno insieme, così il footer chiude sempre la pagina -->
-    <div class="home-after">
     <section class="lab-teaser" aria-label="Dal Lab">
       <div class="lt-head">
         <div><p class="lt-kick mono"><i></i>Dal Lab</p><h2 class="lt-title" style="--d:1">Idee da provare prima di metterle <span class="hl">in scena</span>.</h2><p class="lt-sub" style="--d:2">Esperimenti dal vivo: provali e immagina cosa potrebbero fare per il tuo brand.</p></div>
@@ -1517,15 +1524,21 @@
     ensure(home);
     gate.hidden = true; svcView.hidden = true; aboutView.hidden = true; home.hidden = false; home.classList.remove('arriving');
     view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); setMeta(META.home);
-    home.scrollTop = 0; set({amp:1, shift:0}); revealHome(); homeScroll();
+    home.scrollTop = 0; set({amp:HOME_AMP, shift:0}); revealHome(); homeScroll();
   }
   // mobile: lo scroll della home muove titolo, fumo e aree
   const small = matchMedia('(max-width: 760px)');
   let scrollQueued = false;
+  // 15/10/2026: intensità del fondo in Home: 90%, poi 60% appena sta per entrare "Il nome", fino in fondo
+  const HOME_AMP = .9, HOME_LOW = .6;
+  function homeLevel(){
+    const nm = $('#homeName');
+    return nm && nm.getBoundingClientRect().top < home.clientHeight * .85 ? HOME_LOW : HOME_AMP;
+  }
   function homeScroll(){
     const lead = $('#hero'), hint = $('#scrollHint'), items = [...home.querySelectorAll('#areas > a, #homeName')];
     if (!lead) return;
-    if (!small.matches) { lead.style.translate = lead.style.opacity = hint.style.opacity = ''; items.forEach(a => a.style.translate = a.style.opacity = ''); return; }
+    if (!small.matches) { lead.style.translate = lead.style.opacity = hint.style.opacity = ''; items.forEach(a => a.style.translate = a.style.opacity = ''); if (view === 'home' && !entering && !home.hidden) set({ amp: homeLevel() }); return; }
     const vh = home.clientHeight, p = Math.min(1, home.scrollTop / (vh * .6));
     lead.style.translate = `0 ${(-p * 90).toFixed(1)}px`;
     lead.style.opacity = (1 - p * .8).toFixed(3);
@@ -1535,7 +1548,7 @@
       a.style.translate = `0 ${((1 - t) * 36).toFixed(1)}px`;
       a.style.opacity = (.15 + t * .85).toFixed(3);
     });
-    if (view === 'home' && !entering) set({ amp: 1, shift: p * .1 });
+    if (view === 'home' && !entering) set({ amp: homeLevel(), shift: p * .1 });
   }
   home.addEventListener('scroll', () => { if (scrollQueued) return; scrollQueued = true; requestAnimationFrame(() => { scrollQueued = false; homeScroll(); }); }, { passive: true });
   addEventListener('resize', () => homeScroll());
@@ -1555,7 +1568,7 @@
       gateLogo.animate([{ transform: 'none' }, { transform: flight }], { duration: 1150, easing: 'cubic-bezier(.7,0,.15,1)', fill: 'forwards' });
       gate.querySelectorAll('.tagline, .enter, .top, .bottom').forEach(el => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, easing: 'ease', fill: 'forwards' }));
     } else requestAnimationFrame(() => { gateLogo.style.transform = flight; });
-    setTimeout(() => set({amp:1, shift:0}), 700);
+    setTimeout(() => set({amp:HOME_AMP, shift:0}), 700);
     setTimeout(() => {
       home.classList.remove('arriving'); gate.hidden = true;
       gateLogo.style.transform = ''; gate.classList.remove('leaving');
@@ -1757,7 +1770,7 @@
       requestAnimationFrame(() => { main.classList.add('in'); $('#svcAreas').classList.add('in'); });
     }
     $('#svcCount').innerHTML = `<b>${s.n}</b> / 0${SVC.length}`;
-    baseShift = s.shift; set({ shift: s.shift, live: s.live, amp: s.live ? 1 : .72 });
+    baseShift = s.shift; set({ shift: s.shift, live: s.live, amp: s.live ? 1 : .7 });
     setMeta(generic ? META.svc : { t: s.seoTitle, d: s.seoDesc, u: META.svc.u });
   }
   // indirizzi: /, /servizi/ (aree su #web-software, #eventi, ...), /chi-siamo/; #progetto apre il brief su qualsiasi pagina
@@ -1832,7 +1845,7 @@
   // il nome resta fermo mentre scorri: le tre definizioni si accendono una alla volta e il fumo cambia con loro
   let abDefs = [], abMeter = [];
   INIT.about = () => { abDefs = [...document.querySelectorAll('#abDefs li')]; abMeter = [...document.querySelectorAll('#abMeter i')]; };
-  const AB_MOOD = [ { shift: 0, live: 0, amp: .9 }, { shift: .22, live: 0, amp: .94 }, { shift: .3, live: 1, amp: 1 } ];
+  const AB_MOOD = [ { shift: 0, live: 0, amp: .9 }, { shift: .22, live: 0, amp: .9 }, { shift: .3, live: 1, amp: 1 } ];
   let abStep = -2, abIO = null, abQueued = false;
   function showAbout(){
     ensure(aboutView);
@@ -1858,7 +1871,7 @@
     if (step !== abStep && !entering) {
       abStep = step;
       if (step >= 0 && step < 3) set(AB_MOOD[step]);
-      else set({ shift: after ? .12 : 0, live: 0, amp: after ? .62 : .9 });
+      else set({ shift: after ? .12 : 0, live: 0, amp: after ? .6 : .9 });
     }
     // come lavoriamo: la linea si riempie scorrendo
     const steps = $('#abSteps'), sr = steps.getBoundingClientRect();

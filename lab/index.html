@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="it_IT">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#FBF8F3">
+<meta name="theme-color" content="#F1EAE0">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -50,15 +50,14 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   [hidden] { display: none !important; }
-  /* 14/10/2026: il Lab ha un fondo un tono più chiaro del crema del sito */
   /* come le altre pagine del sito: scorre un riquadro a tutto schermo, non la pagina.
      Così c'è il rimbalzo ma non la rotellina "tira giù per aggiornare" */
   html, body { height: 100%; }
-  html { background: var(--page); }
-  /* 14/10/2026: lo stesso fondo animato del sito, leggero (20%); in pausa dentro Luci di scena e Parete digitale */
-  canvas.bg { position: fixed; inset: 0; width: 100%; height: 100%; display: block; opacity: .2; pointer-events: none; }
+  html { background: var(--cream); }
+  /* 15/10/2026: come le altre pagine (crema del sito + fondo animato in multiply), intensità 30%; in pausa dentro Luci di scena e Parete digitale */
+  canvas.bg { position: fixed; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; mix-blend-mode: multiply; }
   #app { position: fixed; inset: 0; z-index: 1; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
-  body { overflow: hidden; background: var(--page); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  body { overflow: hidden; background: var(--cream); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
   button, a { color: inherit; font: inherit; cursor: pointer; }
   button { background: none; border: 0; }
   :focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
@@ -1188,7 +1187,7 @@
     const c = document.createElement('canvas'); c.className = 'bg'; c.setAttribute('aria-hidden', 'true');
     document.body.insertBefore(c, app);
     const keep = cleanups; cleanups = [];
-    shader(c, { live: 0, interactive: true });
+    shader(c, { live: 0, interactive: true, amp: .3 });
     const mine = cleanups; cleanups = keep;
     bgStop = () => { mine.forEach(fn => { try { fn(); } catch(e){} }); c.remove(); bgStop = null; };
   }
