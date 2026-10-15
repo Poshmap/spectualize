@@ -981,14 +981,18 @@
       const sm = { p: 0 };
       const ease = v => v < .5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2;
       const seg = (p, a, b) => Math.max(0, Math.min(1, (p - a) / (b - a)));
-      let shown = -1;
+      let shown = -1, drawn = -1;
       loop((dt, t) => {
+        // 15/10/2026: il flacone si ridisegna solo quando la posizione cambia (su iPhone tremava e scattava)
         const r = track.getBoundingClientRect();
-        const target = Math.max(0, Math.min(1, -r.top / (r.height - innerHeight)));
+        const target = Math.max(0, Math.min(1, -r.top / (r.height - app.clientHeight)));
         sm.p += (target - sm.p) * Math.min(1, dt * 8);
+        if (Math.abs(target - sm.p) < .0005) sm.p = target;
         const p = sm.p;
+        if (p === drawn) return;
+        drawn = p;
         // capitolo 1: il flacone gira; 2: si riempie di colore; 3: si apre e la camera si avvicina
-        const rot = p * 1.6 + t * .015;
+        const rot = p * 1.6;
         set(rot, ease(seg(p, .3, .62)), ease(seg(p, .7, .92)), ease(seg(p, .66, .95)));
         const k = p < .33 ? 0 : p < .66 ? 1 : 2;
         bars.forEach((b, i) => b.style.setProperty('--f', seg(p, i / 3, (i + 1) / 3).toFixed(3)));
@@ -1179,7 +1183,7 @@
 
   const VIEWS = { configuratore: viewConfig, 'scroll-di-prodotto': viewScroll, 'banner-interattivo': viewBanner, 'luci-di-scena': viewLuci, 'parete-digitale': viewParete, 'invito-su-misura': viewInvito };
   // fondo del sito: vive fuori dai cleanups delle viste, così resta acceso cambiando pagina
-  const HEAVY = ['luci-di-scena', 'parete-digitale'];
+  const HEAVY = ['luci-di-scena', 'parete-digitale', 'scroll-di-prodotto'];
   let bgStop = null;
   function bg(on){
     if (on === !!bgStop) return;
