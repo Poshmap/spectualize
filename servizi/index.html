@@ -1369,10 +1369,12 @@
     });
     click = { x:x/innerWidth, y:1-y/innerHeight, at:now(), big: big?1:0 };
   }
-  addEventListener('pointerdown', e => { if (!e.target.closest('button, a')) ripple(e.clientX, e.clientY, false); });
+  // 15/10/2026: con le luci di palco, su touch il dito serve a scorrere: niente cerchio a ogni swipe e il fascio centrale non insegue il dito (a scatti durante lo scroll)
+  const stageTouch = e => e.pointerType === 'touch' && U.live.t > .5;
+  addEventListener('pointerdown', e => { if (!e.target.closest('button, a') && !stageTouch(e)) ripple(e.clientX, e.clientY, false); });
   addEventListener('mousemove', e => { mT.x=e.clientX/innerWidth; mT.y=1-e.clientY/innerHeight; });
   let lastTouch = -10;
-  addEventListener('touchmove', e => { const t=e.touches[0]; if(t){ lastTouch = now(); mT.x=t.clientX/innerWidth; mT.y=1-t.clientY/innerHeight; } }, {passive:true});
+  addEventListener('touchmove', e => { const t=e.touches[0]; if(t && U.live.t <= .5){ lastTouch = now(); mT.x=t.clientX/innerWidth; mT.y=1-t.clientY/innerHeight; } }, {passive:true});
 
   let gl = null;
   try { gl = canvas.getContext('webgl', {alpha:true, antialias:false, premultipliedAlpha:true, powerPreference:'low-power'}); } catch(e){}
