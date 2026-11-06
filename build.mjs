@@ -1,5 +1,5 @@
 // Genera le tre pagine del sito da un solo sorgente: node build.mjs
-// src/site.html  ->  index.html, servizi/index.html, chi-siamo/index.html
+// src/site.html  ->  index.html, servizi/index.html, chi-siamo/index.html, contatti/index.html
 // Ogni pagina ha il suo head (title, description, canonical, Open Graph, JSON-LD) e apre direttamente la sua sezione.
 // Le sezioni delle altre pagine restano nel file chiuse in un <template>: lo script le apre solo quando servono.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -69,6 +69,17 @@ const PAGES = [
       ORG,
       { '@type': 'AboutPage', name: 'Chi siamo', url: SITE + '/chi-siamo/', about: { '@id': SITE + '/#org' } },
       crumbs('Chi siamo', '/chi-siamo/')
+    ] }
+  },
+  {
+    out: 'contatti/index.html', own: 'contact', path: '/contatti/',
+    title: 'Contatti: parliamo del tuo progetto · Spectualize',
+    desc: 'Scrivici per un progetto o anche solo una domanda: siti, advertising, marketing ed eventi. Ti rispondiamo entro 12 ore, in tutta Italia.',
+    image: '/og-contatti.jpg',
+    ld: { '@context': 'https://schema.org', '@graph': [
+      { ...ORG, email: 'ciao@spectualize.com', contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', email: 'ciao@spectualize.com', areaServed: 'IT', availableLanguage: 'Italian' } },
+      { '@type': 'ContactPage', name: 'Contatti', url: SITE + '/contatti/', about: { '@id': SITE + '/#org' } },
+      crumbs('Contatti', '/contatti/')
     ] }
   }
 ];
@@ -140,7 +151,7 @@ const labTeaser = (k, rv) => {
     </section>`;
 };
 
-const VIEW_ID = { home: 'home', svc: 'svc', about: 'about' };
+const VIEW_ID = { home: 'home', svc: 'svc', about: 'about', contact: 'contact' };
 
 for (const p of PAGES) {
   let html = src

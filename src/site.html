@@ -487,6 +487,57 @@
   .ab-close p { font-size: clamp(17px, 1.4vw, 20px); color: var(--ink-strong); }
   .about .site-foot { padding-top: 20px; }
 
+
+  /* ---------- Contatti (bozza 06/11/2026) ---------- */
+  .ct-hero { min-height: auto; padding-block: 24px clamp(36px, 6vh, 64px); }
+  .ct-hero .claim { max-width: 12ch; }
+  .ct-ways { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(16px, 2vw, 28px); align-items: stretch; }
+  .ct-card { position: relative; display: grid; align-content: start; gap: 16px; padding: clamp(24px, 3vw, 40px); border-radius: 22px; background: var(--panel); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px var(--hairline); }
+  .ct-card h2 { font-weight: 400; font-size: clamp(28px, 2.8vw, 42px); letter-spacing: -.035em; line-height: 1.05; }
+  .ct-card h2 em { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ct-card > p:not(.ab-kick) { font-size: clamp(16px, 1.25vw, 18px); line-height: 1.5; color: var(--ink-strong); max-width: 40ch; }
+  .ct-card .btn { justify-self: start; margin-top: 6px; }
+  .ct-main { box-shadow: inset 0 0 0 1.5px transparent; background: linear-gradient(var(--panel), var(--panel)) padding-box, var(--grad) border-box; border: 1.5px solid transparent; }
+  .ct-steps { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .ct-steps span { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mid); padding: 7px 11px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--hairline); }
+  .ct-note { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mid); }
+  .ct-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; }
+  .ct-form .wz-field.full { grid-column: 1 / -1; }
+  .ct-form textarea { font: inherit; font-size: 17px; line-height: 1.45; color: var(--ink); padding: 14px 16px; min-height: 120px; resize: vertical; border: 0; border-radius: 12px; background: rgba(255,255,255,.6); box-shadow: inset 0 0 0 1px var(--hairline); }
+  .ct-form .wz-field input { background: rgba(255,255,255,.6); }
+  .ct-form textarea:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .ct-form .wz-field.bad textarea { box-shadow: inset 0 0 0 1.5px var(--coral); }
+  .ct-form .wz-check { font-size: 14px; }
+  .ct-form .row-send { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
+  .ct-form .btn[disabled] { opacity: .6; }
+  .ct-form .wz-err { margin: 0; min-height: 0; }
+  .ct-done { display: grid; gap: 12px; padding-block: 12px; }
+  .ct-done h3 { font-weight: 400; font-size: clamp(26px, 2.4vw, 36px); letter-spacing: -.03em; }
+  .ct-done h3 em { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ct-done p { color: var(--ink-strong); }
+  .ct-direct { padding-block: clamp(56px, 10vh, 120px) clamp(32px, 6vh, 64px); display: grid; gap: 28px; }
+  .ct-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--hairline); }
+  .ct-list > div { display: grid; gap: 10px; align-content: start; padding: 22px 24px 8px 0; }
+  .ct-list > div + div { padding-left: 24px; border-left: 1px solid var(--hairline); }
+  .ct-list dt { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); }
+  .ct-list dd { font-size: clamp(19px, 1.7vw, 26px); letter-spacing: -.02em; line-height: 1.25; }
+  .ct-list dd a { color: var(--ink); text-decoration: none; background: var(--grad) left bottom / 100% 2px no-repeat; padding-bottom: 3px; }
+  .ct-list dd small { display: block; margin-top: 6px; font-size: 14px; letter-spacing: 0; color: var(--ink-mid); }
+  .ct-list .soon { color: var(--ink-mid); }
+  .site-foot a { color: inherit; text-decoration: none; }
+  .site-foot a:hover, .site-foot a[aria-current="page"] { color: var(--ink); }
+  @media (max-width: 900px) { .ct-ways { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) {
+    .ct-form { grid-template-columns: 1fr; }
+    .ct-list { grid-template-columns: 1fr; }
+    .ct-list > div, .ct-list > div + div { padding: 18px 0; border-left: 0; }
+    .ct-list > div + div { border-top: 1px solid var(--hairline); }
+    .ct-card { border-radius: 18px; }
+    .contact .ct-hero { min-height: 0; padding-block: clamp(48px, 10vh, 96px) 40px; }
+    .site-foot { flex-wrap: wrap; row-gap: 12px; }
+    .site-foot i:has(+ .js-contact) { display: none; }
+    .site-foot .js-contact { flex-basis: 100%; text-align: center; }
+  }
   .site-head nav a.js-about.on { color: var(--ink); padding-bottom: 5px; margin-bottom: -5px; background: var(--grad) left bottom / 100% 2px no-repeat; }
   @media (max-width: 760px) {
     .ab-hero { min-height: calc(100svh - var(--logo-h) - 2 * var(--gut) - 40px); padding-bottom: 40px; }
@@ -861,7 +912,7 @@
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
     <!--LABTEASER:home-->
-    <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+    <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a class="js-contact" href="/contatti/">Contatti</a></footer>
     </div>
   </section>
 
@@ -892,7 +943,7 @@
       <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
-    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a class="js-contact" href="/contatti/">Contatti</a></footer>
   </section>
 
   <!-- Chi siamo (13/10/2026). Testi: Portale/chi-siamo-testi-v1.md -->
@@ -962,7 +1013,62 @@
         <a class="ab-more js-svc rv" style="--d:3" href="/servizi/">Scopri i servizi <span aria-hidden="true">→</span></a>
       </div>
     </div>
-    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a class="js-contact" href="/contatti/">Contatti</a></footer>
+  </section>
+
+  <!-- Contatti (bozza 06/11/2026, staging). Testi: Portale/Contatti/contatti-testi-v1.md -->
+  <section class="view about contact" id="contact" hidden aria-label="Contatti">
+    <header class="site-head">
+      <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
+      <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
+      <nav><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a><a href="/lab/">Lab</a></nav>
+    </header>
+    <div class="ab-sec ab-hero ct-hero">
+      <p class="ab-kick mono rv" style="--d:0"><i></i>Contatti</p>
+      <h1 class="claim rv" style="--d:1">Parliamo del tuo <span class="hl">progetto.</span></h1>
+      <p class="lede rv" style="--d:2">Un sito, una campagna, un evento o tutto insieme: scegli tu da dove partire. Ti risponde sempre una persona del team, entro 12 ore.</p>
+    </div>
+
+    <div class="ab-sec ct-ways">
+      <div class="ct-card ct-main rv" style="--d:0">
+        <p class="ab-kick mono"><i></i>Hai un progetto?</p>
+        <h2>Raccontacelo in <em>cinque passi.</em></h2>
+        <p>Aree, fase, obiettivo, tempi e due righe sul progetto. Con un brief così ti mandiamo una prima proposta entro 24 ore.</p>
+        <div class="ct-steps" aria-hidden="true"><span>Aree</span><span>Fase</span><span>Obiettivo</span><span>Racconto</span><span>Contatti</span></div>
+        <a class="btn btn-lg js-brief" href="#progetto"><span class="dot"></span>Raccontaci il progetto</a>
+      </div>
+
+      <div class="ct-card rv" style="--d:1">
+        <p class="ab-kick mono"><i></i>Solo una domanda?</p>
+        <h2>Scrivici <em>due righe.</em></h2>
+        <form class="ct-form" id="ctForm" novalidate>
+          <input type="text" id="ctHp" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+          <div class="wz-field" id="cfNome"><label for="ctNome">Nome</label><input id="ctNome" name="nome" autocomplete="name"></div>
+          <div class="wz-field" id="cfEmail"><label for="ctEmail">Email</label><input id="ctEmail" name="email" type="email" autocomplete="email" inputmode="email"></div>
+          <div class="wz-field full" id="cfMsg"><label for="ctMsg">Messaggio</label><textarea id="ctMsg" name="messaggio" placeholder="Di cosa vorresti parlare?"></textarea></div>
+          <label class="wz-check full" id="cfPriv" style="grid-column:1/-1"><input type="checkbox" id="ctPriv"> <span>Acconsento a essere ricontattato per rispondere al mio messaggio.</span></label>
+          <div class="row-send">
+            <button class="btn" type="submit" id="ctSend"><span class="dot"></span><span id="ctSendLabel">Invia il messaggio</span></button>
+            <p class="wz-err" id="ctErr" role="alert"></p>
+          </div>
+        </form>
+        <div class="ct-done" id="ctDone" hidden>
+          <p class="ct-note"><span class="dot"></span> Messaggio inviato</p>
+          <h3 id="ctThanks">Grazie, ci sentiamo <em>presto</em>.</h3>
+          <p>Ti rispondiamo entro 12 ore all'indirizzo che ci hai lasciato.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ab-sec ct-direct">
+      <p class="ab-kick mono rv"><i></i>Contatti diretti</p>
+      <dl class="ct-list rv" style="--d:1">
+        <div><dt>Email</dt><dd><a href="mailto:ciao@spectualize.com">ciao@spectualize.com</a><small>Per progetti, domande e collaborazioni.</small></dd></div>
+        <div><dt>Dove</dt><dd>Italia<small>Un solo team, lavoriamo in tutta Italia, in presenza e da remoto.</small></dd></div>
+        <div><dt>Social</dt><dd class="soon">In cantiere<small>Presto su LinkedIn e Instagram.</small></dd></div>
+      </dl>
+    </div>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a class="js-contact" href="/contatti/">Contatti</a></footer>
   </section>
 
   <section class="view wizard" id="wizard" hidden aria-label="Raccontaci il progetto">
@@ -1087,6 +1193,7 @@
         <a href="/servizi/#eventi" data-svc="eventi" style="--c:var(--pink)"><i></i>Eventi</a>
       </div>
       <a href="/lab/">Lab</a>
+      <a class="js-contact" href="/contatti/">Contatti</a>
       <a class="btn js-brief" href="#progetto"><span class="dot"></span>Raccontaci il progetto</a>
     </nav>
   </div>
@@ -1264,7 +1371,7 @@
   // ---------- Soglia e home ----------
   const gate = $('#gate'), home = $('#home'), gateLogo = $('#gateLogo'), svcView = $('#svc');
   const REVEAL = ['#hero','#areas','#nav','#menuBtn','#homeFoot'];
-  const aboutView = $('#about');
+  const aboutView = $('#about'), contactView = $('#contact');
   let entering = false, view = 'home', baseShift = 0;
 
   // tre pagine vere (/, /servizi/, /chi-siamo/), ognuna col suo file generato da build.mjs.
@@ -1273,7 +1380,8 @@
   const META = {
     home: { t: 'Spectualize · Siti, advertising, marketing ed eventi', d: 'Un unico partner per far crescere il tuo brand, online e dal vivo: siti ed esperienze digitali, advertising, marketing ed eventi. Un solo team, in Italia.', u: '/' },
     svc: { t: 'Servizi: siti, advertising, marketing, eventi · Spectualize', d: "Quattro aree, un solo team: siti ed e-commerce, campagne Google e Meta, marketing e SEO, eventi aziendali. Dall'idea ai risultati, in tutta Italia.", u: '/servizi/' },
-    about: { t: 'Chi siamo: un solo team, online e dal vivo · Spectualize', d: "Un solo team per siti, advertising, marketing ed eventi. Il nome unisce spectacle, visualize e actualize: rendere visibile un'idea e metterla in scena.", u: '/chi-siamo/' }
+    about: { t: 'Chi siamo: un solo team, online e dal vivo · Spectualize', d: "Un solo team per siti, advertising, marketing ed eventi. Il nome unisce spectacle, visualize e actualize: rendere visibile un'idea e metterla in scena.", u: '/chi-siamo/' },
+    contact: { t: 'Contatti: parliamo del tuo progetto · Spectualize', d: 'Scrivici per un progetto o anche solo una domanda: siti, advertising, marketing ed eventi. Ti rispondiamo entro 12 ore, in tutta Italia.', u: '/contatti/' }
   };
   function setMeta(m){
     document.title = m.t;
@@ -1310,13 +1418,13 @@
     entering = false; resetHome(); setLive(false);
     gate.classList.remove('leaving'); gateLogo.style.transform = '';
     ensure(home);
-    gate.hidden = false; home.hidden = true; svcView.hidden = true; aboutView.hidden = true; home.classList.remove('arriving');
+    gate.hidden = false; home.hidden = true; svcView.hidden = true; aboutView.hidden = true; contactView.hidden = true; home.classList.remove('arriving');
     view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); setMeta(META.home);
     set({amp:1, shift:0});
   }
   function showHome(){
     ensure(home);
-    gate.hidden = true; svcView.hidden = true; aboutView.hidden = true; home.hidden = false; home.classList.remove('arriving');
+    gate.hidden = true; svcView.hidden = true; aboutView.hidden = true; contactView.hidden = true; home.hidden = false; home.classList.remove('arriving');
     view = 'home'; baseShift = 0; document.body.classList.remove('on-svc'); setMeta(META.home);
     home.scrollTop = 0; set({amp:HOME_AMP, shift:0}); revealHome(); homeScroll();
   }
@@ -1552,7 +1660,7 @@
     ensure(svcView);
     const s = SVC[i], changed = view !== 'svc' || i !== cur;
     setMenu(false); cur = i; view = 'svc';
-    gate.hidden = true; home.hidden = true; wiz.hidden = true; aboutView.hidden = true; svcView.hidden = false;
+    gate.hidden = true; home.hidden = true; wiz.hidden = true; aboutView.hidden = true; contactView.hidden = true; svcView.hidden = false;
     document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
     if (changed) {
       let main = null;
@@ -1581,10 +1689,11 @@
     if (!wiz.hidden) { wiz.hidden = true; document.body.classList.remove('in-wizard'); }
     if (p === '/servizi/') { const k = svcAt(h); showService(Math.max(0, k), k < 0); return; }
     if (p === '/chi-siamo/') { showAbout(); return; }
+    if (p === '/contatti/') { showContact(); return; }
     showHome(); setLive(live);
   }
   // passaggio tra pagine: la vista attuale sale e sfuma, il fumo pulsa, la nuova entra dal basso
-  const VIEWS = () => [gate, home, svcView, aboutView, wiz];
+  const VIEWS = () => [gate, home, svcView, aboutView, contactView, wiz];
   // tocco sulla barra di stato: riporta in cima la vista aperta (vedi html.tt nello stile)
   if (touch) {
     document.documentElement.classList.add('tt');
@@ -1612,7 +1721,7 @@
       if (to) { to.classList.add('v-in'); to.addEventListener('animationend', function done(e){ if (e.target === to) { to.classList.remove('v-in'); to.removeEventListener('animationend', done); } }); }
     }, 280);
   }
-  const targetOf = url => { const { p, h } = where(url); return h === '#progetto' ? wiz : p === '/servizi/' ? svcView : p === '/chi-siamo/' ? aboutView : home; };
+  const targetOf = url => { const { p, h } = where(url); return h === '#progetto' ? wiz : p === '/servizi/' ? svcView : p === '/chi-siamo/' ? aboutView : p === '/contatti/' ? contactView : home; };
   function go(url){
     try { history.pushState(null, '', url); } catch(e){}
     swap(targetOf(url), () => route(url));
@@ -1644,7 +1753,7 @@
   function showAbout(){
     ensure(aboutView);
     setMenu(false); view = 'about';
-    gate.hidden = true; home.hidden = true; svcView.hidden = true; wiz.hidden = true; aboutView.hidden = false;
+    gate.hidden = true; home.hidden = true; svcView.hidden = true; wiz.hidden = true; contactView.hidden = true; aboutView.hidden = false;
     document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
     setMeta(META.about);
     aboutView.scrollTop = 0; abStep = -2;
@@ -1677,6 +1786,56 @@
   addEventListener('resize', () => aboutScroll());
 
 
+
+  // ---------- Contatti (bozza 06/11/2026) ----------
+  // fondo calmo al 60%, come la parte finale di Home e Chi siamo: qui conta leggere e scrivere
+  const CT_MOOD = { shift: .04, live: 0, amp: .6 };
+  let ctIO = null, ctSending = false;
+  INIT.contact = () => {
+    const f = $('#ctForm'); if (!f) return;
+    f.addEventListener('submit', e => { e.preventDefault(); sendContact(); });
+    f.querySelectorAll('input, textarea').forEach(i => i.addEventListener('input', () => { const w = i.closest('.wz-field'); if (w) w.classList.remove('bad'); $('#ctErr').textContent = ''; }));
+  };
+  function showContact(){
+    ensure(contactView);
+    setMenu(false); view = 'contact';
+    gate.hidden = true; home.hidden = true; svcView.hidden = true; wiz.hidden = true; aboutView.hidden = true; contactView.hidden = false;
+    document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
+    setMeta(META.contact);
+    contactView.querySelectorAll('.site-foot .js-contact').forEach(a => a.setAttribute('aria-current', 'page'));
+    contactView.scrollTop = 0; baseShift = CT_MOOD.shift; set(CT_MOOD);
+    contactView.querySelectorAll('.rv').forEach(el => el.classList.remove('in'));
+    if (!ctIO) ctIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ctIO.unobserve(e.target); } }), { root: contactView, rootMargin: '0px 0px -6% 0px' });
+    requestAnimationFrame(() => contactView.querySelectorAll('.rv').forEach(el => ctIO.observe(el)));
+  }
+  async function sendContact(){
+    if (ctSending) return;
+    const nome = $('#ctNome').value.trim(), email = $('#ctEmail').value.trim(), msg = $('#ctMsg').value.trim();
+    contactView.querySelectorAll('.wz-field.bad').forEach(f => f.classList.remove('bad'));
+    let err = '';
+    if (!nome) { $('#cfNome').classList.add('bad'); err = err || 'Scrivi il tuo nome.'; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { $('#cfEmail').classList.add('bad'); err = err || 'Controlla l\'indirizzo email.'; }
+    if (!msg) { $('#cfMsg').classList.add('bad'); err = err || 'Scrivi il tuo messaggio.'; }
+    if (!err && !$('#ctPriv').checked) err = 'Per inviare il messaggio serve il consenso privacy.';
+    if (err) { $('#ctErr').textContent = err; return; }
+    ctSending = true;
+    const btn = $('#ctSend'), label = $('#ctSendLabel');
+    btn.disabled = true; label.textContent = 'Invio in corso…';
+    // stesso modulo Formspree del brief: "tipo" distingue le domande brevi dai brief completi
+    const payload = { _subject: 'Domanda dal sito: ' + nome, tipo: 'Domanda (pagina Contatti)', nome, email, _replyto: email, messaggio: msg, consenso: 'sì', _gotcha: $('#ctHp').value };
+    try {
+      const r = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      $('#ctThanks').innerHTML = `Grazie, ${nome.replace(/[<>&]/g, '')}. Ci sentiamo <em>presto</em>.`;
+      $('#ctForm').hidden = true; $('#ctDone').hidden = false;
+      const b = btn.getBoundingClientRect(); ripple(b.left + b.width / 2, b.top + b.height / 2, true);
+      set({ amp: 1.22 }); setTimeout(() => set(CT_MOOD), 900);
+    } catch(e) {
+      $('#ctErr').textContent = 'Non siamo riusciti a inviare il messaggio. Riprova o scrivici a ciao@spectualize.com.';
+    } finally {
+      ctSending = false; btn.disabled = false; label.textContent = 'Invia il messaggio';
+    }
+  }
 
   // ---------- Wizard ----------
   const wiz = $('#wizard'), form = $('#wzForm');
@@ -1805,7 +1964,7 @@
   }
   function openBrief(area){
     setMenu(false);
-    home.hidden = true; gate.hidden = true; svcView.hidden = true; aboutView.hidden = true; wiz.hidden = false;
+    home.hidden = true; gate.hidden = true; svcView.hidden = true; aboutView.hidden = true; contactView.hidden = true; wiz.hidden = false;
     document.body.classList.add('in-wizard');
     if (step > STEPS) step = 1;
     if (area) preselect(area);
@@ -1813,7 +1972,7 @@
   }
   function closeBrief(){
     wiz.hidden = true; document.body.classList.remove('in-wizard');
-    if (view === 'svc') { view = ''; showService(cur, svcAt(location.hash) < 0); } else if (view === 'about') showAbout(); else { showHome(); setLive(live); }
+    if (view === 'svc') { view = ''; showService(cur, svcAt(location.hash) < 0); } else if (view === 'about') showAbout(); else if (view === 'contact') showContact(); else { showHome(); setLive(live); }
   }
   // il tasto di un'area apre un brief nuovo con solo quell'area; "Raccontaci il progetto" riprende quello lasciato a metà
   function resetWizard(){
@@ -1824,7 +1983,7 @@
     wiz.querySelectorAll('.wz-field.bad').forEach(f => f.classList.remove('bad'));
     wiz.querySelectorAll('[data-b]').forEach(dd => { dd.textContent = dd.dataset.ph; dd.classList.add('empty'); dd.classList.remove('flash'); });
   }
-  wiz.querySelectorAll('.js-home').forEach(b => b.addEventListener('click', () => swap(view === 'svc' ? svcView : view === 'about' ? aboutView : home, closeBrief)));
+  wiz.querySelectorAll('.js-home').forEach(b => b.addEventListener('click', () => swap(view === 'svc' ? svcView : view === 'about' ? aboutView : view === 'contact' ? contactView : home, closeBrief)));
 
 
   // ---------- Privacy ----------
@@ -1851,6 +2010,7 @@
     }
     if (a.matches('.js-svc')) { e.preventDefault(); if (view !== 'svc') go('/servizi/'); else setMenu(false); return; }
     if (a.matches('.js-about')) { e.preventDefault(); if (view !== 'about') go('/chi-siamo/'); return; }
+    if (a.matches('.js-contact')) { e.preventDefault(); if (view !== 'contact') go('/contatti/'); else if (contactView.scrollTop > 0) contactView.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); return; }
     if (a.matches('.js-home-link')) {
       e.preventDefault();
       if (view === 'home' && !home.hidden) { setMenu(false); if (home.scrollTop > 0) home.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); return; }
@@ -1899,7 +2059,7 @@
   }
 
 
-  [home, svcView, aboutView].forEach(sec => { if (!sec.querySelector(':scope > template.lazy')) INIT[sec.id](); });
+  [home, svcView, aboutView, contactView].forEach(sec => { if (!sec.querySelector(':scope > template.lazy')) INIT[sec.id](); });
   setLive(false);
   let seen = false;
   try { seen = localStorage.getItem(KEY) === '1'; } catch(e){}
