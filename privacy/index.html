@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="it">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Informativa privacy · Spectualize</title>
+<meta name="description" content="Come Spectualize tratta i dati di chi visita il sito e di chi ci scrive: chi è il titolare, quali dati, perché, per quanto tempo e quali sono i tuoi diritti.">
+<meta name="theme-color" content="#F1EAE0">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://spectualize.com/privacy/">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<!-- Pagina statica, fuori da build.mjs (come /lab/). Testo: Portale/privacy-bozza-v2.md. Da far rileggere a un consulente privacy. -->
+<style>
+  :root {
+    --cream: #F1EAE0;
+    --ink: #1A1210;
+    --ink-mid: rgba(26,18,16,0.58);
+    --ink-strong: rgba(26,18,16,0.82);
+    --ink-soft: rgba(26,18,16,0.35);
+    --hairline: rgba(26,18,16,0.12);
+    --orange: #FF7A2A; --coral: #FF3D6E; --magenta: #E91FA8; --pink: #FF1CD6;
+    --grad: linear-gradient(100deg, var(--orange) 0%, var(--coral) 35%, var(--magenta) 70%, var(--pink) 100%);
+    --sans: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --gut: clamp(16px, 3vw, 32px);
+    --logo-h: clamp(44px, 4.4vw, 60px);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--cream); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .mono { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding-inline: max(var(--gut), env(safe-area-inset-left,0px)) max(var(--gut), env(safe-area-inset-right,0px)); }
+  .site-head { padding-block: var(--gut); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .site-head .mark { height: var(--logo-h); width: auto; display: block; }
+  .site-head nav { display: flex; align-items: center; gap: clamp(14px,2.4vw,32px); }
+  .site-head nav a { text-decoration: none; font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-strong); transition: color .2s; }
+  .site-head nav a:hover, .site-head nav a:focus-visible { color: var(--ink); }
+  .site-head .back { display: none; }
+
+  main { max-width: 720px; margin: 0 auto; padding: clamp(40px, 9vh, 96px) 0 clamp(48px, 10vh, 112px); }
+  .kick { display: flex; align-items: center; gap: 10px; color: var(--ink-mid); margin-bottom: 18px; }
+  .kick i { width: 22px; height: 2px; background: var(--grad); display: block; }
+  h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 500; letter-spacing: -.04em; line-height: 1; }
+  .lede { margin-top: 22px; font-size: clamp(17px, 1.6vw, 19px); line-height: 1.55; color: var(--ink-strong); max-width: 56ch; }
+  section { margin-top: clamp(36px, 6vh, 56px); padding-top: 28px; border-top: 1px solid var(--hairline); }
+  h2 { font-size: clamp(21px, 2.2vw, 25px); font-weight: 500; letter-spacing: -.02em; line-height: 1.2; margin-bottom: 14px; }
+  p, li { font-size: 16.5px; line-height: 1.65; color: var(--ink-strong); }
+  p + p, p + ul, ul + p { margin-top: 12px; }
+  ul { padding-left: 1.1em; }
+  li + li { margin-top: 8px; }
+  li::marker { color: var(--coral); }
+  strong { font-weight: 500; color: var(--ink); }
+  main a { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  main a:hover { text-decoration-color: var(--coral); }
+  .todo { background: rgba(255,61,110,.14); padding: 0 4px; border-radius: 3px; }
+  .updated { margin-top: clamp(36px, 6vh, 56px); color: var(--ink-mid); }
+  .site-foot { padding: 26px 0 calc(28px + env(safe-area-inset-bottom,0px)); text-align: center; color: var(--ink-soft); }
+  .site-foot a { text-decoration: none; }
+  .site-foot a:hover { color: var(--ink); }
+  @media (max-width: 760px) {
+    :root { --logo-h: 51px; }
+    .site-head nav a:not(.back) { display: none; }
+    .site-head .back { display: inline; }
+    .site-foot { font-size: 9px; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="site-head">
+    <a href="/" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
+    <nav><a href="/chi-siamo/">Chi siamo</a><a href="/servizi/">Servizi</a><a href="/lab/">Lab</a><a href="/contatti/">Contatti</a><a class="back" href="/">← Home</a></nav>
+  </header>
+
+  <main>
+    <p class="kick mono"><i aria-hidden="true"></i>Privacy</p>
+    <h1>Informativa privacy</h1>
+    <p class="lede">Come trattiamo i dati di chi visita spectualize.com e di chi ci scrive. In breve: raccogliamo solo quello che ci serve per risponderti, non usiamo cookie di profilazione né statistiche, e non vendiamo né cediamo i tuoi dati a nessuno.</p>
+
+    <section>
+      <h2>Chi tratta i tuoi dati</h2>
+      <p>Titolare del trattamento è <strong>Matteo <span class="todo">[Cognome]</span></strong>, <span class="todo">[Città]</span>, che gestisce il progetto Spectualize in attesa della costituzione della società. Quando la società sarà costituita, questa informativa sarà aggiornata con i suoi dati.</p>
+      <p>Per qualsiasi richiesta sulla privacy puoi scrivere a <a href="mailto:ciao@spectualize.com">ciao@spectualize.com</a>.</p>
+    </section>
+
+    <section>
+      <h2>Quali dati raccogliamo</h2>
+      <ul>
+        <li><strong>Quando ci scrivi dal sito</strong>, con il brief “Raccontaci il progetto” o con il modulo “Solo una domanda?” della pagina Contatti: nome, email, azienda e telefono se li indichi, e quello che ci racconti del progetto o nel messaggio.</li>
+        <li><strong>Quando ci scrivi via email</strong>: il tuo indirizzo e il contenuto del messaggio.</li>
+        <li><strong>Quando visiti il sito</strong>: il fornitore di hosting registra dati tecnici come indirizzo IP, tipo di browser e pagina richiesta, per far funzionare il sito e proteggerlo da abusi. Non li usiamo per profilarti.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Perché li usiamo</h2>
+      <p>Per rispondere alla tua richiesta e, se ce la chiedi, preparare una proposta. La base giuridica è l'esecuzione di misure precontrattuali adottate su tua richiesta (art. 6.1.b del GDPR). I dati tecnici di navigazione sono trattati per il nostro legittimo interesse a far funzionare e proteggere il sito (art. 6.1.f).</p>
+      <p>Non usiamo i tuoi dati per newsletter o pubblicità.</p>
+    </section>
+
+    <section>
+      <h2>Per quanto tempo</h2>
+      <p>Conserviamo messaggi e brief per il tempo necessario a gestire la richiesta, e comunque non oltre 24 mesi dall'ultimo contatto. Se nasce un rapporto di lavoro, valgono i tempi previsti dalla legge per i documenti contrattuali e fiscali.</p>
+    </section>
+
+    <section>
+      <h2>Chi può vederli</h2>
+      <p>Solo noi e questi fornitori, che trattano i dati per nostro conto come responsabili del trattamento:</p>
+      <ul>
+        <li><strong>Formspree, Inc.</strong> (Stati Uniti): riceve i moduli del sito e ce li inoltra via email.</li>
+        <li><strong>GitHub, Inc.</strong> (Stati Uniti): ospita il sito con il servizio GitHub Pages.</li>
+        <li><strong>Aruba S.p.A.</strong> (Italia): gestisce la nostra posta elettronica.</li>
+      </ul>
+      <p>Per i fornitori con sede negli Stati Uniti il trasferimento dei dati avviene sulla base del EU-U.S. Data Privacy Framework o delle clausole contrattuali standard approvate dalla Commissione europea.</p>
+      <p>I caratteri tipografici del sito sono ospitati sul nostro dominio: la tua visita non genera richieste verso Google o altri servizi esterni.</p>
+    </section>
+
+    <section>
+      <h2>Cookie e memoria del browser</h2>
+      <p>Il sito non usa cookie di profilazione né strumenti di statistica, per questo non trovi un banner cookie.</p>
+      <p>Salviamo solo, nella memoria del tuo browser (localStorage), un'informazione tecnica che ricorda se hai già visto la pagina di benvenuto, così non te la riproponiamo a ogni visita. Non serve il tuo consenso e puoi cancellarla quando vuoi dalle impostazioni del browser.</p>
+    </section>
+
+    <section>
+      <h2>I tuoi diritti</h2>
+      <p>Puoi chiedere in qualsiasi momento di accedere ai tuoi dati, correggerli, cancellarli, limitarne l'uso, riceverli in un formato portabile o opporti al trattamento (artt. 15-22 del GDPR), scrivendo a <a href="mailto:ciao@spectualize.com">ciao@spectualize.com</a>. Ti rispondiamo entro 30 giorni.</p>
+      <p>Se ritieni che il trattamento violi il GDPR puoi presentare reclamo al <a href="https://www.garanteprivacy.it" rel="noopener">Garante per la protezione dei dati personali</a>.</p>
+    </section>
+
+    <p class="updated mono">Ultimo aggiornamento: <span class="todo">[data di pubblicazione]</span></p>
+  </main>
+
+  <footer class="site-foot mono">Spectualize · Esperienze online e dal vivo · <a href="/privacy/" aria-current="page">Privacy</a></footer>
+</div>

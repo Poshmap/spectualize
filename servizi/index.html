@@ -150,9 +150,8 @@
   ]
 }
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
 <style>
   /* Layout: alla prima visita la splash fa da soglia; dopo "Entra" (e alle visite successive) hero editoriale su griglia a terzi.
      Switch Online / Dal vivo: lo stesso fondo passa da fluido digitale a luci di palco. Tema unico crema, per scelta di brand. */
@@ -825,6 +824,8 @@
   /* ---------- Footer: stessa firma mono della soglia e del tasto privacy ---------- */
   .site-foot { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 26px 0 calc(14px + env(safe-area-inset-bottom,0px)); color: var(--ink-soft); }
   .site-foot i { font-style: normal; }
+  .site-foot a { text-decoration: none; transition: color .2s; }
+  .site-foot a:hover, .site-foot a:focus-visible { color: var(--ink); }
   .home .areas, .page .areas { padding-bottom: 10px; }
   @media (max-width: 760px) {
     .page .site-foot { order: 3; padding-top: 48px; }
@@ -1066,7 +1067,7 @@
         <a class="lt-card" href="/lab/#/invito-su-misura" style="--c:var(--pink)"><span class="lt-pv dark" aria-hidden="true"><span class="lt-pass"><small>Invito di esempio</small><strong><span>OSPITE</span>Il tuo nome</strong><footer><span>PASS N° 1883</span><i></i></footer></span></span><span class="lt-meta"><span class="mono"><i></i>06 · Eventi</span><b>Invito su misura<span aria-hidden="true">→</span></b></span></a>
       </div>
     </section>
-    <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+    <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a href="/privacy/">Privacy</a></footer>
     </div></template>
   </section>
 
@@ -1144,7 +1145,7 @@
       <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
-    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a href="/privacy/">Privacy</a></footer>
   </section>
 
   <!-- Chi siamo (13/10/2026). Testi: Portale/chi-siamo-testi-v1.md -->
@@ -1224,7 +1225,7 @@
         <a class="ab-more js-svc rv" style="--d:3" href="/servizi/">Scopri i servizi <span aria-hidden="true">→</span></a>
       </div>
     </div>
-    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer></template>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a href="/privacy/">Privacy</a></footer></template>
   </section>
 
   <!-- Contatti (bozza 06/11/2026, staging). Testi: Portale/Contatti/contatti-testi-v1.md -->
@@ -1257,7 +1258,7 @@
           <div class="wz-field" id="cfNome"><label for="ctNome">Nome</label><input id="ctNome" name="nome" autocomplete="name"></div>
           <div class="wz-field" id="cfEmail"><label for="ctEmail">Email</label><input id="ctEmail" name="email" type="email" autocomplete="email" inputmode="email"></div>
           <div class="wz-field full" id="cfMsg"><label for="ctMsg">Messaggio</label><textarea id="ctMsg" name="messaggio" placeholder="Di cosa vorresti parlare?"></textarea></div>
-          <label class="wz-check full" id="cfPriv" style="grid-column:1/-1"><input type="checkbox" id="ctPriv"> <span>Acconsento a essere ricontattato per rispondere al mio messaggio.</span></label>
+          <label class="wz-check full" id="cfPriv" style="grid-column:1/-1"><input type="checkbox" id="ctPriv"> <span>Ho letto l'<a href="/privacy/" target="_blank" rel="noopener">informativa privacy</a> e acconsento a essere ricontattato per rispondere al mio messaggio.</span></label>
           <div class="row-send">
             <button class="btn" type="submit" id="ctSend"><span class="dot"></span><span id="ctSendLabel">Invia il messaggio</span></button>
             <p class="wz-err" id="ctErr" role="alert"></p>
@@ -1276,7 +1277,7 @@
       <a class="ct-mailbox" id="ctMailBox" href="mailto:ciao@spectualize.com" aria-label="Scrivi a ciao@spectualize.com"><span class="hn-word ct-mail" id="ctMail"><span class="hn-base" aria-hidden="true"><b style="--k:0">c</b><b style="--k:1">i</b><b style="--k:2">a</b><b style="--k:3">o</b><b style="--k:4">@</b><b style="--k:5">s</b><b style="--k:6">p</b><b style="--k:7">e</b><b style="--k:8">c</b><b style="--k:9">t</b><b style="--k:10">u</b><b style="--k:11">a</b><b style="--k:12">l</b><b style="--k:13">i</b><b style="--k:14">z</b><b style="--k:15">e</b><b style="--k:16">.</b><b style="--k:17">c</b><b style="--k:18">o</b><b style="--k:19">m</b></span><span class="hn-lens" aria-hidden="true"><b style="--k:0">c</b><b style="--k:1">i</b><b style="--k:2">a</b><b style="--k:3">o</b><b style="--k:4">@</b><b style="--k:5">s</b><b style="--k:6">p</b><b style="--k:7">e</b><b style="--k:8">c</b><b style="--k:9">t</b><b style="--k:10">u</b><b style="--k:11">a</b><b style="--k:12">l</b><b style="--k:13">i</b><b style="--k:14">z</b><b style="--k:15">e</b><b style="--k:16">.</b><b style="--k:17">c</b><b style="--k:18">o</b><b style="--k:19">m</b></span></span></a>
       <p class="ct-mail-sub mono rv" style="--d:2"><span>Ti rispondiamo entro 12 ore</span><button type="button" class="ct-copy" id="ctCopy">Copia indirizzo</button></p>
     </div>
-    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer></template>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a href="/privacy/">Privacy</a></footer></template>
   </section>
 
   <section class="view wizard" id="wizard" hidden aria-label="Raccontaci il progetto">
@@ -1348,7 +1349,7 @@
             <div class="wz-field"><label for="wzAzienda">Azienda (facoltativo)</label><input id="wzAzienda" name="azienda" autocomplete="organization"></div>
             <div class="wz-field" id="fEmail"><label for="wzEmail">Email</label><input id="wzEmail" name="email" type="email" autocomplete="email" inputmode="email"></div>
             <div class="wz-field"><label for="wzTel">Telefono (facoltativo)</label><input id="wzTel" name="telefono" type="tel" autocomplete="tel" inputmode="tel"></div>
-            <label class="wz-check" id="fPriv"><input type="checkbox" id="wzPriv"> <span>Acconsento a essere ricontattato per questo progetto.</span><!-- da ripristinare con testo privacy definitivo: Ho letto l'<a href="#" class="js-privacy">informativa privacy</a> e acconsento... --></label>
+            <label class="wz-check" id="fPriv"><input type="checkbox" id="wzPriv"> <span>Ho letto l'<a href="/privacy/" target="_blank" rel="noopener">informativa privacy</a> e acconsento a essere ricontattato per questo progetto.</span></label>
           </div>
         </div>
         <!-- fatto -->
