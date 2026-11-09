@@ -54,7 +54,8 @@
      Così c'è il rimbalzo ma non la rotellina "tira giù per aggiornare" */
   html, body { height: 100%; }
   html { background: var(--cream); }
-  /* 15/10/2026: come le altre pagine (crema del sito + fondo animato in multiply), intensità 30%; in pausa dentro Luci di scena e Parete digitale */
+  /* 15/10/2026: come le altre pagine (crema del sito + fondo animato in multiply), intensità 30%.
+     09/11/2026: acceso su tutte le pagine del Lab; in Luci di scena e Parete digitale si ferma (resta visibile) mentre la demo scura è sullo schermo */
   canvas.bg { position: fixed; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; mix-blend-mode: multiply; }
   #app { position: fixed; inset: 0; z-index: 1; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
   body { overflow: hidden; background: var(--cream); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
@@ -509,7 +510,7 @@
     resize();
     const ro = new ResizeObserver(resize); ro.observe(canvas); onLeave(() => ro.disconnect());
     let mT = { x: .5, y: .5 }, mC = { x: .5, y: .5 }, mP = { x: .5, y: .5 }, mv = 0, lastMove = -10, T = Math.random() * 40, TB = 0, beat = 0;
-    let click = { x: .5, y: .5, at: -100, big: 0 }, now = 0;
+    let click = { x: .5, y: .5, at: -100, big: 0 }, now = 0, drawn = false;
     const live = { v: st.live }, level = { v: st.level };
     const rel = e => { const r = canvas.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width, y: 1 - (e.clientY - r.top) / r.height }; };
     if (st.interactive) {
@@ -518,6 +519,9 @@
     }
     api.ripple = (x, y, big) => { click = { x, y, at: now, big: big ? 1 : 0 }; };
     loop((dt, t) => {
+      // in pausa: non ridisegna, il canvas tiene l'ultimo fotogramma (il fondo resta visibile, fermo)
+      if (st.paused && drawn) return;
+      drawn = true;
       now = t;
       T += dt * (touchLike ? 1.7 : 1) * st.speed;
       // movimento dei fari: fermo, lento, a tempo (a tempo: scatti sul battere, 120 bpm)
@@ -1183,25 +1187,33 @@
   }
 
   const VIEWS = { configuratore: viewConfig, 'scroll-di-prodotto': viewScroll, 'banner-interattivo': viewBanner, 'luci-di-scena': viewLuci, 'parete-digitale': viewParete, 'invito-su-misura': viewInvito };
-  // fondo del sito: vive fuori dai cleanups delle viste, così resta acceso cambiando pagina
-  const HEAVY = ['luci-di-scena', 'parete-digitale', 'scroll-di-prodotto'];
-  let bgStop = null;
+  // fondo del sito: vive fuori dai cleanups delle viste, così resta acceso cambiando pagina.
+  // 09/11/2026: uguale su tutte le pagine. Dove la demo ha già un'animazione pesante (HEAVY), il fondo si ferma
+  // finché la demo è sullo schermo, così il telefono non muove due animazioni a tutto schermo insieme.
+  const HEAVY = ['luci-di-scena', 'parete-digitale'];
+  let bgStop = null, bgApi = null;
   function bg(on){
     if (on === !!bgStop) return;
     if (!on) { bgStop(); return; }
     const c = document.createElement('canvas'); c.className = 'bg'; c.setAttribute('aria-hidden', 'true');
     document.body.insertBefore(c, app);
     const keep = cleanups; cleanups = [];
-    shader(c, { live: 0, interactive: true, amp: .3 });
+    bgApi = shader(c, { live: 0, interactive: true, amp: .3 });
     const mine = cleanups; cleanups = keep;
-    bgStop = () => { mine.forEach(fn => { try { fn(); } catch(e){} }); c.remove(); bgStop = null; };
+    bgStop = () => { mine.forEach(fn => { try { fn(); } catch(e){} }); c.remove(); bgStop = null; bgApi = null; };
   }
   function route(){
     cleanups.forEach(fn => { try { fn(); } catch(e){} }); cleanups = [];
     const slug = location.hash.replace(/^#\/?/, '');
     const x = EX.find(e => e.slug === slug);
-    bg(!HEAVY.includes(slug));
+    bg(true);
+    if (bgApi) bgApi.st.paused = false;
     if (x) VIEWS[slug](x); else viewIndex();
+    const heavy = HEAVY.includes(slug) && app.querySelector('.demo.dark');
+    if (heavy && bgApi && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(([e]) => { if (bgApi) bgApi.st.paused = e.isIntersecting; }, { root: app, threshold: 0 });
+      io.observe(heavy); onLeave(() => io.disconnect());
+    }
     app.scrollTo(0, 0);
     app.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.16,1,.3,1)' });
   }
