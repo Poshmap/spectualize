@@ -526,17 +526,12 @@
   .ct-mail-sub { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 22px; color: var(--ink-mid); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
   .ct-copy { font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--ink); background: none; border: 0; padding: 4px 0; cursor: none; background: var(--grad) left bottom / 100% 1.5px no-repeat; }
   .ct-copy:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
-  .site-foot a { color: inherit; text-decoration: none; }
-  .site-foot a:hover, .site-foot a[aria-current="page"] { color: var(--ink); }
   @media (max-width: 900px) { .ct-ways { grid-template-columns: 1fr; } }
   @media (max-width: 760px) {
     .ct-form { grid-template-columns: 1fr; }
     .ct-direct .hn-word.ct-mail { font-size: 6.6vw; }
     .ct-card { border-radius: 18px; }
     .contact .ct-hero { min-height: 0; padding-block: clamp(48px, 10vh, 96px) 40px; }
-    .site-foot { flex-wrap: wrap; row-gap: 12px; }
-    .site-foot i:has(+ .js-contact) { display: none; }
-    .site-foot .js-contact { flex-basis: 100%; text-align: center; }
   }
   .site-head nav a.js-about.on { color: var(--ink); padding-bottom: 5px; margin-bottom: -5px; background: var(--grad) left bottom / 100% 2px no-repeat; }
   @media (max-width: 760px) {
@@ -882,7 +877,7 @@
     <header class="site-head">
       <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" id="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <button class="menu-btn fade" id="menuBtn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
-      <nav class="fade" id="nav"><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a><a href="/lab/">Lab</a><a class="btn sm js-brief" href="#progetto">Raccontaci il progetto</a></nav>
+      <nav class="fade" id="nav"><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a><a href="/lab/">Lab</a><a class="js-contact" href="/contatti/">Contatti</a><a class="btn sm js-brief" href="#progetto">Raccontaci il progetto</a></nav>
     </header>
     <div class="lead reveal" id="hero">
       <div class="mode" id="mode" role="group" aria-label="Mostra">
@@ -912,7 +907,7 @@
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
     <!--LABTEASER:home-->
-    <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a class="js-contact" href="/contatti/">Contatti</a></footer>
+    <footer class="site-foot mono fade" id="homeFoot"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
     </div>
   </section>
 
@@ -921,7 +916,7 @@
     <header class="site-head">
       <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
-      <nav><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc on" href="/servizi/" aria-current="page">Servizi</a><a href="/lab/">Lab</a><a class="btn sm js-brief" href="#progetto">Raccontaci il progetto</a></nav>
+      <nav><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc on" href="/servizi/" aria-current="page">Servizi</a><a href="/lab/">Lab</a><a class="js-contact" href="/contatti/">Contatti</a><a class="btn sm js-brief" href="#progetto">Raccontaci il progetto</a></nav>
     </header>
     <h1 class="sr-only">Servizi</h1>
     <!--SVC-->
@@ -943,7 +938,7 @@
       <span class="hn-line"><em>Spectacle</em>, <em>visualize</em>, <em>actualize</em>: rendere visibile un'idea e metterla in scena.</span>
       <span class="hn-more">Scopri chi siamo <span aria-hidden="true">→</span></span>
     </a>
-    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a class="js-contact" href="/contatti/">Contatti</a></footer>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
 
   <!-- Chi siamo (13/10/2026). Testi: Portale/chi-siamo-testi-v1.md -->
@@ -951,7 +946,7 @@
     <header class="site-head">
       <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
-      <nav><a class="js-about on" href="/chi-siamo/" aria-current="page">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a><a href="/lab/">Lab</a></nav>
+      <nav><a class="js-about on" href="/chi-siamo/" aria-current="page">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a><a href="/lab/">Lab</a><a class="js-contact" href="/contatti/">Contatti</a></nav>
     </header>
     <div class="ab-sec ab-hero">
       <p class="ab-kick mono rv" style="--d:0"><i></i>Chi siamo</p>
@@ -1013,7 +1008,7 @@
         <a class="ab-more js-svc rv" style="--d:3" href="/servizi/">Scopri i servizi <span aria-hidden="true">→</span></a>
       </div>
     </div>
-    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a class="js-contact" href="/contatti/">Contatti</a></footer>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
 
   <!-- Contatti (bozza 06/11/2026, staging). Testi: Portale/Contatti/contatti-testi-v1.md -->
@@ -1021,7 +1016,7 @@
     <header class="site-head">
       <a href="/" class="js-home-link" aria-label="Spectualize, home"><img class="mark" src="/logo.png" alt="Spectualize" width="2000" height="1115"></a>
       <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
-      <nav><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a><a href="/lab/">Lab</a></nav>
+      <nav><a class="js-about" href="/chi-siamo/">Chi siamo</a><a class="js-svc" href="/servizi/">Servizi</a><a href="/lab/">Lab</a><a class="js-contact on" href="/contatti/" aria-current="page">Contatti</a></nav>
     </header>
     <div class="ab-sec ab-hero ct-hero">
       <p class="ab-kick mono rv" style="--d:0"><i></i>Contatti</p>
@@ -1065,7 +1060,7 @@
       <a class="ct-mailbox" id="ctMailBox" href="mailto:ciao@spectualize.com" aria-label="Scrivi a ciao@spectualize.com"><span class="hn-word ct-mail" id="ctMail"><span class="hn-base" aria-hidden="true"><b style="--k:0">c</b><b style="--k:1">i</b><b style="--k:2">a</b><b style="--k:3">o</b><b style="--k:4">@</b><b style="--k:5">s</b><b style="--k:6">p</b><b style="--k:7">e</b><b style="--k:8">c</b><b style="--k:9">t</b><b style="--k:10">u</b><b style="--k:11">a</b><b style="--k:12">l</b><b style="--k:13">i</b><b style="--k:14">z</b><b style="--k:15">e</b><b style="--k:16">.</b><b style="--k:17">c</b><b style="--k:18">o</b><b style="--k:19">m</b></span><span class="hn-lens" aria-hidden="true"><b style="--k:0">c</b><b style="--k:1">i</b><b style="--k:2">a</b><b style="--k:3">o</b><b style="--k:4">@</b><b style="--k:5">s</b><b style="--k:6">p</b><b style="--k:7">e</b><b style="--k:8">c</b><b style="--k:9">t</b><b style="--k:10">u</b><b style="--k:11">a</b><b style="--k:12">l</b><b style="--k:13">i</b><b style="--k:14">z</b><b style="--k:15">e</b><b style="--k:16">.</b><b style="--k:17">c</b><b style="--k:18">o</b><b style="--k:19">m</b></span></span></a>
       <p class="ct-mail-sub mono rv" style="--d:2"><span>Ti rispondiamo entro 12 ore</span><button type="button" class="ct-copy" id="ctCopy">Copia indirizzo</button></p>
     </div>
-    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span><i aria-hidden="true">·</i><a class="js-contact" href="/contatti/">Contatti</a></footer>
+    <footer class="site-foot mono"><span>Spectualize</span><i aria-hidden="true">·</i><span>Esperienze online e dal vivo</span></footer>
   </section>
 
   <section class="view wizard" id="wizard" hidden aria-label="Raccontaci il progetto">
@@ -1800,7 +1795,6 @@
     gate.hidden = true; home.hidden = true; svcView.hidden = true; wiz.hidden = true; aboutView.hidden = true; contactView.hidden = false;
     document.body.classList.remove('in-wizard'); document.body.classList.add('on-svc');
     setMeta(META.contact);
-    contactView.querySelectorAll('.site-foot .js-contact').forEach(a => a.setAttribute('aria-current', 'page'));
     contactView.scrollTop = 0; baseShift = CT_MOOD.shift; set(CT_MOOD);
     contactView.querySelectorAll('.rv').forEach(el => el.classList.remove('in'));
     if (!ctIO) ctIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ctIO.unobserve(e.target); } }), { root: contactView, rootMargin: '0px 0px -6% 0px' });
